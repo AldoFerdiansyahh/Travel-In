@@ -1,0 +1,18 @@
+{
+  "cwd": "C:\\Users\\toshiba\\Documents\\Aldo Ferdi KULIAH LPKIA\\SEMESTER 6\\mobile 2\\Travel-In",
+  "type": [
+    "web"
+  ],
+  "name": "Travel-In",
+  "framework": "core",
+  "template": "tabs",
+  "bundler": "vite",
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkMode": false,
+    "iconFonts": true
+  },
+  "customBuild": false
+}
