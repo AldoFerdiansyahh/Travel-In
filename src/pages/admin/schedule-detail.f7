@@ -1,0 +1,82 @@
+<template>
+  <div class="page" data-name="admin-schedule-detail">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="/admin/schedules/" class="link icon-only">
+            <i class="icon f7-icons">arrow_left</i>
+          </a>
+        </div>
+        <div class="title">Detail Jadwal</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="card card-rounded card-shadow">
+        <div class="card-content card-content-padding">
+          <div class="block-title">${schedule.origin} → ${schedule.destination}</div>
+          <div class="detail-info">
+            <div class="detail-label">Tanggal</div>
+            <div class="detail-value">${schedule.date}</div>
+          </div>
+          <div class="detail-info">
+            <div class="detail-label">Jam</div>
+            <div class="detail-value">${schedule.time}</div>
+          </div>
+          <div class="detail-info">
+            <div class="detail-label">Armada</div>
+            <div class="detail-value">${schedule.vehicle}</div>
+          </div>
+          <div class="detail-info">
+            <div class="detail-label">Plat Nomor</div>
+            <div class="detail-value">${schedule.plate}</div>
+          </div>
+          <div class="detail-info">
+            <div class="detail-label">Kapasitas</div>
+            <div class="detail-value">${schedule.capacity} kursi</div>
+          </div>
+          <div class="detail-info">
+            <div class="detail-label">Kursi Terisi</div>
+            <div class="detail-value">${schedule.filledSeats} kursi</div>
+          </div>
+          <div class="detail-info">
+            <div class="detail-label">Sisa Kursi</div>
+            <div class="detail-value">${schedule.seatsLeft} kursi</div>
+          </div>
+          <div class="detail-status">
+            <span class="status-chip status-${schedule.status.toLowerCase()}">${schedule.status}</span>
+          </div>
+          <div class="block-title">Daftar Penumpang</div>
+          <div class="list no-hairlines-md">
+            <ul>
+              ${schedule.passengers.length > 0 ? schedule.passengers.map((passenger) => $h`
+                <li class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title-row">
+                      <div class="item-title">${passenger.name}</div>
+                      <div class="item-after">${passenger.seat}</div>
+                    </div>
+                    <div class="item-subtitle">${passenger.ticketId}</div>
+                  </div>
+                </li>
+              `) : $h`
+                <li class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Belum ada penumpang terdaftar.</div>
+                  </div>
+                </li>
+              `}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $store }) => {
+    const scheduleId = (props.route && props.route.params && props.route.params.id) || '';
+    const schedule = $store.getters.schedules.value.find((item) => item.id === scheduleId) || { origin: '-', destination: '-', date: '-', time: '-', vehicle: '-', plate: '-', capacity: 0, filledSeats: 0, seatsLeft: 0, status: 'Tidak tersedia', passengers: [] };
+    return $render;
+  };
+</script>

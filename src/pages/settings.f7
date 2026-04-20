@@ -1,103 +1,143 @@
 <template>
-<div class="page" data-name="settings">
-  <div class="navbar">
-    <div class="navbar-bg"></div>
-    <div class="navbar-inner sliding">
-      <div class="title">Settings</div>
+  <div class="page" data-name="settings">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="title">Akun Saya</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <!-- Profile Section -->
+      <div class="block block-strong text-align-center">
+        <div class="avatar" style="width: 100px; height: 100px; background: #1d4ed8; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: white; font-size: 40px; margin: 0 auto;">
+          <i class="icon f7-icons">person_fill</i>
+        </div>
+        <h2 style="margin: 1rem 0 0.25rem 0;">John Doe</h2>
+        <p style="color: #6b7280;">john.doe@email.com</p>
+        <p style="color: #6b7280; font-size: 0.9rem;">Member sejak 2023</p>
+      </div>
+
+      <!-- Account Stats -->
+      <div class="block-title">Statistik Perjalanan</div>
+      <div class="block grid grid-cols-3 grid-gap">
+        <div class="card stat-card">
+          <div class="card-content card-content-padding text-align-center">
+            <div class="stat-number">12</div>
+            <div class="stat-label">Perjalanan</div>
+          </div>
+        </div>
+        <div class="card stat-card">
+          <div class="card-content card-content-padding text-align-center">
+            <div class="stat-number">8</div>
+            <div class="stat-label">Tiket Aktif</div>
+          </div>
+        </div>
+        <div class="card stat-card">
+          <div class="card-content card-content-padding text-align-center">
+            <div class="stat-number">4.8</div>
+            <div class="stat-label">Rating</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Menu -->
+      <div class="block-title">Pengaturan Akun</div>
+      <div class="list list-strong list-dividers-ios">
+        <ul>
+          <li>
+            <a href="#" class="item-link item-content">
+              <div class="item-media">
+                <i class="icon f7-icons">ticket_fill</i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title">Tiket Saya</div>
+                <div class="item-after">
+                  <span class="badge color-blue">8</span>
+                </div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="item-link item-content">
+              <div class="item-media">
+                <i class="icon f7-icons">heart_fill</i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title">Rute Favorit</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="item-link item-content">
+              <div class="item-media">
+                <i class="icon f7-icons">creditcard_fill</i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title">Metode Pembayaran</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="item-link item-content">
+              <div class="item-media">
+                <i class="icon f7-icons">bell_fill</i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title">Notifikasi</div>
+                <div class="item-after">
+                  <label class="toggle">
+                    <input type="checkbox" checked />
+                    <span class="toggle-icon"></span>
+                  </label>
+                </div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="item-link item-content">
+              <div class="item-media">
+                <i class="icon f7-icons">lock_fill</i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title">Privasi & Keamanan</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="item-link item-content">
+              <div class="item-media">
+                <i class="icon f7-icons">info_circle_fill</i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title">Bantuan & Dukungan</div>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Logout Button -->
+      <div class="block block-strong">
+        <button type="button" class="button button-fill color-red">
+          <i class="icon f7-icons">arrow_right_to_line</i>
+          Keluar
+        </button>
+      </div>
+
+      <!-- App Info -->
+      <div class="block block-strong text-align-center">
+        <p style="color: #6b7280; font-size: 0.9rem;">Travel-In v1.0.0</p>
+        <p style="color: #6b7280; font-size: 0.8rem;">© 2026 Travel-In. All rights reserved.</p>
+      </div>
     </div>
   </div>
-  <div class="page-content">
-    <div class="block-title">Form Example</div>
-    <div class="list list-strong-ios list-dividers-ios list-outline-ios">
-      <ul>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Name</div>
-              <div class="item-input-wrap">
-                <input type="text" placeholder="Your name" />
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">E-mail</div>
-              <div class="item-input-wrap">
-                <input type="email" placeholder="E-mail" />
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">URL</div>
-              <div class="item-input-wrap">
-                <input type="url" placeholder="URL" />
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Password</div>
-              <div class="item-input-wrap">
-                <input type="password" placeholder="Password" />
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Phone</div>
-              <div class="item-input-wrap">
-                <input type="tel" placeholder="Phone" />
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Gender</div>
-              <div class="item-input-wrap">
-                <select>
-                  <option>Male</option>
-                  <option>Female</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Birth date</div>
-              <div class="item-input-wrap">
-                <input type="date" placeholder="Birth day" value="2014-04-30" />
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Toggle</div>
-              <div class="item-after">
-                <label class="toggle toggle-init">
-                  <input type="checkbox" />
-                  <span class="toggle-icon"></span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
+</template>
+
+<script>
+export default () => {
+  return $render;
+}
+</script>
             <div class="item-inner">
               <div class="item-title item-label">Slider</div>
               <div class="item-input-wrap">

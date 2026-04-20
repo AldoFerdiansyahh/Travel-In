@@ -3,44 +3,78 @@
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
-        <div class="title">Catalog</div>
+        <div class="title">Katalog Travel</div>
       </div>
     </div>
     <div class="page-content">
-      <div class="list list-strong list-dividers-ios list-outline-ios inset-md">
+      <div class="block block-strong">
+        <div class="block-title">Jadwal Travel Tersedia</div>
+      </div>
+
+      <div class="list media-list inset">
         <ul>
-          ${products.value.map((product) => $h`
+          ${schedules.value.map((schedule) => $h`
           <li>
-            <a class="item-content item-link" href="/product/${product.id}/">
-              <div class="item-inner">
-                <div class="item-title">${product.title}</div>
+            <div class="item-content">
+              <div class="item-media">
+                <span class="status-chip status-${schedule.status.toLowerCase()}">${schedule.status}</span>
               </div>
-            </a>
+              <div class="item-inner">
+                <div class="item-title-row">
+                  <div class="item-title">${schedule.origin} → ${schedule.destination}</div>
+                  <div class="item-after">${formatPrice(schedule.price)}</div>
+                </div>
+                <div class="item-subtitle">${schedule.date} · ${schedule.time} · ${schedule.vehicle}</div>
+                <div class="item-text">${schedule.seatsLeft} kursi tersedia dari ${schedule.capacity}</div>
+              </div>
+            </div>
+            <div class="row admin-actions">
+              <div class="col">
+                <a href="/armada-management/${schedule.id}/" class="button button-small button-outline color-blue">Lihat Detail</a>
+              </div>
+              <div class="col">
+                <button type="button" class="button button-small button-fill" @click=${() => bookTicket(schedule.id)}>Pesan Tiket</button>
+              </div>
+            </div>
           </li>
           `)}
         </ul>
       </div>
-      ${products.value.length === 3 && $h`
-      <div class="block">
-        <button class="button button-fill" @click=${addProduct}>Add Product</Button>
+
+      ${schedules.value.length === 0 && $h`
+      <div class="block block-strong text-align-center">
+        <p>Tidak ada jadwal travel tersedia saat ini.</p>
+        <p>Silakan cek kembali nanti atau hubungi admin.</p>
       </div>
       `}
     </div>
   </div>
 </template>
 <script>
-  export default (props, { $store }) => {
-    const products = $store.getters.products;
+  export default (props, { $store, $f7 }) => {
+    const schedules = $store.getters.schedules;
 
-    const addProduct = () => {
-      $store.dispatch('addProduct', {
-        id: '4',
-        title: 'Apple iPhone 12',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi tempora similique reiciendis, error nesciunt vero, blanditiis pariatur dolor, minima sed sapiente rerum, dolorem corrupti hic modi praesentium unde saepe perspiciatis.'
-      });
-    }
+    const formatPrice = (value) => {
+      const amount = Number(value || 0);
+      if (Number.isNaN(amount)) return 'Rp 0';
+      return 'Rp ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
+
+    const bookTicket = (scheduleId) => {
+      const schedule = schedules.value.find(s => s.id === scheduleId);
+      if (!schedule) return;
+
+      $f7.dialog.confirm(
+        `Pesan tiket untuk ${schedule.origin} → ${schedule.destination}?\n\nHarga: ${formatPrice(schedule.price)}\nTanggal: ${schedule.date} ${schedule.time}`,
+        () => {
+          $f7.toast.create({
+            text: 'Tiket berhasil dipesan! Cek email untuk konfirmasi.',
+            closeTimeout: 3000
+          }).open();
+        }
+      );
+    };
 
     return $render;
   }
-
 </script>

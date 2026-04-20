@@ -1,0 +1,88 @@
+<template>
+  <div class="page" data-name="booking">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="/travel/${schedule.id}/" class="link icon-only">
+            <i class="icon f7-icons">arrow_left</i>
+          </a>
+        </div>
+        <div class="title">Booking Tiket</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="block block-strong">
+        <div class="block-title">Data Penumpang</div>
+      </div>
+      <div class="card card-rounded card-shadow">
+        <div class="card-content card-content-padding">
+          <div class="list no-hairlines-md">
+            <ul>
+              <li class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-title item-label">Nama Penumpang</div>
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Masukkan nama" value="${form.passenger}" @input="${updateField('passenger')}" />
+                  </div>
+                </div>
+              </li>
+              <li class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-title item-label">Jumlah Kursi</div>
+                  <div class="item-input-wrap">
+                    <input type="number" min="1" max="${schedule.seatsLeft}" placeholder="Jumlah kursi" value="${form.seats}" @input="${updateField('seats')}" />
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="button button-fill button-round" @click="${submitBooking}">Lanjut ke Pembayaran</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default (props, { $store, $f7, $router, $update }) => {
+    const scheduleId = (props.route && props.route.params && props.route.params.id) || '';
+    const schedule = $store.getters.schedules.value.find((item) => item.id === scheduleId) || { id: '', origin: '-', destination: '-', date: '-', time: '-', price: 0, vehicle: '-', seatsLeft: 0 };
+
+    let form = { passenger: '', seats: '1' };
+
+    const updateField = (field) => (e) => {
+      form[field] = e.target.value;
+      $update();
+    };
+
+    const submitBooking = () => {
+      if (!form.passenger || !form.seats) {
+        $f7.dialog.alert('Silakan isi nama penumpang dan jumlah kursi.');
+        return;
+      }
+      const seats = Number(form.seats);
+      if (seats < 1 || seats > schedule.seatsLeft) {
+        $f7.dialog.alert('Jumlah kursi tidak valid.');
+        return;
+      }
+      const ticketId = `ETK-${Date.now()}`;
+      $store.dispatch('addTicket', {
+        id: ticketId,
+        passenger: form.passenger,
+        route: `${schedule.origin} → ${schedule.destination}`,
+        scheduleId: schedule.id,
+        seats: seats,
+        price: schedule.price * seats,
+        paymentStatus: 'Pending',
+        verified: false,
+      });
+      $store.dispatch('updateScheduleSeats', { id: schedule.id, seats: seats });
+      $router.navigate(`/payment/${ticketId}/`);
+    };
+
+    return $render;
+  };
+</script>

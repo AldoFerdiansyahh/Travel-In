@@ -1,0 +1,71 @@
+<template>
+  <div class="page" data-name="login">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="title">Masuk</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="block block-strong">
+        <div class="card card-rounded card-shadow">
+          <div class="card-content card-content-padding">
+            <div class="list no-hairlines-md">
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Email</div>
+                    <div class="item-input-wrap">
+                      <input type="email" placeholder="Masukkan email" value="${form.email}" @input="${updateField('email')}" />
+                    </div>
+                  </div>
+                </li>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Password</div>
+                    <div class="item-input-wrap">
+                      <input type="password" placeholder="Masukkan password" value="${form.password}" @input="${updateField('password')}" />
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="button button-fill button-round" @click="${submitLogin}">Masuk</button>
+          </div>
+        </div>
+      </div>
+      <div class="block text-align-center">
+        <p>Belum punya akun? <a href="/register/" class="link">Daftar di sini</a></p>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $store, $f7, $router, $update }) => {
+    let form = { email: '', password: '' };
+
+    const updateField = (field) => (e) => {
+      form[field] = e.target.value;
+      $update();
+    };
+
+    const submitLogin = () => {
+      if (!form.email || !form.password) {
+        $f7.dialog.alert('Silakan lengkapi semua input.');
+        return;
+      }
+      const success = $store.dispatch('loginUser', { email: form.email, password: form.password });
+      if (success) {
+        $f7.dialog.alert('Login berhasil.', () => {
+          $router.navigate('/');
+        });
+      } else {
+        $f7.dialog.alert('Email atau password tidak cocok.');
+      }
+    };
+
+    return $render;
+  };
+</script>

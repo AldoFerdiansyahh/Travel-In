@@ -1,0 +1,73 @@
+<template>
+  <div class="page" data-name="travel-detail">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="/search-results/" class="link icon-only">
+            <i class="icon f7-icons">arrow_left</i>
+          </a>
+        </div>
+        <div class="title">Detail Travel</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="card card-rounded card-shadow">
+        <div class="card-content card-content-padding">
+          <div class="block-title">Rute Perjalanan</div>
+          <p class="detail-title">${schedule.origin} → ${schedule.destination}</p>
+          <div class="detail-info">
+            <span>${schedule.date}</span>
+            <span>${schedule.time}</span>
+            <span>${schedule.vehicle}</span>
+          </div>
+          <div class="detail-status">
+            <span class="status-chip status-${schedule.status.toLowerCase()}">${schedule.status}</span>
+            <span class="detail-caption">${schedule.seatsLeft} kursi tersisa</span>
+          </div>
+          <div class="block-title">Informasi Armada</div>
+          <p>${schedule.description}</p>
+          <div class="list no-hairlines-md">
+            <ul>
+              <li class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-title item-label">Harga Tiket</div>
+                  <div class="item-input-wrap">
+                    <input type="text" readonly value="${formatPrice(schedule.price)}" />
+                  </div>
+                </div>
+              </li>
+              <li class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-title item-label">Plat Nomor</div>
+                  <div class="item-input-wrap">
+                    <input type="text" readonly value="${schedule.plate}" />
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="/booking/${schedule.id}/" class="button button-fill button-round">Booking Sekarang</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default (props, { $store }) => {
+    const scheduleId = (props.route && props.route.params && props.route.params.id) || '';
+    const schedule = $store.getters.schedules.value.find((item) => item.id === scheduleId) || {
+      origin: '-', destination: '-', date: '-', time: '-', price: 0, vehicle: '-', seatsLeft: 0, status: 'Tidak tersedia', plate: '-', description: 'Jadwal tidak ditemukan.',
+    };
+
+    const formatPrice = (value) => {
+      const amount = Number(value || 0);
+      return 'Rp ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
+
+    return $render;
+  };
+</script>

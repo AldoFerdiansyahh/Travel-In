@@ -1,0 +1,66 @@
+<template>
+  <div class="page" data-name="e-ticket">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="/payment/${ticket.id}/" class="link icon-only">
+            <i class="icon f7-icons">arrow_left</i>
+          </a>
+        </div>
+        <div class="title">E-Tiket</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="block block-strong">
+        <div class="block-title">E-Tiket Anda</div>
+        <div class="card card-rounded card-shadow">
+          <div class="card-content card-content-padding">
+            <div class="detail-info">
+              <div class="detail-label">ID Tiket</div>
+              <div class="detail-value">${ticket.id}</div>
+            </div>
+            <div class="detail-info">
+              <div class="detail-label">Penumpang</div>
+              <div class="detail-value">${ticket.passenger}</div>
+            </div>
+            <div class="detail-info">
+              <div class="detail-label">Rute</div>
+              <div class="detail-value">${ticket.route}</div>
+            </div>
+            <div class="detail-info">
+              <div class="detail-label">Jumlah Kursi</div>
+              <div class="detail-value">${ticket.seats}</div>
+            </div>
+            <div class="detail-info">
+              <div class="detail-label">Total Bayar</div>
+              <div class="detail-value">${formatPrice(ticket.price)}</div>
+            </div>
+            <div class="detail-info">
+              <div class="detail-label">Status</div>
+              <div class="detail-value">${ticket.paymentStatus}</div>
+            </div>
+            <div class="qr-holder">
+              <div class="qr-code">QR</div>
+              <div class="qr-caption">Tunjukkan e-tiket ini saat boarding</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default (props, { $store }) => {
+    const ticketId = (props.route && props.route.params && props.route.params.ticketId) || '';
+    const ticket = $store.getters.tickets.value.find((item) => item.id === ticketId) || { id: '-', passenger: '-', route: '-', seats: 0, price: 0, paymentStatus: 'Pending' };
+
+    const formatPrice = (value) => {
+      const amount = Number(value || 0);
+      return 'Rp ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
+
+    return $render;
+  };
+</script>
