@@ -8,61 +8,91 @@
     </div>
     <div class="page-content">
       <div class="block block-strong">
-        <div class="card card-rounded card-shadow">
-          <div class="card-content card-content-padding">
-            <div class="list no-hairlines-md">
-              <ul>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Email</div>
-                    <div class="item-input-wrap">
-                      <input type="email" placeholder="Masukkan email" value="${form.email}" @input="${updateField('email')}" />
+        <form @submit.prevent="${submitLogin}">
+          <div class="card card-rounded card-shadow">
+            <div class="card-content card-content-padding">
+              <div class="list no-hairlines-md">
+                <ul>
+                  <li class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">Email</div>
+                      <div class="item-input-wrap">
+                        <input
+                          type="email"
+                          placeholder="Masukkan email"
+                          value="${form.email}"
+                          @input="${updateField('email')}"
+                          required
+                        />
+                      </div>
                     </div>
-                  </div>
-                </li>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Password</div>
-                    <div class="item-input-wrap">
-                      <input type="password" placeholder="Masukkan password" value="${form.password}" @input="${updateField('password')}" />
+                  </li>
+                  <li class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">Password</div>
+                      <div class="item-input-wrap">
+                        <input
+                          type="password"
+                          placeholder="Masukkan password"
+                          value="${form.password}"
+                          @input="${updateField('password')}"
+                          required
+                        />
+                      </div>
                     </div>
-                  </div>
-                </li>
-              </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="button button-fill button-round">
+                Masuk
+              </button>
             </div>
           </div>
-          <div class="card-footer">
-            <button class="button button-fill button-round" @click="${submitLogin}">Masuk</button>
-          </div>
-        </div>
+        </form>
       </div>
       <div class="block text-align-center">
-        <p>Belum punya akun? <a href="/register/" class="link">Daftar di sini</a></p>
+        <p>
+          Belum punya akun? <a href="/register/" class="link">Daftar di sini</a>
+        </p>
       </div>
     </div>
   </div>
 </template>
 <script>
+  import { loginWithFirebase } from '../../js/auth.js';
+
   export default (props, { $store, $f7, $router, $update }) => {
     let form = { email: '', password: '' };
+
+    const currentUser = $store.getters.currentUser.value;
+    if (currentUser) {
+      const redirectTo = currentUser.role === 'admin' ? '/admin/' : '/home/';
+      $router.navigate(redirectTo, { reloadCurrent: true });
+    }
 
     const updateField = (field) => (e) => {
       form[field] = e.target.value;
       $update();
     };
 
-    const submitLogin = () => {
+    const submitLogin = async () => {
       if (!form.email || !form.password) {
         $f7.dialog.alert('Silakan lengkapi semua input.');
         return;
       }
-      const success = $store.dispatch('loginUser', { email: form.email, password: form.password });
-      if (success) {
-        $f7.dialog.alert('Login berhasil.', () => {
-          $router.navigate('/');
-        });
-      } else {
-        $f7.dialog.alert('Email atau password tidak cocok.');
+      try {
+        const profile = await loginWithFirebase(form.email, form.password);
+        const user = $store.dispatch('loginUser', profile);
+        if (user) {
+          const redirectTo = user.role === 'admin' ? '/admin/' : '/home/';
+          $f7.dialog.alert('Login berhasil.', () => {
+            $router.navigate(redirectTo);
+          });
+        }
+      } catch (error) {
+        $f7.dialog.alert(error.message || 'Email atau password tidak cocok.');
       }
     };
 

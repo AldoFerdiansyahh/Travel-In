@@ -10,10 +10,22 @@
     <div class="page-content">
       <div class="block hero-section no-margin-top no-margin-bottom">
         <div class="hero-content text-align-center">
-          <h1 class="hero-title">Rencanakan Perjalanan Anda</h1>
+          <h1 class="hero-title">Halo, ${currentUser.name || 'Traveler'}!</h1>
           <p class="hero-text">
-            Temukan travel terbaik untuk kenyamanan perjalanan Anda
+            Rencanakan perjalanan Anda dengan pilihan travel terbaik.
           </p>
+        </div>
+      </div>
+      <div class="block searchbar-block">
+        <div class="searchbar searchbar-init searchbar-round">
+          <div class="searchbar-inner">
+            <div class="searchbar-input-wrap">
+              <input type="search" placeholder="Cari destinasi populer..." value="${search.query}" @input="${updateSearch('query')}" />
+              <i class="searchbar-icon"></i>
+              <span class="input-clear-button"></span>
+            </div>
+            <span class="searchbar-disable-button">Batal</span>
+          </div>
         </div>
       </div>
 
@@ -227,11 +239,13 @@
 </style>
 
 <script>
-  export default (props, { $f7, $router, $update }) => {
+export default (props, { $f7, $router, $store, $update }) => {
+    const currentUser = $store.getters.currentUser.value || {};
     // State Pencarian
     let search = {
       origin: "",
       destination: "",
+      query: "",
       date: new Date().toISOString().split("T")[0], // Menggunakan tanggal hari ini sebagai default
     };
 

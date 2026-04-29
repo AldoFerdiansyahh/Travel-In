@@ -51,6 +51,8 @@
   </div>
 </template>
 <script>
+  import { registerWithFirebase } from '../../js/auth.js';
+
   export default (props, { $store, $f7, $router, $update }) => {
     let form = { name: '', email: '', password: '' };
 
@@ -59,18 +61,23 @@
       $update();
     };
 
-    const submitRegister = () => {
+    const submitRegister = async () => {
       if (!form.name || !form.email || !form.password) {
         $f7.dialog.alert('Mohon isi semua data pendaftaran.');
         return;
       }
-      const success = $store.dispatch('registerUser', { ...form });
-      if (success) {
-        $f7.dialog.alert('Akun berhasil dibuat. Silakan masuk.', () => {
-          $router.navigate('/login/');
+      try {
+        const profile = await registerWithFirebase({
+          name: form.name,
+          email: form.email,
+          password: form.password,
         });
-      } else {
-        $f7.dialog.alert('Email sudah terdaftar. Gunakan email lain.');
+        $store.dispatch('loginUser', profile);
+        $f7.dialog.alert('Akun berhasil dibuat. Selamat datang!', () => {
+          $router.navigate('/home/');
+        });
+      } catch (error) {
+        $f7.dialog.alert(error.message || 'Registrasi gagal. Silakan coba lagi.');
       }
     };
 

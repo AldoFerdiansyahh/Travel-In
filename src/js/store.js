@@ -1,8 +1,10 @@
 import { createStore } from 'framework7';
 
+const persistedUser = localStorage.getItem('travelin-current-user');
+
 const store = createStore({
   state: {
-    currentUser: null,
+    currentUser: persistedUser ? JSON.parse(persistedUser) : null,
     users: [
       {
         id: 'u1',
@@ -10,6 +12,13 @@ const store = createStore({
         email: 'admin@travel-in.com',
         password: 'admin123',
         role: 'admin',
+      },
+      {
+        id: 'u2',
+        name: 'Anton Wisata',
+        email: 'user@travel-in.com',
+        password: 'user123',
+        role: 'user',
       },
     ],
     schedules: [
@@ -114,28 +123,25 @@ const store = createStore({
     registerUser({ state }, user) {
       const exists = state.users.find((item) => item.email.toLowerCase() === user.email.toLowerCase());
       if (exists) return false;
-      state.users = [
-        ...state.users,
-        {
-          id: String(Date.now()),
-          name: user.name,
-          email: user.email,
-          password: user.password,
-          role: 'user',
-        },
-      ];
+      const newUser = {
+        id: String(Date.now()),
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        role: 'user',
+      };
+      state.users = [...state.users, newUser];
       return true;
     },
-    loginUser({ state }, credentials) {
-      const user = state.users.find(
-        (item) => item.email.toLowerCase() === credentials.email.toLowerCase() && item.password === credentials.password,
-      );
-      if (!user) return false;
+    loginUser({ state }, user) {
+      if (!user || !user.uid) return null;
       state.currentUser = user;
-      return true;
+      localStorage.setItem('travelin-current-user', JSON.stringify(user));
+      return user;
     },
     logoutUser({ state }) {
       state.currentUser = null;
+      localStorage.removeItem('travelin-current-user');
     },
     addSchedule({ state }, schedule) {
       state.schedules = [schedule, ...state.schedules];
@@ -181,4 +187,5 @@ const store = createStore({
     },
   },
 });
+
 export default store;
