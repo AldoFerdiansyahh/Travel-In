@@ -1,85 +1,84 @@
 <template>
-  <div class="page" data-name="home">
-    <!-- Top Navbar -->
-    <div class="navbar navbar-large">
-      <div class="navbar-bg"></div>
-      <div class="navbar-inner">
+  <div class="page bg-gray-50" data-name="home">
+    <div class="navbar no-shadow bg-[#1a1a1a] text-white rounded-b-[30px]">
+      <div class="navbar-inner px-6">
         <div class="left">
-          <a href="#" class="link icon-only panel-open" data-panel="left">
-            <i class="icon f7-icons if-not-md">menu</i>
-            <i class="icon material-icons if-md">menu</i>
-          </a>
+          <div class="flex flex-col">
+            <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Halo, Selamat Datang</span>
+            <span class="text-lg font-black text-[#F4D03F]">Aldo Ferdiansyah</span>
+          </div>
         </div>
-        <div class="title sliding">Travel-In</div>
         <div class="right">
-          <a href="#" class="link icon-only panel-open" data-panel="right">
-            <i class="icon f7-icons if-not-md">menu</i>
-            <i class="icon material-icons if-md">menu</i>
+          <a href="/settings/" class="link">
+            <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
+              <i class="f7-icons text-lg">person_fill</i>
+            </div>
           </a>
-        </div>
-        <div class="title-large">
-          <div class="title-large-text">Travel-In</div>
         </div>
       </div>
     </div>
 
-    <!-- Scrollable page content-->
-    <div class="page-content">
-      <div class="block">
-        <p>This is an example of tabs-layout application. The main point of such tabbed layout is that each tab contains independent view with its own routing and navigation.</p>
+    <div class="page-content pt-4">
+      <div class="block px-4 -mt-8">
+        <div class="bg-white rounded-[25px] shadow-xl p-6 border border-gray-100">
+          <h3 class="text-sm font-black text-[#1a1a1a] mb-4 uppercase tracking-tight">Cari Jadwal Travel</h3>
+          
+          <div class="space-y-4">
+            <div class="relative">
+              <label class="text-[9px] font-black text-gray-400 absolute top-3 left-4 z-10 uppercase">Dari</label>
+              <select class="w-full bg-gray-50 h-16 pt-6 px-4 rounded-2xl border-2 border-transparent focus:border-[#F4D03F] outline-none font-bold text-sm appearance-none">
+                <option value="Bandung">Bandung (IDE LPKIA)</option>
+                <option value="Jakarta">Jakarta (Cawang)</option>
+              </select>
+            </div>
 
-        <p>Each tab/view may have different layout, different navbar type (dynamic, fixed or static) or without navbar like this tab.</p>
-      </div>
-      <div class="block-title">Navigation</div>
-      <div class="list list-strong inset list-dividers-ios">
-        <ul>
-          <li>
-            <a href="/about/" class="item-content item-link">
-              <div class="item-inner">
-                <div class="item-title">About</div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="/form/" class="item-content item-link">
-              <div class="item-inner">
-                <div class="item-title">Form</div>
-              </div>
-            </a>
-          </li>
-        </ul>
-      </div>
+            <div class="relative">
+              <label class="text-[9px] font-black text-gray-400 absolute top-3 left-4 z-10 uppercase">Tujuan</label>
+              <select class="w-full bg-gray-50 h-16 pt-6 px-4 rounded-2xl border-2 border-transparent focus:border-[#F4D03F] outline-none font-bold text-sm appearance-none">
+                <option value="Jakarta">Jakarta (Cawang)</option>
+                <option value="Bandung">Bandung (IDE LPKIA)</option>
+              </select>
+            </div>
 
-      <div class="block-title">Modals</div>
-      <div class="block grid grid-cols-2 grid-gap">
-        <a href="#" class="button button-fill popup-open" data-popup="#my-popup">Popup</a>
-        <a href="#" class="button button-fill login-screen-open" data-login-screen="#my-login-screen">Login Screen</a>
+            <button class="w-full h-14 bg-[#F4D03F] text-[#1a1a1a] font-black rounded-2xl shadow-lg shadow-[#F4D03F]/20 active:scale-95 transition-transform mt-2">
+              CARI JADWAL SEKARANG
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="block-title">Panels</div>
-      <div class="block grid grid-cols-2 grid-gap">
-        <a href="#" class="button button-fill panel-open" data-panel="left">Left Panel</a>
-        <a href="#" class="button button-fill panel-open" data-panel="right">Right Panel</a>
+      <div class="block mt-6 px-4">
+        <div class="flex justify-between items-center mb-4 px-2">
+          <span class="font-black text-sm uppercase tracking-tight">Promo Menarik</span>
+          <a href="#" class="text-[11px] font-bold text-[#F4D03F]">Lihat Semua</a>
+        </div>
+        
+        <div class="bg-gradient-to-r from-[#1a1a1a] to-[#333] h-32 rounded-[25px] p-6 flex items-center relative overflow-hidden">
+          <div class="z-10">
+            <h4 class="text-white font-black text-lg m-0 leading-none">DISKON 20%</h4>
+            <p class="text-gray-400 text-[10px] mt-1 uppercase font-bold tracking-widest">Khusus Mahasiswa LPKIA</p>
+          </div>
+          <div class="absolute -right-4 -bottom-4 opacity-10">
+             <i class="f7-icons text-[100px] text-white">ticket_fill</i>
+          </div>
+        </div>
       </div>
 
-      <div class="list list-strong inset list-dividers-ios links-list">
-        <ul>
-          <li>
-            <a href="/dynamic-route/blog/45/post/125/?foo=bar#about">Dynamic (Component) Route</a>
-          </li>
-          <li>
-            <a href="/load-something-that-doesnt-exist/">Default Route (404)</a>
-          </li>
-          <li>
-            <a href="/request-and-load/user/123456/">Request Data & Load</a>
-          </li>
-        </ul>
+      <div class="fixed bottom-6 left-4 right-4 h-16 bg-[#1a1a1a] rounded-2xl flex items-center justify-around px-4 shadow-2xl">
+        <a href="/home/" class="flex flex-col items-center text-[#F4D03F]">
+          <i class="f7-icons text-xl">house_fill</i>
+          <span class="text-[9px] font-bold mt-1">Beranda</span>
+        </a>
+        <a href="/catalog/" class="flex flex-col items-center text-gray-500">
+          <i class="f7-icons text-xl">square_list</i>
+          <span class="text-[9px] font-bold mt-1">Pesanan</span>
+        </a>
+        <a href="/settings/" class="flex flex-col items-center text-gray-500">
+          <i class="f7-icons text-xl">person</i>
+          <span class="text-[9px] font-bold mt-1">Profil</span>
+        </a>
       </div>
+
     </div>
   </div>
 </template>
-<script>
-export default () => {
-  return $render;
-}
-</script>

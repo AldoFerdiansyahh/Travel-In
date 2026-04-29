@@ -1,1 +1,55 @@
-/* Your app custom styles here */
+
+/* 2. TAILWIND CORE */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 3. VARIABLE DEFINITION */
+:root {
+  --f7-theme-color: #F4D03F;        /* Kuning Travel-In */
+  --f7-navbar-bg-color: #ffffff;
+  --f7-navbar-text-color: #121212;
+  --primary-yellow: #F4D03F;
+  --dark-bg: #121212;
+  --f7-font-family: 'Poppins', sans-serif;
+}
+
+/* 4. GLOBAL RESET & TYPOGRAPHY */
+body, input, button, .page, .navbar, .toolbar {
+  font-family: 'Poppins', sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+/* 5. HARD RESET TOOLBAR */
+.toolbar, 
+.tabbar, 
+.toolbar-bottom,
+.page.no-toolbar .toolbar {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* 6. COMPONENT STYLING */
+.item-input-wrap input::placeholder {
+  color: #bbbbbb;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.safe-areas {
+  --f7-safe-area-top: 44px;
+  --f7-safe-area-bottom: 34px;
+}
+
+.btn-yellow-shadow {
+  box-shadow: 0 10px 20px rgba(244, 208, 63, 0.3);
+}
+
+.button-active-effect:active {
+  transform: scale(0.96);
+  transition: 0.1s;
+}

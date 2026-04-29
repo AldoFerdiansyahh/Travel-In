@@ -1,0 +1,39 @@
+<template>
+  <div class="page no-navbar no-toolbar bg-white" data-name="login">
+    <div class="page-content flex flex-col px-9 pt-16">
+      
+      <div class="flex flex-col items-center mb-12">
+        <div class="w-20 h-20 bg-[#1a1a1a] rounded-[24px] flex items-center justify-center shadow-xl shadow-black/10 mb-5">
+           <span class="text-[#F4D03F] text-4xl font-black italic">T</span>
+        </div>
+        <h1 class="font-black text-2xl text-[#1a1a1a] m-0 tracking-tighter uppercase">TRAVEL-<span class="text-[#F4D03F]">IN</span></h1>
+        <p class="text-gray-400 text-[11px] font-semibold mt-1 tracking-wide uppercase">Mobil Travel Cepat & Mudah</p>
+      </div>
+
+      <form id="login-form" class="flex flex-col">
+        <div class="mb-6">
+          <label class="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2 px-1">Alamat Email</label>
+          <input type="email" name="email" placeholder="Masukkan email anda" required
+            class="w-full h-14 bg-gray-50 border-2 border-gray-50 rounded-2xl px-5 text-sm font-bold focus:border-[#F4D03F] focus:bg-white transition-all outline-none text-[#1a1a1a] placeholder-gray-300">
+        </div>
+
+        <div class="mb-8">
+          <label class="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2 px-1">Kata Sandi</label>
+          <input type="password" name="password" placeholder="Masukkan password" required
+            class="w-full h-14 bg-gray-50 border-2 border-gray-50 rounded-2xl px-5 text-sm font-bold focus:border-[#F4D03F] focus:bg-white transition-all outline-none text-[#1a1a1a] placeholder-gray-300">
+        </div>
+
+        <button type="submit" class="w-full h-15 bg-[#1a1a1a] text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-lg active:scale-95 transition-transform py-4">
+          Masuk Sekarang
+        </button>
+      </form>
+
+      <div class="text-center mt-12">
+        <p class="text-gray-400 text-xs font-bold">
+          Belum punya akun? <a href="/registrasi/" class="text-[#F4D03F] hover:underline font-black">Daftar</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</template>
