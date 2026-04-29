@@ -1,0 +1,49 @@
+<template>
+  <div class="page" data-name="admin-tickets">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="title">Monitoring E-Tiket</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="block block-strong">
+        <div class="block-title">Daftar Tiket</div>
+      </div>
+      <div class="list media-list inset admin-list">
+        <ul>
+          ${tickets.length > 0 ? tickets.map((ticket) => $h`
+            <li>
+              <div class="item-content">
+                <div class="item-media">
+                  <span class="badge ${ticket.verified ? 'color-green' : 'color-orange'}">${ticket.verified ? 'Verified' : 'Pending'}</span>
+                </div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">${ticket.passenger}</div>
+                    <div class="item-after">${ticket.paymentStatus}</div>
+                  </div>
+                  <div class="item-subtitle">${ticket.id} · ${ticket.route}</div>
+                </div>
+              </div>
+            </li>
+          `) : $h`
+            <li>
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Belum ada tiket tersimpan.</div>
+                </div>
+              </div>
+            </li>
+          `}
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $store }) => {
+    const tickets = $store.getters.tickets.value;
+    return $render;
+  };
+</script>

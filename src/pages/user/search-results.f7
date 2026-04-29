@@ -1,0 +1,221 @@
+<template>
+  <div class="page" data-name="search-results">
+    <div class="navbar navbar-transparent">
+      <div class="navbar-bg bg-color-white"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back icon-only color-black">
+            <i class="icon f7-icons">arrow_left</i>
+          </a>
+        </div>
+        <div class="title text-color-black">
+          <div class="search-summary-title">${query.origin || 'Asal'} → ${query.destination || 'Tujuan'}</div>
+          <div class="search-summary-subtitle">${query.date || 'Semua Tanggal'}</div>
+        </div>
+        <div class="right">
+          <a href="#" class="link icon-only color-black">
+            <i class="icon f7-icons">arrow_up_down</i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-content bg-color-f7">
+      
+      <div class="list media-list no-hairlines no-margin-top search-results-list">
+        <ul>
+          ${filteredSchedules.length > 0 ? filteredSchedules.map((schedule) => $h`
+          <li class="card travel-card-elegant shadow-sm">
+            <a href="/booking/${schedule.id}/" class="item-link item-content card-content">
+              <div class="item-inner">
+                
+                <div class="row margin-bottom">
+                  <div class="col-60 display-flex align-items-center">
+                    <div class="time-block">
+                      <div class="departure-time">${schedule.time}</div>
+                      <div class="arrival-info color-gray">Tiba</div>
+                    </div>
+                    <div class="route-line-container margin-horizontal">
+                      <div class="route-dot origin-dot"></div>
+                      <div class="route-line"></div>
+                      <div class="route-dot destination-dot"></div>
+                    </div>
+                    <div class="location-block">
+                      <div class="location-name">${schedule.origin}</div>
+                      <div class="location-name">${schedule.destination}</div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-40 text-align-right price-container">
+                    <span class="ticket-price">${formatPrice(schedule.price)}</span>
+                    <span class="price-per-person color-gray">/orang</span>
+                  </div>
+                </div>
+
+                <hr class="divider-thin" />
+
+                <div class="row margin-top-half align-items-center info-footer">
+                  <div class="col-60 display-flex align-items-center color-gray">
+                    <i class="icon f7-icons size-14 margin-right-half">car_fill</i>
+                    <span class="vehicle-name">${schedule.vehicle}</span>
+                    <span class="separator-dot">•</span>
+                    <span class="status-text">${schedule.status}</span>
+                  </div>
+                  
+                  <div class="col-40 text-align-right seats-info ${schedule.seatsLeft < 5 ? 'text-color-red' : 'color-gray'}">
+                    ${schedule.seatsLeft < 5 ? $h`
+                      <i class="icon f7-icons size-12">exclamationmark_triangle_fill</i>
+                    ` : ''}
+                    ${schedule.seatsLeft} kursi tersisa
+                  </div>
+                </div>
+
+              </div>
+            </a>
+          </li>
+          `) : $h`
+          <div class="block text-align-center empty-state-elegant">
+            <i class="icon f7-icons size-48 color-gray">search</i>
+            <h4 class="weight-600 no-margin-bottom">Jadwal Tidak Tersedia</h4>
+            <p class="text-color-gray no-margin-top">Maaf, kami tidak menemukan perjalanan yang sesuai.</p>
+          </div>
+          `}
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+  /* Palet Warna Elegan: Putih, Abu-abu (#f7, #eee, #666), dan Navy (#1a1a1a) */
+  .bg-color-f7 { background-color: #f7f7f7 !important; }
+  
+  /* Navbar */
+  .navbar-transparent .navbar-inner {
+    border-bottom: 1px solid #eee;
+  }
+  .search-summary-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  .search-summary-subtitle {
+    font-size: 11px;
+    color: #666;
+    font-weight: 400;
+  }
+
+  /* Travel Card Elegan */
+  .travel-card-elegant {
+    margin: 10px 16px !important;
+    border-radius: 12px !important;
+    background: white !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03) !important;
+    border: none !important;
+  }
+  .travel-card-elegant .item-inner {
+    padding: 16px !important;
+  }
+
+  /* Waktu & Lokasi */
+  .departure-time {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a1a1a;
+    line-height: 1;
+  }
+  .arrival-info {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+  .location-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    white-space: nowrap;
+  }
+
+  /* Garis Rute Minimalis */
+  .route-line-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+  }
+  .route-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .origin-dot { background-color: #ddd; }
+  .destination-dot { background-color: #1a1a1a; }
+  .route-line {
+    width: 1px;
+    background-color: #eee;
+    flex-grow: 1;
+    margin: 2px 0;
+  }
+
+  /* Harga */
+  .ticket-price {
+    font-size: 19px;
+    font-weight: 800;
+    color: #1a1a1a;
+  }
+  .price-per-person {
+    font-size: 11px;
+    margin-left: 2px;
+  }
+
+  /* Footer Card */
+  .divider-thin {
+    border: 0;
+    border-top: 1px solid #f0f0f0;
+    margin: 0;
+  }
+  .info-footer {
+    font-size: 12px;
+  }
+  .separator-dot {
+    margin: 0 6px;
+    color: #ccc;
+  }
+  .seats-info {
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  /* Empty State */
+  .empty-state-elegant {
+    padding-top: 80px;
+  }
+  .weight-600 { font-weight: 600; }
+</style>
+
+<script>
+  export default (props, { $store, $h }) => {
+    const query = (props.route && props.route.query) || {};
+    const schedules = $store.getters.schedules;
+
+    const isMatch = (schedule, field, value) => {
+      if (!value) return true;
+      return schedule[field].toLowerCase().includes(value.toLowerCase());
+    };
+
+    const filteredSchedules = schedules.value.filter((schedule) => {
+      return isMatch(schedule, 'origin', query.origin || '') &&
+        isMatch(schedule, 'destination', query.destination || '') &&
+        (!query.date || schedule.date === query.date);
+    });
+
+    const formatPrice = (value) => {
+      const amount = Number(value || 0);
+      return 'Rp ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
+
+    return $render;
+  };
+</script>

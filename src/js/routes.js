@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // 1. Import Halaman Baru (Login & Registrasi)
 import LoginPage from '../pages/login.f7';
 import RegistrasiPage from '../pages/registrasi.f7';
@@ -11,6 +12,22 @@ import ProductPage from '../pages/product.f7';
 import SettingsPage from '../pages/settings.f7';
 import DynamicRoutePage from '../pages/dynamic-route.f7';
 import RequestAndLoad from '../pages/request-and-load.f7';
+=======
+import HomePage from '../pages/user/home.f7';
+import LoginPage from '../pages/user/login.f7';
+import RegisterPage from '../pages/user/register.f7';
+import SearchResultsPage from '../pages/user/search-results.f7';
+import TravelDetailPage from '../pages/user/travel-detail.f7';
+import BookingPage from '../pages/user/booking.f7';
+import PaymentPage from '../pages/user/payment.f7';
+import ETicketPage from '../pages/user/e-ticket.f7';
+import SettingsPage from '../pages/settings.f7';
+
+import AdminDashboardPage from '../pages/admin/dashboard.f7';
+import AdminSchedulePage from '../pages/admin/schedule-management.f7';
+import AdminScheduleDetailPage from '../pages/admin/schedule-detail.f7';
+import AdminTicketMonitoringPage from '../pages/admin/ticket-monitoring.f7';
+>>>>>>> 611c4b53ff6c5cc22817587f125a78a8a47e9ad3
 import NotFoundPage from '../pages/404.f7';
 
 var routes = [
@@ -30,32 +47,48 @@ var routes = [
     component: HomePage,
   },
   {
-    path: '/about/',
-    component: AboutPage,
+    path: '/login/',
+    component: LoginPage,
   },
   {
-    path: '/form/',
-    component: FormPage,
+    path: '/register/',
+    component: RegisterPage,
   },
   {
-    path: '/catalog/',
-    component: CatalogPage,
+    path: '/search-results/',
+    component: SearchResultsPage,
   },
   {
-    path: '/product/:id/',
-    component: ProductPage,
+    path: '/travel/:id/',
+    component: TravelDetailPage,
+  },
+  {
+    path: '/booking/:id/',
+    component: BookingPage,
+  },
+  {
+    path: '/payment/:ticketId/',
+    component: PaymentPage,
+  },
+  {
+    path: '/e-ticket/:ticketId/',
+    component: ETicketPage,
   },
   {
     path: '/settings/',
     component: SettingsPage,
   },
+<<<<<<< HEAD
 
   // --- ROUTE BAWAAN (DYNAMIC & REQUEST) ---
+=======
+>>>>>>> 611c4b53ff6c5cc22817587f125a78a8a47e9ad3
   {
-    path: '/dynamic-route/blog/:blogId/post/:postId/',
-    component: DynamicRoutePage,
+    path: '/admin/',
+    component: AdminDashboardPage,
   },
   {
+<<<<<<< HEAD
     path: '/request-and-load/user/:userId/',
     async: function ({ router, to, resolve }) {
       var app = router.app;
@@ -79,6 +112,18 @@ var routes = [
         );
       }, 1000);
     },
+=======
+    path: '/admin/schedules/',
+    component: AdminSchedulePage,
+  },
+  {
+    path: '/admin/schedules/:id/',
+    component: AdminScheduleDetailPage,
+  },
+  {
+    path: '/admin/tickets/',
+    component: AdminTicketMonitoringPage,
+>>>>>>> 611c4b53ff6c5cc22817587f125a78a8a47e9ad3
   },
 
   // --- 404 NOT FOUND ---

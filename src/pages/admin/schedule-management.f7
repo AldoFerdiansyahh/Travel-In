@@ -1,0 +1,185 @@
+<template>
+  <div class="page" data-name="admin-schedules">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="title">Kelola Jadwal</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="block block-strong">
+        <div class="block-title">Tambah / Edit Jadwal Travel</div>
+      </div>
+      <div class="card card-rounded card-shadow admin-card">
+        <div class="card-content card-content-padding">
+          <div class="list no-hairlines-md">
+            <ul>
+              ${formFields.map((field) => $h`
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">${field.label}</div>
+                    <div class="item-input-wrap">
+                      ${field.type === 'select'
+                        ? $h`<select value="${field.value}" @change="${field.onChange}">${field.options.map((option) => $h`<option value="${option}">${option}</option>`)}</select>`
+                        : $h`<input type="${field.type}" placeholder="${field.placeholder}" value="${field.value}" @input="${field.onChange}" />`}
+                    </div>
+                  </div>
+                </li>
+              `)}
+            </ul>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="button button-fill button-round" @click="${saveSchedule}">${isEditing ? 'Perbarui Jadwal' : 'Tambah Jadwal'}</button>
+        </div>
+      </div>
+
+      <div class="block block-strong">
+        <div class="block-title">Daftar Jadwal</div>
+      </div>
+      <div class="list media-list inset admin-list">
+        <ul>
+          ${schedules.length > 0 ? schedules.map((schedule) => $h`
+            <li>
+              <div class="item-content">
+                <div class="item-media">
+                  <span class="status-chip status-${schedule.status.toLowerCase()}">${schedule.status}</span>
+                </div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">${schedule.origin} → ${schedule.destination}</div>
+                    <div class="item-after">${formatPrice(schedule.price)}</div>
+                  </div>
+                  <div class="item-subtitle">${schedule.date} · ${schedule.time}</div>
+                  <div class="item-text">${schedule.vehicle} · ${schedule.seatsLeft} kursi</div>
+                </div>
+              </div>
+              <div class="row admin-actions">
+                <div class="col">
+                  <button class="button button-small button-outline button-round" @click="${() => startEdit(schedule.id)}">Edit</button>
+                </div>
+                <div class="col">
+                  <button class="button button-small button-fill color-red button-round" @click="${() => removeSchedule(schedule.id)}">Hapus</button>
+                </div>
+                <div class="col">
+                  <a href="/admin/schedules/${schedule.id}/" class="button button-small button-outline color-blue button-round">Detail</a>
+                </div>
+              </div>
+            </li>
+          `) : $h`
+            <li>
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Belum ada jadwal travel.</div>
+                </div>
+              </div>
+            </li>
+          `}
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $store, $f7, $update }) => {
+    const schedules = $store.getters.schedules.value;
+    let isEditing = false;
+    let editingId = null;
+    let form = {
+      origin: '',
+      destination: '',
+      date: '',
+      time: '',
+      price: '',
+      vehicle: 'Bus',
+      capacity: '',
+      status: 'Available',
+    };
+
+    const updateField = (field) => (e) => {
+      form[field] = e.target.value;
+      $update();
+    };
+
+    const populateForm = (schedule) => {
+      form = {
+        origin: schedule.origin,
+        destination: schedule.destination,
+        date: schedule.date,
+        time: schedule.time,
+        price: schedule.price,
+        vehicle: schedule.vehicle,
+        capacity: schedule.capacity,
+        status: schedule.status,
+      };
+      isEditing = true;
+      editingId = schedule.id;
+      $update();
+    };
+
+    const saveSchedule = () => {
+      if (!form.origin || !form.destination || !form.date || !form.time || !form.price || !form.capacity) {
+        $f7.dialog.alert('Lengkapi semua field jadwal.');
+        return;
+      }
+      const scheduleData = {
+        id: isEditing ? editingId : String(Date.now()),
+        origin: form.origin,
+        destination: form.destination,
+        date: form.date,
+        time: form.time,
+        price: Number(form.price),
+        vehicle: form.vehicle,
+        capacity: Number(form.capacity),
+        filledSeats: isEditing ? schedules.find((item) => item.id === editingId).filledSeats : 0,
+        seatsLeft: Number(form.capacity) - (isEditing ? schedules.find((item) => item.id === editingId).filledSeats : 0),
+        status: form.status,
+        plate: isEditing ? schedules.find((item) => item.id === editingId).plate : 'B 0000 XX',
+        description: 'Armada handal untuk setiap perjalanan Anda.',
+        passengers: isEditing ? schedules.find((item) => item.id === editingId).passengers : [],
+      };
+      if (isEditing) {
+        $store.dispatch('updateSchedule', scheduleData);
+        $f7.toast.create({ text: 'Jadwal berhasil diperbarui.', closeTimeout: 2000 }).open();
+      } else {
+        $store.dispatch('addSchedule', scheduleData);
+        $f7.toast.create({ text: 'Jadwal berhasil ditambahkan.', closeTimeout: 2000 }).open();
+      }
+      form = { origin: '', destination: '', date: '', time: '', price: '', vehicle: 'Bus', capacity: '', status: 'Available' };
+      isEditing = false;
+      editingId = null;
+      $update();
+    };
+
+    const startEdit = (id) => {
+      const schedule = schedules.find((item) => item.id === id);
+      if (schedule) populateForm(schedule);
+    };
+
+    const removeSchedule = (id) => {
+      $f7.dialog.confirm('Hapus jadwal ini?', () => {
+        $store.dispatch('deleteSchedule', id);
+        $f7.toast.create({ text: 'Jadwal telah dihapus.', closeTimeout: 2000 }).open();
+        $update();
+      });
+    };
+
+    const formatPrice = (value) => {
+      const amount = Number(value || 0);
+      return 'Rp ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
+
+    const formFields = [
+      { label: 'Kota Asal', type: 'text', placeholder: 'Jakarta', value: form.origin, onChange: updateField('origin') },
+      { label: 'Kota Tujuan', type: 'text', placeholder: 'Bandung', value: form.destination, onChange: updateField('destination') },
+      { label: 'Tanggal Keberangkatan', type: 'date', placeholder: '', value: form.date, onChange: updateField('date') },
+      { label: 'Jam Keberangkatan', type: 'time', placeholder: '', value: form.time, onChange: updateField('time') },
+      { label: 'Harga Tiket', type: 'number', placeholder: '185000', value: form.price, onChange: updateField('price') },
+      { label: 'Pilihan Armada', type: 'select', value: form.vehicle, onChange: updateField('vehicle'), options: ['Bus', 'Travel', 'Minibus'] },
+      { label: 'Kapasitas Kursi', type: 'number', placeholder: '45', value: form.capacity, onChange: updateField('capacity') },
+      { label: 'Status Perjalanan', type: 'select', value: form.status, onChange: updateField('status'), options: ['Available', 'Boarding', 'Departed', 'Canceled'] },
+    ];
+
+    return $render;
+  };
+</script>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 /* 2. TAILWIND CORE */
 @tailwind base;
@@ -53,3 +54,140 @@ body, input, button, .page, .navbar, .toolbar {
   transform: scale(0.96);
   transition: 0.1s;
 }
+=======
+:root {
+  --f7-theme-color: #1d4ed8;
+  --f7-bars-bg-color: #ffffff;
+  --f7-bars-text-color: #0f172a;
+  --f7-card-bg-color: #ffffff;
+  --f7-card-border-radius: 18px;
+  --f7-card-border-color: rgba(30, 64, 175, 0.14);
+}
+
+body {
+  background-color: #f3f4f6;
+}
+
+.admin-card {
+  border: 1px solid rgba(30, 64, 175, 0.18);
+}
+
+.card-footer {
+  background-color: #f8fbff;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.status-available {
+  background-color: #2563eb;
+}
+
+.status-boarding {
+  background-color: #f97316;
+}
+
+.status-departed {
+  background-color: #0f172a;
+}
+
+.status-canceled {
+  background-color: #dc2626;
+}
+
+.admin-actions {
+  margin-top: 0.5rem;
+}
+
+.admin-actions .col {
+  padding-left: 0.35rem;
+  padding-right: 0.35rem;
+}
+
+.admin-actions .button {
+  width: 100%;
+}
+
+.admin-list .item-content {
+  padding: 0.85rem 0.75rem;
+}
+
+.admin-list .item-inner {
+  gap: 0.25rem;
+}
+
+.admin-detail-block .item-title {
+  font-weight: 600;
+}
+
+/* Travel App Styles */
+.travel-hero {
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+  color: white;
+  padding: 2rem 1rem;
+  text-align: center;
+  border-radius: 0 0 24px 24px;
+  margin: -1rem -1rem 1rem -1rem;
+}
+
+.travel-hero h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.travel-hero p {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.search-card {
+  border: 1px solid rgba(30, 64, 175, 0.18);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.quick-action-card {
+  border: 1px solid rgba(30, 64, 175, 0.14);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quick-action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.2);
+}
+
+.quick-action-card .card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #374151;
+  margin-top: 0.5rem;
+}
+
+/* Account Page Styles */
+.stat-card {
+  border: 1px solid rgba(30, 64, 175, 0.14);
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+>>>>>>> 611c4b53ff6c5cc22817587f125a78a8a47e9ad3

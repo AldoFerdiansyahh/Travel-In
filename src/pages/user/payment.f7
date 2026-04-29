@@ -1,0 +1,98 @@
+<template>
+  <div class="page" data-name="payment">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="/booking/${ticket.id}/" class="link icon-only">
+            <i class="icon f7-icons">arrow_left</i>
+          </a>
+        </div>
+        <div class="title">Pembayaran</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="block block-strong">
+        <div class="block-title">Ringkasan Pembayaran</div>
+        <div class="card card-rounded card-shadow">
+          <div class="card-content card-content-padding">
+            <div class="list no-hairlines-md">
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Nama</div>
+                    <div class="item-input-wrap"><input type="text" readonly value="${ticket.passenger}" /></div>
+                  </div>
+                </li>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Rute</div>
+                    <div class="item-input-wrap"><input type="text" readonly value="${ticket.route}" /></div>
+                  </div>
+                </li>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Jumlah Kursi</div>
+                    <div class="item-input-wrap"><input type="text" readonly value="${ticket.seats} kursi" /></div>
+                  </div>
+                </li>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Total</div>
+                    <div class="item-input-wrap"><input type="text" readonly value="${formatPrice(ticket.price)}" /></div>
+                  </div>
+                </li>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Metode Pembayaran</div>
+                    <div class="item-input-wrap">
+                      <select value="${paymentMethod}" @change="${updateMethod}">
+                        <option value="Transfer Bank">Transfer Bank</option>
+                        <option value="E-Wallet">E-Wallet</option>
+                        <option value="Kartu Kredit">Kartu Kredit</option>
+                      </select>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="button button-fill button-round" @click="${submitPayment}">Bayar Sekarang</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default (props, { $store, $f7, $router, $update }) => {
+    const ticketId = (props.route && props.route.params && props.route.params.ticketId) || '';
+    const ticket = $store.getters.tickets.value.find((item) => item.id === ticketId) || { passenger: '-', route: '-', seats: 0, price: 0 };
+    let paymentMethod = 'Transfer Bank';
+
+    const updateMethod = (e) => {
+      paymentMethod = e.target.value;
+      $update();
+    };
+
+    const submitPayment = () => {
+      if (!ticket.id) {
+        $f7.dialog.alert('Tiket tidak ditemukan.');
+        return;
+      }
+      $store.dispatch('payTicket', { id: ticket.id, method: paymentMethod });
+      $f7.dialog.alert('Pembayaran berhasil.', () => {
+        $router.navigate(`/e-ticket/${ticket.id}/`);
+      });
+    };
+
+    const formatPrice = (value) => {
+      const amount = Number(value || 0);
+      return 'Rp ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
+
+    return $render;
+  };
+</script>

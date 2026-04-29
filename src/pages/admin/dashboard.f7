@@ -1,0 +1,78 @@
+<template>
+  <div class="page" data-name="admin-dashboard">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="title">Admin Dashboard</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="block block-strong">
+        <div class="block-title">Ringkasan Kontrol</div>
+      </div>
+      <div class="block grid grid-cols-2 grid-gap">
+        <div class="card card-rounded card-shadow stat-card">
+          <div class="card-content text-align-center">
+            <div class="stat-number">${schedules.length}</div>
+            <div class="stat-label">Jadwal Travel</div>
+          </div>
+        </div>
+        <div class="card card-rounded card-shadow stat-card">
+          <div class="card-content text-align-center">
+            <div class="stat-number">${tickets.length}</div>
+            <div class="stat-label">E-Tiket</div>
+          </div>
+        </div>
+        <div class="card card-rounded card-shadow stat-card">
+          <div class="card-content text-align-center">
+            <div class="stat-number">${armadas.length}</div>
+            <div class="stat-label">Armada</div>
+          </div>
+        </div>
+        <div class="card card-rounded card-shadow stat-card">
+          <div class="card-content text-align-center">
+            <div class="stat-number">${users.length}</div>
+            <div class="stat-label">Pengguna</div>
+          </div>
+        </div>
+      </div>
+      <div class="block block-strong">
+        <div class="block-title">Aksi Admin</div>
+      </div>
+      <div class="list inset list-strong">
+        <ul>
+          <li>
+            <a href="/admin/schedules/" class="item-content item-link">
+              <div class="item-inner">
+                <div class="item-title">Kelola Jadwal Travel</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/armada/" class="item-content item-link">
+              <div class="item-inner">
+                <div class="item-title">Manajemen Armada</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/tickets/" class="item-content item-link">
+              <div class="item-inner">
+                <div class="item-title">Monitoring E-Tiket</div>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $store }) => {
+    const schedules = $store.getters.schedules.value;
+    const tickets = $store.getters.tickets.value;
+    const armadas = $store.getters.armadas.value;
+    const users = $store.getters.users.value;
+    return $render;
+  };
+</script>

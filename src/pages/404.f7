@@ -1,23 +1,23 @@
 <template>
-<div class="page">
-  <div class="navbar">
-    <div class="navbar-bg"></div>
-    <div class="navbar-inner sliding">
-      <div class="left">
-        <a href="#" class="link back">
-          <i class="icon icon-back"></i>
-        </a>
+  <div class="page" data-name="not-found">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="title">Halaman Tidak Ditemukan</div>
       </div>
-      <div class="title">Not found</div>
+    </div>
+    <div class="page-content">
+      <div class="block text-align-center">
+        <div style="font-size: 4rem; color: #1d4ed8;">404</div>
+        <div class="block-title">Oops! Halaman tidak ditemukan</div>
+        <p>Maaf, tampaknya alamat yang Anda buka tidak tersedia.</p>
+        <p>Silakan kembali ke beranda untuk melanjutkan.</p>
+        <div class="block">
+          <a href="/" class="button button-fill">Kembali ke Beranda</a>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="page-content">
-    <div class="block block-strong inset">
-      <p>Sorry</p>
-      <p>Requested content not found.</p>
-    </div>
-  </div>
-</div>
 </template>
 <script>
 export default () => {
