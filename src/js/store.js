@@ -1,5 +1,5 @@
 import { createStore } from 'framework7';
-import { auth, db } from './firebase.js'; // Pastikan path-nya benar
+import { auth, db } from './firebase.js';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
@@ -10,7 +10,6 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 const store = createStore({
   state: {
     currentUser: null,
-    // Data dummy untuk tampilan UI tetap saya biarkan
     schedules: [
       {
         id: '1',
@@ -26,70 +25,60 @@ const store = createStore({
         status: 'Available',
         plate: 'B 1234 XYZ',
         description: 'Bus eksekutif dengan AC dingin, reclining seat, dan fasilitas bagasi luas.',
-      },
-      // ... data lainnya
+      }
     ],
-    armadas: [],
-    tickets: [],
   },
   getters: {
     currentUser: ({ state }) => state.currentUser,
-    schedules: ({ state }) => state.schedules,
-    armadas: ({ state }) => state.armadas,
-    tickets: ({ state }) => state.tickets,
   },
   actions: {
-    // 1. REGISTER USER KE FIREBASE
+    // --- FUNGSI REGISTRASI (YANG TADI HILANG) ---
     async registerUser({ state }, { nama, email, whatsapp, password }) {
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // SIMPAN DATA TAMBAHAN KE FIRESTORE
+        // Simpan data tambahan ke Firestore
         await setDoc(doc(db, "users", user.uid), {
           nama: nama,
           email: email,
           whatsapp: whatsapp,
-          role: 'user', // Default role saat daftar
+          role: 'user', // Otomatis jadi user biasa dulu
           createdAt: new Date()
         });
         return true;
       } catch (error) {
-        // Lempar error agar bisa ditangkap oleh dialog.alert di UI
         throw error;
       }
     },
 
-    // 2. LOGIN USER DENGAN CEK ROLE
+    // --- FUNGSI LOGIN ---
     async loginUser({ state }, { email, password }) {
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // AMBIL DATA ROLE DARI FIRESTORE
         const userDoc = await getDoc(doc(db, "users", user.uid));
-        let userData = { email: user.email, uid: user.uid, role: 'user' };
+        
+        let role = 'user'; 
+        let userData = { email: user.email, uid: user.uid };
 
         if (userDoc.exists()) {
-          userData = { ...userData, ...userDoc.data() };
+          const data = userDoc.data();
+          role = data.role;
+          userData = { ...userData, ...data };
         }
 
         state.currentUser = userData;
-        return userData.role; // Kembalikan role (admin/user) untuk navigasi
+        return role; 
       } catch (error) {
         throw error;
       }
     },
 
-    // 3. LOGOUT
     async logoutUser({ state }) {
       await signOut(auth);
       state.currentUser = null;
-    },
-
-    // Action lainnya seperti addSchedule dsb bisa tetap di sini
-    addSchedule({ state }, schedule) {
-      state.schedules = [schedule, ...state.schedules];
     },
   },
 });
