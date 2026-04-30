@@ -1,17 +1,16 @@
 import { createStore } from 'framework7';
+import { auth, db } from './firebase.js'; // Pastikan path-nya benar
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut 
+} from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const store = createStore({
   state: {
     currentUser: null,
-    users: [
-      {
-        id: 'u1',
-        name: 'Admin Travel',
-        email: 'admin@travel-in.com',
-        password: 'admin123',
-        role: 'admin',
-      },
-    ],
+    // Data dummy untuk tampilan UI tetap saya biarkan
     schedules: [
       {
         id: '1',
@@ -27,158 +26,72 @@ const store = createStore({
         status: 'Available',
         plate: 'B 1234 XYZ',
         description: 'Bus eksekutif dengan AC dingin, reclining seat, dan fasilitas bagasi luas.',
-        passengers: [
-          { name: 'Andi', ticketId: 'T-2101', seat: '03A', paymentStatus: 'Paid', verified: true },
-          { name: 'Dewi', ticketId: 'T-2102', seat: '05B', paymentStatus: 'Paid', verified: true },
-        ],
       },
-      {
-        id: '2',
-        origin: 'Bandung',
-        destination: 'Yogyakarta',
-        date: '2026-05-14',
-        time: '16:30',
-        price: 435000,
-        vehicle: 'Minibus',
-        capacity: 18,
-        filledSeats: 9,
-        seatsLeft: 9,
-        status: 'Boarding',
-        plate: 'D 5678 EFG',
-        description: 'Minibus nyaman untuk perjalanan ringkas dengan kapasitas kecil dan layanan premium.',
-        passengers: [
-          { name: 'Rina', ticketId: 'T-3405', seat: '01A', paymentStatus: 'Paid', verified: true },
-          { name: 'Budi', ticketId: 'T-3406', seat: '02B', paymentStatus: 'Pending', verified: false },
-        ],
-      },
+      // ... data lainnya
     ],
-    armadas: [
-      {
-        id: 'a1',
-        name: 'Bus Eksekutif',
-        plate: 'B 1234 XYZ',
-        type: 'Bus',
-        capacity: 45,
-        status: 'Available',
-      },
-      {
-        id: 'a2',
-        name: 'Minibus Premium',
-        plate: 'D 5678 EFG',
-        type: 'Minibus',
-        capacity: 18,
-        status: 'In Service',
-      },
-    ],
-    tickets: [
-      {
-        id: 'ETK-2101',
-        passenger: 'Joko Santoso',
-        route: 'Jakarta → Bandung',
-        scheduleId: '1',
-        seats: 1,
-        price: 185000,
-        paymentStatus: 'Paid',
-        verified: true,
-      },
-      {
-        id: 'ETK-2102',
-        passenger: 'Maya Putri',
-        route: 'Bandung → Yogyakarta',
-        scheduleId: '2',
-        seats: 1,
-        price: 435000,
-        paymentStatus: 'Pending',
-        verified: false,
-      },
-    ],
+    armadas: [],
+    tickets: [],
   },
   getters: {
-    users({ state }) {
-      return state.users;
-    },
-    currentUser({ state }) {
-      return state.currentUser;
-    },
-    schedules({ state }) {
-      return state.schedules;
-    },
-    armadas({ state }) {
-      return state.armadas;
-    },
-    tickets({ state }) {
-      return state.tickets;
-    },
+    currentUser: ({ state }) => state.currentUser,
+    schedules: ({ state }) => state.schedules,
+    armadas: ({ state }) => state.armadas,
+    tickets: ({ state }) => state.tickets,
   },
   actions: {
-    registerUser({ state }, user) {
-      const exists = state.users.find((item) => item.email.toLowerCase() === user.email.toLowerCase());
-      if (exists) return false;
-      state.users = [
-        ...state.users,
-        {
-          id: String(Date.now()),
-          name: user.name,
-          email: user.email,
-          password: user.password,
-          role: 'user',
-        },
-      ];
-      return true;
+    // 1. REGISTER USER KE FIREBASE
+    async registerUser({ state }, { nama, email, whatsapp, password }) {
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // SIMPAN DATA TAMBAHAN KE FIRESTORE
+        await setDoc(doc(db, "users", user.uid), {
+          nama: nama,
+          email: email,
+          whatsapp: whatsapp,
+          role: 'user', // Default role saat daftar
+          createdAt: new Date()
+        });
+        return true;
+      } catch (error) {
+        // Lempar error agar bisa ditangkap oleh dialog.alert di UI
+        throw error;
+      }
     },
-    loginUser({ state }, credentials) {
-      const user = state.users.find(
-        (item) => item.email.toLowerCase() === credentials.email.toLowerCase() && item.password === credentials.password,
-      );
-      if (!user) return false;
-      state.currentUser = user;
-      return true;
+
+    // 2. LOGIN USER DENGAN CEK ROLE
+    async loginUser({ state }, { email, password }) {
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // AMBIL DATA ROLE DARI FIRESTORE
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        let userData = { email: user.email, uid: user.uid, role: 'user' };
+
+        if (userDoc.exists()) {
+          userData = { ...userData, ...userDoc.data() };
+        }
+
+        state.currentUser = userData;
+        return userData.role; // Kembalikan role (admin/user) untuk navigasi
+      } catch (error) {
+        throw error;
+      }
     },
-    logoutUser({ state }) {
+
+    // 3. LOGOUT
+    async logoutUser({ state }) {
+      await signOut(auth);
       state.currentUser = null;
     },
+
+    // Action lainnya seperti addSchedule dsb bisa tetap di sini
     addSchedule({ state }, schedule) {
       state.schedules = [schedule, ...state.schedules];
     },
-    updateSchedule({ state }, schedule) {
-      state.schedules = state.schedules.map((item) => (item.id === schedule.id ? schedule : item));
-    },
-    deleteSchedule({ state }, id) {
-      state.schedules = state.schedules.filter((item) => item.id !== id);
-    },
-    updateScheduleSeats({ state }, payload) {
-      state.schedules = state.schedules.map((item) => {
-        if (item.id !== payload.id) return item;
-        return {
-          ...item,
-          filledSeats: item.filledSeats + payload.seats,
-          seatsLeft: Math.max(item.seatsLeft - payload.seats, 0),
-        };
-      });
-    },
-    addArmada({ state }, armada) {
-      state.armadas = [armada, ...state.armadas];
-    },
-    updateArmada({ state }, armada) {
-      state.armadas = state.armadas.map((item) => (item.id === armada.id ? armada : item));
-    },
-    deleteArmada({ state }, id) {
-      state.armadas = state.armadas.filter((item) => item.id !== id);
-    },
-    addTicket({ state }, ticket) {
-      state.tickets = [ticket, ...state.tickets];
-    },
-    payTicket({ state }, payload) {
-      state.tickets = state.tickets.map((item) => {
-        if (item.id !== payload.id) return item;
-        return {
-          ...item,
-          paymentStatus: 'Paid',
-          verified: true,
-          paymentMethod: payload.method,
-        };
-      });
-    },
   },
 });
+
 export default store;

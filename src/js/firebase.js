@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// Konfigurasi asli dari Firebase Console kamu
+// Konfigurasi dari screenshot Kakang
 const firebaseConfig = {
   apiKey: "AIzaSyBQ168sl6feOZKLaqDC97C6Dxj9uwZhjwU",
   authDomain: "travel-in-9adaf.firebaseapp.com",
@@ -15,9 +15,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Inisialisasi Auth (untuk Login) dan Firestore (untuk Database)
+// Inisialisasi Auth dan DB
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// EXPORT biar bisa dipanggil di file app.js
+// EKSPOR HARUS SEPERTI INI (PENTING!)
 export { auth, db };

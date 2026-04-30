@@ -1,49 +1,62 @@
 <template>
   <div class="page" data-name="login">
-    <div class="navbar">
-      <div class="navbar-bg"></div>
-      <div class="navbar-inner sliding">
-        <div class="title">Masuk</div>
+    <div class="page-content" style="background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 0 40px; box-sizing: border-box;">
+      
+      <!-- 1. Logo Travel-In (Path diperbaiki ke folder public) -->
+      <div style="margin-bottom: 30px; text-align: center;">
+        <img src="images/logo.png" style="height: 120px; width: auto; object-fit: contain;" alt="Logo Travel-In" />
       </div>
-    </div>
-    <div class="page-content">
-      <div class="block block-strong">
-        <div class="card card-rounded card-shadow">
-          <div class="card-content card-content-padding">
-            <div class="list no-hairlines-md">
-              <ul>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Email</div>
-                    <div class="item-input-wrap">
-                      <input type="email" placeholder="Masukkan email" value="${form.email}" @input="${updateField('email')}" />
-                    </div>
-                  </div>
-                </li>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Password</div>
-                    <div class="item-input-wrap">
-                      <input type="password" placeholder="Masukkan password" value="${form.password}" @input="${updateField('password')}" />
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button class="button button-fill button-round" @click="${submitLogin}">Masuk</button>
-          </div>
+
+      <!-- 2. Label Text -->
+      <div style="text-align: center; margin-bottom: 40px;">
+        <p style="color: #9ca3af; font-size: 14px; font-weight: 500; margin: 0;">Silakan masuk ke akun Anda</p>
+      </div>
+
+      <!-- 3. Form Input Super Clean -->
+      <div style="width: 100%; max-width: 400px;">
+        
+        <!-- Email Group -->
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; text-transform: uppercase; font-size: 11px; font-weight: 800; color: #111827; letter-spacing: 0.1em; margin-bottom: 8px; margin-left: 4px;">Email</label>
+          <input type="email" 
+            placeholder="nama@email.com"
+            style="width: 100%; border: 2px solid #111827; border-radius: 16px; padding: 16px; font-size: 14px; font-weight: 600; outline: none; box-sizing: border-box; background-color: #ffffff !important; box-shadow: none !important; -webkit-appearance: none;"
+            value="${form.email}" 
+            @input="${updateField('email')}" />
         </div>
+
+        <!-- Password Group -->
+        <div style="margin-bottom: 30px;">
+          <label style="display: block; text-transform: uppercase; font-size: 11px; font-weight: 800; color: #111827; letter-spacing: 0.1em; margin-bottom: 8px; margin-left: 4px;">Password</label>
+          <input type="password" 
+            placeholder="••••••••"
+            style="width: 100%; border: 2px solid #111827; border-radius: 16px; padding: 16px; font-size: 14px; font-weight: 600; outline: none; box-sizing: border-box; background-color: #ffffff !important; box-shadow: none !important; -webkit-appearance: none;"
+            value="${form.password}" 
+            @input="${updateField('password')}" />
+        </div>
+
+        <!-- Button Masuk -->
+        <button @click="${submitLogin}" 
+          style="width: 100%; background-color: #000000; color: #ffffff; border: none; border-radius: 16px; padding: 18px; font-size: 14px; font-weight: 900; letter-spacing: 0.2em; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.1s;"
+          onmousedown="this.style.transform='scale(0.95)'"
+          onmouseup="this.style.transform='scale(1)'">
+          MASUK
+        </button>
       </div>
-      <div class="block text-align-center">
-        <p>Belum punya akun? <a href="/register/" class="link">Daftar di sini</a></p>
+
+      <!-- 4. Footer Link -->
+      <div style="margin-top: 50px; text-align: center; padding-bottom: 30px;">
+        <p style="color: #6b7280; font-size: 14px; font-weight: 500;">
+          Belum punya akun? <a href="/register/" class="link" style="color: #F7C910; font-weight: 700; text-decoration: underline; text-underline-offset: 4px;">Daftar Sekarang</a>
+        </p>
       </div>
+
     </div>
   </div>
 </template>
+
 <script>
-  export default (props, { $store, $f7, $router, $update }) => {
+  export default (props, { $f7, $router, $update, $store }) => {
     let form = { email: '', password: '' };
 
     const updateField = (field) => (e) => {
@@ -51,18 +64,31 @@
       $update();
     };
 
-    const submitLogin = () => {
+    const submitLogin = async () => {
       if (!form.email || !form.password) {
-        $f7.dialog.alert('Silakan lengkapi semua input.');
+        $f7.dialog.alert('Silakan lengkapi semua input.', 'Travel-In');
         return;
       }
-      const success = $store.dispatch('loginUser', { email: form.email, password: form.password });
-      if (success) {
-        $f7.dialog.alert('Login berhasil.', () => {
-          $router.navigate('/');
+      
+      $f7.preloader.show();
+      
+      try {
+        // Melakukan login via store (Pastikan store.js sudah siap)
+        const success = await $store.dispatch('loginUser', { 
+          email: form.email, 
+          password: form.password 
         });
-      } else {
-        $f7.dialog.alert('Email atau password tidak cocok.');
+
+        $f7.preloader.hide();
+
+        if (success) {
+          $router.navigate('/home/');
+        } else {
+          $f7.dialog.alert('Email atau password salah.', 'Gagal');
+        }
+      } catch (error) {
+        $f7.preloader.hide();
+        $f7.dialog.alert('Terjadi kesalahan sistem.', 'Error');
       }
     };
 

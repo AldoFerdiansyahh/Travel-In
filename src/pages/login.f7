@@ -1,39 +1,92 @@
 <template>
-  <div class="page no-navbar no-toolbar bg-white" data-name="login">
-    <div class="page-content flex flex-col px-9 pt-16">
+  <div class="page" data-name="login">
+    <div class="page-content" style="background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 0 40px; box-sizing: border-box;">
       
-      <div class="flex flex-col items-center mb-12">
-        <div class="w-20 h-20 bg-[#1a1a1a] rounded-[24px] flex items-center justify-center shadow-xl shadow-black/10 mb-5">
-           <span class="text-[#F4D03F] text-4xl font-black italic">T</span>
-        </div>
-        <h1 class="font-black text-2xl text-[#1a1a1a] m-0 tracking-tighter uppercase">TRAVEL-<span class="text-[#F4D03F]">IN</span></h1>
-        <p class="text-gray-400 text-[11px] font-semibold mt-1 tracking-wide uppercase">Mobil Travel Cepat & Mudah</p>
+      <!-- Logo -->
+      <div style="margin-bottom: 30px; text-align: center;">
+        <img src="images/logo.png" style="height: 120px; width: auto; object-fit: contain;" alt="Logo Travel-In" />
       </div>
 
-      <form id="login-form" class="flex flex-col">
-        <div class="mb-6">
-          <label class="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2 px-1">Alamat Email</label>
-          <input type="email" name="email" placeholder="Masukkan email anda" required
-            class="w-full h-14 bg-gray-50 border-2 border-gray-50 rounded-2xl px-5 text-sm font-bold focus:border-[#F4D03F] focus:bg-white transition-all outline-none text-[#1a1a1a] placeholder-gray-300">
+      <!-- Label Text -->
+      <div style="text-align: center; margin-bottom: 40px;">
+        <p style="color: #9ca3af; font-size: 14px; font-weight: 500; margin: 0;">Silakan masuk ke akun Anda</p>
+      </div>
+
+      <!-- Form Input -->
+      <div style="width: 100%; max-width: 400px;">
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; text-transform: uppercase; font-size: 11px; font-weight: 800; color: #111827; letter-spacing: 0.1em; margin-bottom: 8px; margin-left: 4px;">Email</label>
+          <input type="email" 
+            placeholder="nama@email.com"
+            style="width: 100%; border: 2px solid #111827; border-radius: 16px; padding: 16px; font-size: 14px; font-weight: 600; outline: none; box-sizing: border-box; background-color: #ffffff !important; box-shadow: none !important; -webkit-appearance: none;"
+            value="${form.email}" 
+            @input="${updateField('email')}" />
         </div>
 
-        <div class="mb-8">
-          <label class="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2 px-1">Kata Sandi</label>
-          <input type="password" name="password" placeholder="Masukkan password" required
-            class="w-full h-14 bg-gray-50 border-2 border-gray-50 rounded-2xl px-5 text-sm font-bold focus:border-[#F4D03F] focus:bg-white transition-all outline-none text-[#1a1a1a] placeholder-gray-300">
+        <div style="margin-bottom: 30px;">
+          <label style="display: block; text-transform: uppercase; font-size: 11px; font-weight: 800; color: #111827; letter-spacing: 0.1em; margin-bottom: 8px; margin-left: 4px;">Password</label>
+          <input type="password" 
+            placeholder="••••••••"
+            style="width: 100%; border: 2px solid #111827; border-radius: 16px; padding: 16px; font-size: 14px; font-weight: 600; outline: none; box-sizing: border-box; background-color: #ffffff !important; box-shadow: none !important; -webkit-appearance: none;"
+            value="${form.password}" 
+            @input="${updateField('password')}" />
         </div>
 
-        <button type="submit" class="w-full h-15 bg-[#1a1a1a] text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-lg active:scale-95 transition-transform py-4">
-          Masuk Sekarang
+        <button @click="${submitLogin}" 
+          style="width: 100%; background-color: #000000; color: #ffffff; border: none; border-radius: 16px; padding: 18px; font-size: 14px; font-weight: 900; letter-spacing: 0.2em; cursor: pointer; transition: transform 0.1s;"
+          onmousedown="this.style.transform='scale(0.95)'"
+          onmouseup="this.style.transform='scale(1)'">
+          MASUK
         </button>
-      </form>
+      </div>
 
-      <div class="text-center mt-12">
-        <p class="text-gray-400 text-xs font-bold">
-          Belum punya akun? <a href="/registrasi/" class="text-[#F4D03F] hover:underline font-black">Daftar</a>
+      <div style="margin-top: 50px; text-align: center; padding-bottom: 30px;">
+        <p style="color: #6b7280; font-size: 14px; font-weight: 500;">
+          Belum punya akun? <a href="/register/" class="link" style="color: #F7C910; font-weight: 700; text-decoration: underline; text-underline-offset: 4px;">Daftar Sekarang</a>
         </p>
       </div>
 
     </div>
   </div>
 </template>
+
+<script>
+  export default (props, { $f7, $router, $update, $store }) => {
+    let form = { email: '', password: '' };
+
+    const updateField = (field) => (e) => {
+      form[field] = e.target.value;
+      $update();
+    };
+
+    const submitLogin = async () => {
+      if (!form.email || !form.password) {
+        $f7.dialog.alert('Silakan lengkapi semua input.', 'Travel-In');
+        return;
+      }
+      
+      $f7.preloader.show();
+      
+      try {
+        // Melakukan login dan mendapatkan role
+        const role = await $store.dispatch('loginUser', { 
+          email: form.email, 
+          password: form.password 
+        });
+
+        $f7.preloader.hide();
+
+        if (role === 'admin') {
+          $router.navigate('/admin/'); 
+        } else {
+          $router.navigate('/home/');
+        }
+      } catch (error) {
+        $f7.preloader.hide();
+        $f7.dialog.alert('Email atau password salah.', 'Gagal');
+      }
+    };
+
+    return $render;
+  };
+</script>

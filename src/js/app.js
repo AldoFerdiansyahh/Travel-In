@@ -2,7 +2,6 @@ import $ from "dom7";
 import Framework7 from "framework7/bundle";
 
 // Import F7 Styles
-<<<<<<< HEAD
 import 'framework7/css/bundle';
 import '../css/icons.css';
 import '../css/app.css';
@@ -17,14 +16,18 @@ import { auth, db } from './firebase.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 
+// Inisialisasi App
 var app = new Framework7({
   name: 'Travel-In',
   theme: 'auto',
-  el: '#app', // Pastikan ini ada dan sama dengan ID di app.f7
+  el: '#app', 
   component: App,
   store: store,
   routes: routes,
 });
+
+// Simpan ke window biar gampang di-debug di console
+window.app = app;
 
 // --- LOGIKA AUTHENTICATION ---
 
@@ -79,34 +82,3 @@ $(document).on('page:init', '.page[data-name="registrasi"]', function (e) {
     }
   });
 });
-=======
-import "framework7/css/bundle";
-
-// Import Icons and App Custom Styles
-import "../css/icons.css";
-import "../css/app.css";
-
-// Import Routes
-import routes from "./routes.js";
-// Import Store
-import store from "./store.js";
-
-console.log("App.js loading...");
-
-try {
-  var app = new Framework7({
-    name: "Travel-In", // App name
-    theme: "auto", // Automatic theme detection
-    el: "#app", // App root element
-    // App store
-    store: store,
-    // App routes
-    routes: routes,
-  });
-  console.log("Framework7 initialized successfully", app);
-  window.app = app;
-} catch (error) {
-  console.error("Error initializing Framework7:", error);
-  console.error(error.stack);
-}
->>>>>>> 611c4b53ff6c5cc22817587f125a78a8a47e9ad3

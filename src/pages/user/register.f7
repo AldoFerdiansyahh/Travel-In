@@ -1,79 +1,118 @@
 <template>
   <div class="page" data-name="register">
-    <div class="navbar">
-      <div class="navbar-bg"></div>
-      <div class="navbar-inner sliding">
-        <div class="title">Daftar</div>
-      </div>
-    </div>
-    <div class="page-content">
-      <div class="block block-strong">
-        <div class="card card-rounded card-shadow">
-          <div class="card-content card-content-padding">
-            <div class="list no-hairlines-md">
-              <ul>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Nama Lengkap</div>
-                    <div class="item-input-wrap">
-                      <input type="text" placeholder="Masukkan nama" value="${form.name}" @input="${updateField('name')}" />
-                    </div>
-                  </div>
-                </li>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Email</div>
-                    <div class="item-input-wrap">
-                      <input type="email" placeholder="Masukkan email" value="${form.email}" @input="${updateField('email')}" />
-                    </div>
-                  </div>
-                </li>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Password</div>
-                    <div class="item-input-wrap">
-                      <input type="password" placeholder="Buat password" value="${form.password}" @input="${updateField('password')}" />
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
+    <div class="page-content" style="background-color: #ffffff;">
+      <div style="padding-bottom: 50px;">
+        
+        <!-- Tombol Kembali -->
+        <div style="padding: 30px 24px 20px;">
+          <a @click="${() => $router.navigate('/')}" 
+            style="display: inline-flex; padding: 12px; background-color: #f3f4f6; border-radius: 16px; color: #000000; cursor: pointer;">
+            <i class="icon f7-icons" style="font-size: 20px; font-weight: 800;">arrow_left</i>
+          </a>
+        </div>
+
+        <!-- Header -->
+        <div style="padding: 0 40px; margin-bottom: 40px;">
+          <h2 style="font-size: 36px; font-weight: 900; letter-spacing: -0.05em; color: #111827; margin: 0 0 8px;">Daftar Akun</h2>
+          <p style="color: #9ca3af; font-size: 14px; font-weight: 500; margin: 0;">Lengkapi data untuk memesan tiket</p>
+        </div>
+
+        <!-- Form Input -->
+        <div style="padding: 0 40px;">
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; text-transform: uppercase; font-size: 10px; font-weight: 900; color: #111827; margin-bottom: 8px;">Nama Lengkap</label>
+            <input type="text" placeholder="Nama Anda"
+              style="width: 100%; border: 2px solid #e5e7eb; border-radius: 16px; padding: 16px; font-size: 14px; font-weight: 600; background-color: #f9fafb; outline: none; -webkit-appearance: none; box-sizing: border-box;"
+              value="${form.nama}" @input="${updateField('nama')}" />
           </div>
-          <div class="card-footer">
-            <button class="button button-fill button-round" @click="${submitRegister}">Daftar Sekarang</button>
+
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; text-transform: uppercase; font-size: 10px; font-weight: 900; color: #111827; margin-bottom: 8px;">Email</label>
+            <input type="email" placeholder="nama@email.com"
+              style="width: 100%; border: 2px solid #e5e7eb; border-radius: 16px; padding: 16px; font-size: 14px; font-weight: 600; background-color: #f9fafb; outline: none; -webkit-appearance: none; box-sizing: border-box;"
+              value="${form.email}" @input="${updateField('email')}" />
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; text-transform: uppercase; font-size: 10px; font-weight: 900; color: #111827; margin-bottom: 8px;">WhatsApp</label>
+            <input type="tel" placeholder="812345678"
+              style="width: 100%; border: 2px solid #e5e7eb; border-radius: 16px; padding: 16px; font-size: 14px; font-weight: 600; background-color: #f9fafb; outline: none; -webkit-appearance: none; box-sizing: border-box;"
+              value="${form.whatsapp}" @input="${updateField('whatsapp')}" />
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; text-transform: uppercase; font-size: 10px; font-weight: 900; color: #111827; margin-bottom: 8px;">Password</label>
+            <input type="password" placeholder="••••••••"
+              style="width: 100%; border: 2px solid #e5e7eb; border-radius: 16px; padding: 16px; font-size: 14px; font-weight: 600; background-color: #f9fafb; outline: none; -webkit-appearance: none; box-sizing: border-box;"
+              value="${form.password}" @input="${updateField('password')}" />
+          </div>
+
+          <div style="margin-bottom: 30px;">
+            <label style="display: block; text-transform: uppercase; font-size: 10px; font-weight: 900; color: #111827; margin-bottom: 8px;">Konfirmasi Password</label>
+            <input type="password" placeholder="••••••••"
+              style="width: 100%; border: 2px solid #e5e7eb; border-radius: 16px; padding: 16px; font-size: 14px; font-weight: 600; background-color: #f9fafb; outline: none; -webkit-appearance: none; box-sizing: border-box;"
+              value="${form.password_confirm}" @input="${updateField('password_confirm')}" />
+          </div>
+
+          <button @click="${submitRegister}" 
+            style="width: 100%; background-color: #000000; color: #ffffff; border: none; border-radius: 16px; padding: 20px; font-size: 14px; font-weight: 900; cursor: pointer; letter-spacing: 0.1em;">
+            DAFTAR SEKARANG
+          </button>
+
+          <div style="margin-top: 40px; text-align: center;">
+            <p style="color: #6b7280; font-size: 14px;">Sudah punya akun? <a href="/" class="link" style="color: #F7C910; font-weight: 900; text-decoration: underline; text-underline-offset: 4px;">Masuk</a></p>
           </div>
         </div>
-      </div>
-      <div class="block text-align-center">
-        <p>Sudah punya akun? <a href="/login/" class="link">Masuk di sini</a></p>
       </div>
     </div>
   </div>
 </template>
+
 <script>
-  export default (props, { $store, $f7, $router, $update }) => {
-    let form = { name: '', email: '', password: '' };
+  export default (props, { $f7, $router, $update, $store }) => {
+    let form = { nama: '', email: '', whatsapp: '', password: '', password_confirm: '' };
 
     const updateField = (field) => (e) => {
       form[field] = e.target.value;
       $update();
     };
 
-    const submitRegister = () => {
-      if (!form.name || !form.email || !form.password) {
-        $f7.dialog.alert('Mohon isi semua data pendaftaran.');
+    const submitRegister = async () => {
+      if (!form.nama || !form.email || !form.whatsapp || !form.password) {
+        $f7.dialog.alert('Mohon lengkapi semua data.', 'Travel-In');
         return;
       }
-      const success = $store.dispatch('registerUser', { ...form });
-      if (success) {
-        $f7.dialog.alert('Akun berhasil dibuat. Silakan masuk.', () => {
-          $router.navigate('/login/');
+      if (form.password !== form.password_confirm) {
+        $f7.dialog.alert('Konfirmasi password tidak cocok.', 'Gagal');
+        return;
+      }
+
+      $f7.preloader.show();
+      try {
+        await $store.dispatch('registerUser', { 
+          nama: form.nama,
+          email: form.email,
+          whatsapp: form.whatsapp,
+          password: form.password
         });
-      } else {
-        $f7.dialog.alert('Email sudah terdaftar. Gunakan email lain.');
+        
+        $f7.preloader.hide();
+
+        // Menggunakan Toast agar otomatis pindah setelah sukses
+        $f7.toast.create({
+          text: 'Akun berhasil dibuat!',
+          position: 'center',
+          closeTimeout: 1500,
+          on: {
+            closed: () => { $router.navigate('/'); } // Pindah ke Login setelah daftar
+          }
+        }).open();
+        
+      } catch (error) {
+        $f7.preloader.hide();
+        $f7.dialog.alert(error.message, 'Gagal Daftar');
       }
     };
-
     return $render;
   };
 </script>
