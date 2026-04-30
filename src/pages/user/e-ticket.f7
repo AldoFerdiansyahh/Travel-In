@@ -4,7 +4,7 @@
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
         <div class="left">
-          <a href="/payment/${ticket.id}/" class="link icon-only">
+          <a href="${ticket.id ? `/payment/${ticket.id}/` : '/home/'}" class="link icon-only">
             <i class="icon f7-icons">arrow_left</i>
           </a>
         </div>
