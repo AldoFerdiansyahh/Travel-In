@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> d766c0889af0f8ce10bea172fe79279236405300
 /* 2. TAILWIND CORE */
 @tailwind base;
 @tailwind components;
@@ -25,9 +21,7 @@ body, input, button, .page, .navbar, .toolbar {
 }
 
 /* 5. HARD RESET TOOLBAR */
-.toolbar, 
-.tabbar, 
-.toolbar-bottom,
+.tabbar,
 .page.no-toolbar .toolbar {
   display: none !important;
   visibility: hidden !important;
@@ -275,7 +269,4 @@ body {
   color: #6b7280;
   font-weight: 500;
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> d766c0889af0f8ce10bea172fe79279236405300

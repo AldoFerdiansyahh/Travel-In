@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-<<<<<<< HEAD
     <!-- Panel Kiri (Menu) -->
     <div class="panel panel-left panel-cover panel-init">
       <div class="view">
@@ -51,21 +50,11 @@
       <div id="view-home" class="view view-main view-init tab tab-active" data-url="/"></div>
       <div id="view-settings" class="view view-init tab" data-name="settings" data-url="/settings/"></div>
     </div>
-=======
-    <div class="view view-main view-init safe-areas"></div>
->>>>>>> d766c0889af0f8ce10bea172fe79279236405300
   </div>
 </template>
 
 <script>
-<<<<<<< HEAD
 export default () => {
   return $render;
 };
 </script>
-=======
-  export default () => {
-    return $render;
-  };
-</script>
->>>>>>> d766c0889af0f8ce10bea172fe79279236405300

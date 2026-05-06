@@ -41,7 +41,7 @@
             <label style="display: block; text-transform: uppercase; font-size: 11px; font-weight: 800; color: #111827; margin-bottom: 8px; margin-left: 5px;">WhatsApp</label>
             <input type="tel" placeholder="08975614300"
               style="width: 100%; border: 1px solid #f3f4f6; background-color: #f9fafb; border-radius: 16px; padding: 16px; font-size: 15px; font-weight: 600; box-sizing: border-box; outline: none;"
-              .value="${form.whatsapp}" @input="${(e) => { form.whatsapp = e.target.value; $update(); }}" />
+              .value="${form.whatsapp}" @input="${(e) => { form.whatsapp = e.target.value.trim(); $update(); }}" />
           </div>
 
           <!-- Field Password -->
@@ -52,11 +52,12 @@
               .value="${form.password}" @input="${(e) => { form.password = e.target.value; $update(); }}" />
           </div>
 
-          <!-- Field Konfirmasi Password (Opsional, tapi biasanya ada di UI Apple) -->
+          <!-- Field Konfirmasi Password -->
           <div>
             <label style="display: block; text-transform: uppercase; font-size: 11px; font-weight: 800; color: #111827; margin-bottom: 8px; margin-left: 5px;">Konfirmasi Password</label>
             <input type="password" placeholder="••••••••"
-              style="width: 100%; border: 1px solid #f3f4f6; background-color: #f9fafb; border-radius: 16px; padding: 16px; font-size: 15px; font-weight: 600; box-sizing: border-box; outline: none;" />
+              style="width: 100%; border: 1px solid #f3f4f6; background-color: #f9fafb; border-radius: 16px; padding: 16px; font-size: 15px; font-weight: 600; box-sizing: border-box; outline: none;"
+              .value="${form.password_confirm}" @input="${(e) => { form.password_confirm = e.target.value; $update(); }}" />
           </div>
 
           <!-- Button Register -->
@@ -79,55 +80,51 @@
 </template>
 
 <script>
-<<<<<<< HEAD
-  export default (props, { $f7, $router, $update, $store }) => {
-    let form = { nama: '', email: '', whatsapp: '', password: '' };
+  import { registerWithFirebase } from '../../js/auth.js';
+
+  export default (props, { $f7, $router, $update }) => {
+    const router = $router || ($f7.views && $f7.views.current && $f7.views.current.router) || ($f7.views && $f7.views.main && $f7.views.main.router);
+    let form = {
+      nama: '',
+      email: '',
+      whatsapp: '',
+      password: '',
+      password_confirm: '',
+    };
 
     const handleRegister = async () => {
-      if (!form.nama || !form.email || !form.whatsapp || !form.password) {
+      if (!form.nama || !form.email || !form.whatsapp || !form.password || !form.password_confirm) {
         $f7.dialog.alert('Mohon lengkapi semua data.', 'Travel-In');
+        return;
+      }
+
+      if (form.password !== form.password_confirm) {
+        $f7.dialog.alert('Password dan konfirmasi password harus sama.', 'Travel-In');
+        return;
+      }
+
+      if (!router || !router.navigate) {
+        $f7.dialog.alert('Router tidak tersedia. Silakan muat ulang aplikasi.', 'Travel-In');
         return;
       }
 
       $f7.preloader.show();
       try {
-        await $store.dispatch('registerUser', { ...form });
-        $f7.preloader.hide();
-        $f7.dialog.alert('Akun berhasil dibuat!', 'Sukses', () => {
-          $router.navigate('/');
-        });
-      } catch (error) {
-        $f7.preloader.hide();
-        $f7.dialog.alert('Gagal: ' + error.message, 'Travel-In');
-=======
-  import { registerWithFirebase } from '../../js/auth.js';
-
-  export default (props, { $store, $f7, $router, $update }) => {
-    let form = { name: '', email: '', password: '' };
-
-    const updateField = (field) => (e) => {
-      form[field] = e.target.value;
-      $update();
-    };
-
-    const submitRegister = async () => {
-      if (!form.name || !form.email || !form.password) {
-        $f7.dialog.alert('Mohon isi semua data pendaftaran.');
-        return;
-      }
-      try {
-        const profile = await registerWithFirebase({
-          name: form.name,
+        await registerWithFirebase({
+          name: form.nama,
           email: form.email,
           password: form.password,
+          whatsapp: form.whatsapp,
         });
-        $store.dispatch('loginUser', profile);
-        $f7.dialog.alert('Akun berhasil dibuat. Selamat datang!', () => {
-          $router.navigate('/home/');
+        $f7.preloader.hide();
+        $f7.dialog.alert('Akun berhasil dibuat. Silakan masuk.', 'Sukses', () => {
+          router.navigate('/login/');
         });
       } catch (error) {
-        $f7.dialog.alert(error.message || 'Registrasi gagal. Silakan coba lagi.');
->>>>>>> d766c0889af0f8ce10bea172fe79279236405300
+        $f7.preloader.hide();
+        console.error('Registrasi Error:', error);
+        const message = error.message || 'Registrasi gagal. Silakan coba lagi.';
+        $f7.dialog.alert(message, 'Gagal Registrasi');
       }
     };
 

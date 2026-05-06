@@ -1,19 +1,12 @@
 import { createStore } from 'framework7';
 import { auth, db } from './firebase.js';
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut 
-} from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const persistedUser = localStorage.getItem('travelin-current-user');
 
 const store = createStore({
   state: {
-<<<<<<< HEAD
-    currentUser: null,
-=======
     currentUser: persistedUser ? JSON.parse(persistedUser) : null,
     users: [
       {
@@ -31,7 +24,6 @@ const store = createStore({
         role: 'user',
       },
     ],
->>>>>>> d766c0889af0f8ce10bea172fe79279236405300
     schedules: [
       {
         id: '1',
@@ -47,27 +39,41 @@ const store = createStore({
         status: 'Available',
         plate: 'B 1234 XYZ',
         description: 'Bus eksekutif dengan AC dingin, reclining seat, dan fasilitas bagasi luas.',
+        passengers: [],
       }
+    ],
+    tickets: [],
+    armadas: [
+      {
+        id: 'a1',
+        name: 'Armada Travel-In 1',
+        plate: 'B 2345 YZX',
+        capacity: 45,
+        year: 2024,
+        facilities: 'AC, Reclining Seat, Audio',
+        status: 'Available',
+      },
     ],
   },
   getters: {
     currentUser: ({ state }) => state.currentUser,
+    users: ({ state }) => state.users,
+    schedules: ({ state }) => state.schedules,
+    tickets: ({ state }) => state.tickets,
+    armadas: ({ state }) => state.armadas,
   },
   actions: {
-<<<<<<< HEAD
-    // --- FUNGSI REGISTRASI (YANG TADI HILANG) ---
     async registerUser({ state }, { nama, email, whatsapp, password }) {
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Simpan data tambahan ke Firestore
         await setDoc(doc(db, "users", user.uid), {
           nama: nama,
           email: email,
           whatsapp: whatsapp,
-          role: 'user', // Otomatis jadi user biasa dulu
-          createdAt: new Date()
+          role: 'user',
+          createdAt: new Date(),
         });
         return true;
       } catch (error) {
@@ -75,15 +81,21 @@ const store = createStore({
       }
     },
 
-    // --- FUNGSI LOGIN ---
-    async loginUser({ state }, { email, password }) {
+    async loginUser({ state }, payload) {
+      if (payload && payload.uid && payload.email) {
+        const role = payload.role || 'user';
+        state.currentUser = payload;
+        localStorage.setItem('travelin-current-user', JSON.stringify(payload));
+        return role;
+      }
+
+      const { email, password } = payload || {};
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
         const userDoc = await getDoc(doc(db, "users", user.uid));
-        
-        let role = 'user'; 
+        let role = 'user';
         let userData = { email: user.email, uid: user.uid };
 
         if (userDoc.exists()) {
@@ -93,30 +105,11 @@ const store = createStore({
         }
 
         state.currentUser = userData;
-        return role; 
+        localStorage.setItem('travelin-current-user', JSON.stringify(userData));
+        return role;
       } catch (error) {
         throw error;
       }
-=======
-    registerUser({ state }, user) {
-      const exists = state.users.find((item) => item.email.toLowerCase() === user.email.toLowerCase());
-      if (exists) return false;
-      const newUser = {
-        id: String(Date.now()),
-        name: user.name,
-        email: user.email,
-        password: user.password,
-        role: 'user',
-      };
-      state.users = [...state.users, newUser];
-      return true;
-    },
-    loginUser({ state }, user) {
-      if (!user || !user.uid) return null;
-      state.currentUser = user;
-      localStorage.setItem('travelin-current-user', JSON.stringify(user));
-      return user;
->>>>>>> d766c0889af0f8ce10bea172fe79279236405300
     },
 
     async logoutUser({ state }) {
@@ -124,11 +117,55 @@ const store = createStore({
       state.currentUser = null;
       localStorage.removeItem('travelin-current-user');
     },
+
+    addTicket({ state }, ticket) {
+      state.tickets = [...state.tickets, ticket];
+      return ticket;
+    },
+
+    updateScheduleSeats({ state }, { id, seats }) {
+      state.schedules = state.schedules.map((schedule) => {
+        if (schedule.id !== id) return schedule;
+        return {
+          ...schedule,
+          filledSeats: (schedule.filledSeats || 0) + seats,
+          seatsLeft: Math.max((schedule.seatsLeft || schedule.capacity || 0) - seats, 0),
+        };
+      });
+    },
+
+    payTicket({ state }, { id, method }) {
+      state.tickets = state.tickets.map((ticket) => {
+        if (ticket.id !== id) return ticket;
+        return {
+          ...ticket,
+          paymentStatus: 'Paid',
+          paymentMethod: method,
+        };
+      });
+    },
+
+    addSchedule({ state }, schedule) {
+      state.schedules = [...state.schedules, schedule];
+    },
+
+    updateSchedule({ state }, updatedSchedule) {
+      state.schedules = state.schedules.map((schedule) => (schedule.id === updatedSchedule.id ? updatedSchedule : schedule));
+    },
+
+    deleteSchedule({ state }, id) {
+      state.schedules = state.schedules.filter((schedule) => schedule.id !== id);
+    },
+
+    addArmada({ state }, armada) {
+      state.armadas = [...state.armadas, armada];
+    },
+
+    updateArmada({ state }, updatedArmada) {
+      state.armadas = state.armadas.map((armada) => (armada.id === updatedArmada.id ? updatedArmada : armada));
+    },
   },
 });
 
-<<<<<<< HEAD
 export default store;
-=======
-export default store;
->>>>>>> d766c0889af0f8ce10bea172fe79279236405300
+

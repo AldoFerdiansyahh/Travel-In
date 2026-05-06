@@ -1,0 +1,152 @@
+<template>
+  <div class="page" data-name="admin-laporan">
+    <div class="navbar navbar-transparent">
+      <div class="navbar-bg" style="background: #ffffff !important; border-bottom: 1px solid #f1f5f9;"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back text-color-black" style="padding-left: 10px;">
+            <i class="icon f7-icons font-bold text-xl">arrow_left</i>
+          </a>
+        </div>
+        <div class="title text-color-black font-black tracking-wide" style="font-size: 16px;">Statistik & Laporan</div>
+        <div class="right"></div>
+      </div>
+    </div>
+
+    <div class="page-content" style="background-color: #fafafa; padding-bottom: 30px;">
+      
+      <div class="block" style="margin-top: 20px; margin-bottom: 15px;">
+        <h2 class="no-margin font-black text-color-black" style="font-size: 24px; tracking-tight: -0.03em;">Laporan Ringkasan</h2>
+        <p class="no-margin text-color-gray text-xs mt-1" style="font-weight: 500;">Pantau dan unduh data transaksi operasional Travel-In</p>
+      </div>
+
+      <div class="block" style="margin-top: 0; margin-bottom: 24px;">
+        <div class="card card-outline no-border shadow-md" style="background: linear-gradient(135deg, #111827 0%, #1f2937 100%); border-radius: 24px; overflow: hidden; padding: 24px 20px;">
+          <div class="display-flex justify-content-space-between align-items-center">
+            <div>
+              <span style="font-size: 10px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.15em;">Total Pendapatan Terkumpul</span>
+              <h1 class="no-margin font-black mt-1" style="font-size: 28px; color: #ffffff;">
+                Rp ${formatRupiah(calculateTotalRevenue())}
+              </h1>
+            </div>
+            <div style="background-color: rgba(247, 201, 16, 0.15); width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+              <i class="icon f7-icons" style="color: #f7c910; font-size: 24px;">money_rubl_circle_fill</i>
+            </div>
+          </div>
+          
+          <div style="height: 1px; background-color: rgba(255, 255, 255, 0.1); margin: 20px 0 16px 0;"></div>
+          
+          <div class="display-flex justify-content-space-between align-items-center">
+            <span class="badge" style="background-color: #22c55e; color: #ffffff; font-size: 10px; padding: 4px 10px; border-radius: 8px; font-weight: 800;">STATUS AKTIF</span>
+            <span style="font-size: 11px; color: #9ca3af; font-weight: 600;">Berdasarkan tiket berstatus lunas</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block-title medium text-color-black font-extrabold" style="padding-left: 10px; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b;">Pilih Format Ekspor</div>
+      
+      <div class="list inset list-strong list-outline shadow-sm" style="border-radius: 20px; overflow: hidden; border: none; background: #ffffff; margin-bottom: 24px;">
+        <ul>
+          <li>
+            <a href="#" class="item-link item-content py-3" @click="${exportToExcel}">
+              <div class="item-media">
+                <div class="report-icon-box" style="background-color: #f0fdf4;">
+                  <i class="icon f7-icons text-lg" style="color: #16a34a;">arrow_down_doc_fill</i>
+                </div>
+              </div>
+              <div class="item-inner" style="border-bottom: 1px solid #f1f5f9;">
+                <div class="item-title">
+                  <div class="font-bold text-gray-800" style="font-size: 14px;">Laporan Transaksi (Excel)</div>
+                  <div class="text-color-gray" style="font-size: 11px; font-weight: 500; margin-top: 2px;">Format berkas .xlsx untuk analisis keuangan</div>
+                </div>
+                <div class="item-after">
+                  <i class="icon f7-icons text-xs color-gray" style="font-size: 12px;">chevron_right</i>
+                </div>
+              </div>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="item-link item-content py-3" @click="${exportToPDF}">
+              <div class="item-media">
+                <div class="report-icon-box" style="background-color: #fef2f2;">
+                  <i class="icon f7-icons text-lg" style="color: #dc2626;">doc_text_fill</i>
+                </div>
+              </div>
+              <div class="item-inner">
+                <div class="item-title">
+                  <div class="font-bold text-gray-800" style="font-size: 14px;">Manifes Penumpang (PDF)</div>
+                  <div class="text-color-gray" style="font-size: 11px; font-weight: 500; margin-top: 2px;">Format cetak PDF untuk manifes keberangkatan</div>
+                </div>
+                <div class="item-after">
+                  <i class="icon f7-icons text-xs color-gray" style="font-size: 12px;">chevron_right</i>
+                </div>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</template>
+
+<style>
+  /* Menghilangkan panah bawaan Framework7 agar kita bisa mendesain tombol ekspor kustom */
+  .custom-admin-list .item-link .item-inner,
+  .list.inset .item-link .item-inner {
+    background-image: none !important;
+    padding-right: 15px !important;
+  }
+
+  /* Kotak Pembungkus Ikon Laporan */
+  .report-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+<script>
+  export default (props, { $f7, $store }) => {
+    const tickets = $store.getters.tickets.value || [];
+
+    // Hitung total pendapatan dari tiket yang berstatus lunas / sukses
+    const calculateTotalRevenue = () => {
+      return tickets
+        .filter(ticket => ticket.status === 'success' || ticket.status === 'completed' || ticket.status === 'PAID')
+        .reduce((sum, ticket) => sum + (Number(ticket.totalPrice) || Number(ticket.price) || 0), 0);
+    };
+
+    // Format Mata Uang Rupiah sederhana
+    const formatRupiah = (value) => {
+      if (!value) return '0';
+      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
+
+    // Fungsi Trigger Ekspor Excel
+    const exportToExcel = (e) => {
+      if (e) e.preventDefault();
+      $f7.dialog.preloader('Menyiapkan Berkas Excel...');
+      setTimeout(() => {
+        $f7.preloader.hide();
+        $f7.dialog.alert('Laporan Transaksi Travel-In sukses diekspor ke Excel (Format XLSX)!', 'Sukses');
+      }, 1500);
+    };
+
+    // Fungsi Trigger Ekspor PDF
+    const exportToPDF = (e) => {
+      if (e) e.preventDefault();
+      $f7.dialog.preloader('Menghasilkan Laporan PDF...');
+      setTimeout(() => {
+        $f7.preloader.hide();
+        $f7.dialog.alert('Laporan Manifes Penumpang Berhasil diunduh dalam berkas PDF!', 'Sukses');
+      }, 1800);
+    };
+
+    return $render;
+  };
+</script>

@@ -1,121 +1,234 @@
 <template>
   <div class="page" data-name="admin-dashboard">
-    <div class="navbar">
-      <div class="navbar-bg bg-color-ocean"></div>
+    <div class="navbar navbar-transparent">
+      <div class="navbar-bg custom-admin-nav"></div>
       <div class="navbar-inner sliding">
-        <div class="title text-color-white">Admin Dashboard</div>
+        <div class="title text-color-white font-black tracking-wide">Admin Panel</div>
         <div class="right">
-          <a href="#" class="link icon-only text-color-white admin-logout-btn" @click="${handleLogout}" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;">
-            <i class="icon f7-icons">rectangle_portrait_and_arrow_right</i>
+          <a href="#" class="link icon-only text-color-white admin-logout-btn" @click="${handleLogout}" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center;">
+            <i class="icon f7-icons text-xl">rectangle_portrait_and_arrow_right</i>
           </a>
         </div>
       </div>
     </div>
 
-    <div class="page-content bg-light-blue">
+    <div class="page-content bg-light-gray">
       <div class="admin-welcome-header">
         <div class="block">
-          <h1 class="no-margin text-color-white">Halo, ${currentUser.name || 'Admin'}!</h1>
-          <p class="no-margin text-color-white opacity-70">Kelola operasional Travel-In di sini.</p>
+          <h1 class="no-margin text-color-white font-black">Halo, ${currentUser.name || 'Admin'}!</h1>
+          <p class="no-margin text-color-white opacity-80 font-semibold mt-1">Kelola operasional & armada Travel-In di sini.</p>
         </div>
       </div>
 
-      <div class="block no-margin-top">
-        <div class="row">
-          <div class="col-50">
-            <div class="card card-outline dashboard-stat-card">
-              <div class="card-content card-content-padding">
-                <i class="icon f7-icons color-ocean">calendar</i>
-                <div class="stat-number">${schedules.length || 0}</div>
-                <div class="stat-label">Jadwal</div>
+      <div class="block" style="margin-top: -35px !important; position: relative; z-index: 10; padding: 0 8px;">
+        <div class="grid grid-cols-2 grid-gap">
+          
+          <div class="card card-outline dashboard-stat-card shadow-sm no-margin">
+            <div class="card-content card-content-padding stat-card-inner">
+              <div class="stat-icon-wrapper bg-blue-tint">
+                <i class="icon f7-icons color-blue text-xl">calendar_badge_plus</i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Jadwal</span>
+                <span class="stat-number">${schedules.length || 0}</span>
               </div>
             </div>
           </div>
-          <div class="col-50">
-            <div class="card card-outline dashboard-stat-card">
-              <div class="card-content card-content-padding">
-                <i class="icon f7-icons color-ocean">ticket</i>
-                <div class="stat-number">${tickets.length || 0}</div>
-                <div class="stat-label">E-Tiket</div>
+
+          <div class="card card-outline dashboard-stat-card shadow-sm no-margin">
+            <div class="card-content card-content-padding stat-card-inner">
+              <div class="stat-icon-wrapper bg-green-tint">
+                <i class="icon f7-icons color-green text-xl">ticket_fill</i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">E-Tiket</span>
+                <span class="stat-number">${tickets.length || 0}</span>
               </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-50">
-            <div class="card card-outline dashboard-stat-card">
-              <div class="card-content card-content-padding">
-                <i class="icon f7-icons color-ocean">bus_fill</i>
-                <div class="stat-number">${armadas.length || 0}</div>
-                <div class="stat-label">Armada</div>
+
+          <div class="card card-outline dashboard-stat-card shadow-sm no-margin">
+            <div class="card-content card-content-padding stat-card-inner">
+              <div class="stat-icon-wrapper bg-yellow-tint">
+                <i class="icon f7-icons color-yellow text-xl">bus_fill</i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Armada</span>
+                <span class="stat-number">${armadas.length || 0}</span>
               </div>
             </div>
           </div>
-          <div class="col-50">
-            <div class="card card-outline dashboard-stat-card">
-              <div class="card-content card-content-padding">
-                <i class="icon f7-icons color-ocean">person_2_fill</i>
-                <div class="stat-number">${users.length || 0}</div>
-                <div class="stat-label">User</div>
+
+          <div class="card card-outline dashboard-stat-card shadow-sm no-margin">
+            <div class="card-content card-content-padding stat-card-inner">
+              <div class="stat-icon-wrapper bg-purple-tint">
+                <i class="icon f7-icons color-purple text-xl">person_2_fill</i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">User</span>
+                <span class="stat-number">${users.length || 0}</span>
               </div>
             </div>
           </div>
+
         </div>
       </div>
 
-      <div class="block-title medium text-color-black">Manajemen Utama</div>
-      <div class="list inset list-strong-ios list-outline-ios custom-admin-list">
+      <div class="block-title medium text-color-black font-extrabold" style="padding-left: 10px; margin-top: 30px; margin-bottom: 10px;">Manajemen Sistem</div>
+      <div class="list inset list-strong list-outline custom-admin-list shadow-sm" style="margin-bottom: 30px;">
         <ul>
           <li>
-            <a href="/admin/armadas/" class="item-link item-content">
-              <div class="item-media"><i class="icon f7-icons color-ocean">bus_fill</i></div>
-              <div class="item-inner"><div class="item-title">Manajemen Armada</div></div>
+            <a href="/admin/armadas/" class="item-link item-content py-2">
+              <div class="item-media">
+                <div class="menu-icon-wrapper bg-yellow-tint">
+                  <i class="icon f7-icons text-lg color-yellow">bus_fill</i>
+                </div>
+              </div>
+              <div class="item-inner">
+                <div class="item-title font-bold text-gray-800">Manajemen Armada</div>
+              </div>
             </a>
           </li>
+
           <li>
-            <a href="/admin/schedules/" class="item-link item-content">
-              <div class="item-media"><i class="icon f7-icons color-ocean">calendar_badge_plus</i></div>
-              <div class="item-inner"><div class="item-title">Kelola Jadwal</div></div>
+            <a href="/admin/schedules/" class="item-link item-content py-2">
+              <div class="item-media">
+                <div class="menu-icon-wrapper bg-blue-tint">
+                  <i class="icon f7-icons text-lg color-blue">calendar_badge_plus</i>
+                </div>
+              </div>
+              <div class="item-inner">
+                <div class="item-title font-bold text-gray-800">Kelola Jadwal Perjalanan</div>
+              </div>
             </a>
           </li>
+
           <li>
-            <a href="/admin/tickets/" class="item-link item-content">
-              <div class="item-media"><i class="icon f7-icons color-ocean">doc_text_search</i></div>
-              <div class="item-inner"><div class="item-title">Monitoring Tiket</div></div>
+            <a href="/admin/tickets/" class="item-link item-content py-2">
+              <div class="item-media">
+                <div class="menu-icon-wrapper bg-purple-tint">
+                  <i class="icon f7-icons text-lg color-purple">doc_text_search</i>
+                </div>
+              </div>
+              <div class="item-inner">
+                <div class="item-title font-bold text-gray-800">Monitoring Tiket Penjualan</div>
+              </div>
+            </a>
+          </li>
+
+          <li>
+            <a href="/admin/laporan/" class="item-link item-content py-2">
+              <div class="item-media">
+                <div class="menu-icon-wrapper bg-green-tint">
+                  <i class="icon f7-icons text-lg color-green">graph_square_fill</i>
+                </div>
+              </div>
+              <div class="item-inner">
+                <div class="item-title font-bold text-gray-800">Fitur Laporan</div>
+                <div class="after-title"><span class="badge color-green">Rp ${formatRupiah(calculateTotalRevenue())}</span></div>
+              </div>
             </a>
           </li>
         </ul>
       </div>
+
     </div>
   </div>
 </template>
 
 <style>
-  /* Warna Custom Ocean Blue */
-  .bg-color-ocean { background-color: #0077b6 !important; }
-  .color-ocean { color: #0077b6 !important; }
-  .bg-light-blue { background-color: #f8fbff; }
+  /* Admin Navbar Styling */
+  .custom-admin-nav {
+    background: linear-gradient(135deg, #111827 0%, #1f2937 100%) !important;
+  }
 
-  /* Style Header */
+  /* Admin Header */
   .admin-welcome-header {
-    background: linear-gradient(180deg, #0077b6 0%, #00b4d8 100%);
-    padding: 30px 0 50px 0;
-    border-radius: 0 0 25px 25px;
-    margin-bottom: -20px;
+    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+    padding: 35px 5px 75px 5px;
+    border-radius: 0 0 40px 40px;
   }
 
-  /* Style Kartu Statistik */
+  /* Dashboard Colors */
+  .bg-light-gray { background-color: #f9fafb; }
+
+  /* Grid Gap Spacing */
+  .grid-gap {
+    --f7-grid-gap: 12px;
+  }
+
+  /* Stat Card Custom dengan Flexbox Horizontal */
   .dashboard-stat-card {
-    border-radius: 16px !important;
-    border: 1px solid rgba(0, 119, 182, 0.1) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
-    text-align: center;
-    margin: 8px 0;
+    border-radius: 20px !important;
+    border: none !important;
+    background: #ffffff !important;
+    transition: all 0.3s ease;
   }
-  .stat-number { font-size: 22px; font-weight: 800; color: #0077b6; margin-top: 4px; }
-  .stat-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
 
-  .custom-admin-list { border-radius: 16px !important; overflow: hidden; }
+  .stat-card-inner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 16px 14px !important;
+  }
+
+  /* Ikon di bagian kiri */
+  .stat-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 12px;
+  }
+
+  /* Ikon Tint Background */
+  .bg-blue-tint { background-color: #eff6ff; }
+  .bg-green-tint { background-color: #f0fdf4; }
+  .bg-yellow-tint { background-color: #fefce8; }
+  .bg-purple-tint { background-color: #faf5ff; }
+
+  /* Info Teks di bagian kanan */
+  .stat-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .stat-label { 
+    font-size: 11px; 
+    color: #9ca3af; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: 0.05em; 
+  }
+
+  .stat-number { 
+    font-size: 22px; 
+    font-weight: 900; 
+    color: #111827; 
+    line-height: 1.1;
+    margin-top: 2px;
+  }
+
+  /* Menu List Styling */
+  .custom-admin-list { 
+    border-radius: 20px !important; 
+    overflow: hidden; 
+    border: none !important;
+    background: #ffffff !important;
+  }
+
+  .menu-icon-wrapper {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 </style>
 
 <script>
@@ -124,23 +237,36 @@
   import { signOut } from 'firebase/auth';
 
   export default (props, { $f7, $store, $router }) => {
-    // Ambil data dari store
     const currentUser = $store.getters.currentUser.value || {};
     const schedules = $store.getters.schedules.value || [];
     const tickets = $store.getters.tickets.value || [];
     const armadas = $store.getters.armadas.value || [];
     const users = $store.getters.users.value || [];
 
-    // Fungsi Logout
-    const handleLogout = async () => {
-      $f7.confirm('Apakah anda yakin ingin keluar dari Admin Panel?', 'Logout', async () => {
+    // Hitung Total Pendapatan dari Tiket yang sukses / lunas
+    const calculateTotalRevenue = () => {
+      return tickets
+        .filter(ticket => ticket.status === 'success' || ticket.status === 'completed' || ticket.status === 'PAID')
+        .reduce((sum, ticket) => sum + (Number(ticket.totalPrice) || Number(ticket.price) || 0), 0);
+    };
+
+    // Format Mata Uang Rupiah sederhana
+    const formatRupiah = (value) => {
+      if (!value) return '0';
+      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
+
+    // Fungsi Logout Admin
+    const handleLogout = () => {
+      $f7.dialog.confirm('Apakah Anda yakin ingin keluar dari Admin Panel?', 'Logout', async () => {
         $f7.preloader.show();
         try {
           await signOut(auth);
         } catch (err) {
           console.warn('Firebase signOut failed', err);
         }
-        $store.dispatch('logoutUser');
+        
+        await $store.dispatch('logoutUser');
         $f7.preloader.hide();
 
         const appRouter = $router || ($f7.views && $f7.views.main && $f7.views.main.router);
@@ -155,7 +281,7 @@
       });
     };
 
-    // Bind event click manual supaya tombol logout selalu responsif
+    // Bind event klik manual
     $(document).off('click', '.admin-logout-btn').on('click', '.admin-logout-btn', (e) => {
       e.preventDefault();
       handleLogout();
