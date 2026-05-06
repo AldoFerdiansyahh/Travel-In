@@ -1,5 +1,5 @@
 <template>
-  <div class="page" data-name="login">
+  <div class="page no-toolbar" data-name="login">
     <div class="page-content" style="background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 0 40px; box-sizing: border-box;">
       
       <div style="margin-bottom: 30px; text-align: center;">

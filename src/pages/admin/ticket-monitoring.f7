@@ -1,5 +1,5 @@
 <template>
-  <div class="page" data-name="admin-tickets">
+  <div class="page no-toolbar" data-name="admin-tickets">
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">

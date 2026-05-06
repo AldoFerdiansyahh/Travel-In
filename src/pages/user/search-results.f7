@@ -1,5 +1,5 @@
 <template>
-  <div class="page" data-name="search-results">
+  <div class="page page-with-navbar page-with-toolbar" data-name="search-results">
     <div class="navbar navbar-transparent">
       <div class="navbar-bg bg-color-white"></div>
       <div class="navbar-inner sliding">

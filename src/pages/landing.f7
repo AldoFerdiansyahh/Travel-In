@@ -1,5 +1,5 @@
 <template>
-  <div class="page page-center" data-name="landing">
+  <div class="page page-center no-toolbar" data-name="landing">
     <div class="page-content text-align-center">
       <div class="block">
         <div class="mb-8">

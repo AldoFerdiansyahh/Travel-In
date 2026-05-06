@@ -1,5 +1,5 @@
 <template>
-  <div class="page" data-name="admin-laporan">
+  <div class="page no-toolbar" data-name="admin-laporan">
     <div class="navbar navbar-transparent">
       <div class="navbar-bg" style="background: #ffffff !important; border-bottom: 1px solid #f1f5f9;"></div>
       <div class="navbar-inner sliding">

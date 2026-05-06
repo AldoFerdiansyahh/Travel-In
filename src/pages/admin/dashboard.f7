@@ -1,5 +1,5 @@
 <template>
-  <div class="page" data-name="admin-dashboard">
+  <div class="page no-toolbar" data-name="admin-dashboard">
     <div class="navbar navbar-transparent">
       <div class="navbar-bg custom-admin-nav"></div>
       <div class="navbar-inner sliding">

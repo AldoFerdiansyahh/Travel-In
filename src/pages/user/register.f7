@@ -1,5 +1,5 @@
 <template>
-  <div class="page" data-name="register">
+  <div class="page no-toolbar" data-name="register">
     <div class="page-content" style="background-color: #ffffff;">
       <!-- Pembungkus Utama dengan Padding -->
       <div style="padding: 20px 30px 40px 30px;">

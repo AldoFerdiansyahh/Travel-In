@@ -20,14 +20,23 @@ body, input, button, .page, .navbar, .toolbar {
   box-sizing: border-box;
 }
 
-/* 5. HARD RESET TOOLBAR */
-.tabbar,
-.page.no-toolbar .toolbar {
+/* 5. HARD RESET TOOLBAR - hanya untuk halaman tanpa toolbar */
+.page.no-toolbar .toolbar,
+.page.no-toolbar .tabbar {
   display: none !important;
   visibility: hidden !important;
   height: 0 !important;
   opacity: 0 !important;
   pointer-events: none !important;
+}
+
+/* 6. SHOW TOOLBAR di halaman yang punya toolbar */
+.page-with-toolbar .toolbar,
+.page-with-toolbar .tabbar {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 /* 6. COMPONENT STYLING */
