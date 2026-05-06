@@ -7,9 +7,31 @@ import {
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
+const persistedUser = localStorage.getItem('travelin-current-user');
+
 const store = createStore({
   state: {
+<<<<<<< HEAD
     currentUser: null,
+=======
+    currentUser: persistedUser ? JSON.parse(persistedUser) : null,
+    users: [
+      {
+        id: 'u1',
+        name: 'Admin Travel',
+        email: 'admin@travel-in.com',
+        password: 'admin123',
+        role: 'admin',
+      },
+      {
+        id: 'u2',
+        name: 'Anton Wisata',
+        email: 'user@travel-in.com',
+        password: 'user123',
+        role: 'user',
+      },
+    ],
+>>>>>>> d766c0889af0f8ce10bea172fe79279236405300
     schedules: [
       {
         id: '1',
@@ -32,6 +54,7 @@ const store = createStore({
     currentUser: ({ state }) => state.currentUser,
   },
   actions: {
+<<<<<<< HEAD
     // --- FUNGSI REGISTRASI (YANG TADI HILANG) ---
     async registerUser({ state }, { nama, email, whatsapp, password }) {
       try {
@@ -74,13 +97,38 @@ const store = createStore({
       } catch (error) {
         throw error;
       }
+=======
+    registerUser({ state }, user) {
+      const exists = state.users.find((item) => item.email.toLowerCase() === user.email.toLowerCase());
+      if (exists) return false;
+      const newUser = {
+        id: String(Date.now()),
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        role: 'user',
+      };
+      state.users = [...state.users, newUser];
+      return true;
+    },
+    loginUser({ state }, user) {
+      if (!user || !user.uid) return null;
+      state.currentUser = user;
+      localStorage.setItem('travelin-current-user', JSON.stringify(user));
+      return user;
+>>>>>>> d766c0889af0f8ce10bea172fe79279236405300
     },
 
     async logoutUser({ state }) {
       await signOut(auth);
       state.currentUser = null;
+      localStorage.removeItem('travelin-current-user');
     },
   },
 });
 
+<<<<<<< HEAD
 export default store;
+=======
+export default store;
+>>>>>>> d766c0889af0f8ce10bea172fe79279236405300

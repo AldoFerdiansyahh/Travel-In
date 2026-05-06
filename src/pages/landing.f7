@@ -1,0 +1,25 @@
+<template>
+  <div class="page page-center" data-name="landing">
+    <div class="page-content text-align-center">
+      <div class="block">
+        <div class="mb-8">
+          <div class="landing-logo mx-auto mb-4">
+            <div class="landing-logo-box">
+              <span class="landing-logo-ts">T</span>
+              <span class="landing-logo-arrow">→</span>
+              <span class="landing-logo-s">S</span>
+            </div>
+          </div>
+          <h1 class="text-3xl font-black mb-2">Travel-In</h1>
+          <p class="text-sm text-gray-500 px-6">
+            Aplikasi travel modern untuk pengguna dan admin. Mulai perjalanan Anda sekarang.
+          </p>
+        </div>
+        <div class="space-y-4">
+          <a href="/login/" class="button button-fill button-large">Login</a>
+          <a href="/register/" class="button button-outline button-large">Register</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

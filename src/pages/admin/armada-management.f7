@@ -1,0 +1,413 @@
+<template>
+  <div class="page" data-name="admin-armadas">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="title">Manajemen Armada</div>
+        <div class="right">
+          <button @click="${openUnitForm}" class="button button-fill button-small">+ UNIT</button>
+        </div>
+      </div>
+    </div>
+    <div class="page-content page-content-padding bg-organization">
+      <div class="block block-strong admin-top-panel">
+        <div class="block-title">Manajemen Armada</div>
+        <p class="block-subtitle">Kelola unit bus dan armada Travel-In dengan tampilan yang lebih bersih dan profesional.</p>
+        <div class="row admin-stat-row">
+          <div class="col-50 tablet-col-25">
+            <div class="card card-round admin-summary-card">
+              <div class="card-content text-center">
+                <div class="summary-value">${armadas.length || 0}</div>
+                <div class="summary-label">Total Armada</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-50 tablet-col-25">
+            <div class="card card-round admin-summary-card">
+              <div class="card-content text-center">
+                <div class="summary-value">${armadas.filter((item) => item.status === 'Available').length || 0}</div>
+                <div class="summary-label">Tersedia</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-50 tablet-col-25">
+            <div class="card card-round admin-summary-card">
+              <div class="card-content text-center">
+                <div class="summary-value">${armadas.filter((item) => item.status !== 'Available').length || 0}</div>
+                <div class="summary-label">In Service</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-50 tablet-col-25">
+            <div class="card card-round admin-summary-card admin-summary-action">
+              <div class="card-content text-center">
+                <a href="#" class="button button-fill button-round button-small" @click="${openUnitForm}">Tambah Unit</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block block-strong block-title-space">
+        <div class="block-title">Daftar Armada</div>
+        <div class="block-text">Semua data armada bisa diedit, dinonaktifkan, atau dicek jadwalnya di sini.</div>
+      </div>
+
+      <div class="list no-hairlines-md inset admin-list">
+        <ul>
+          ${armadas.length > 0 ? armadas.map((armada) => $h`
+            <li>
+              <div class="item-content admin-armada-card">
+                <div class="item-media admin-armada-media">
+                  <i class="icon f7-icons icon-large">bus_fill</i>
+                  <div class="status-pill ${armada.status === 'Available' ? 'color-green' : 'color-orange'}">${armada.status}</div>
+                </div>
+                <div class="item-inner admin-armada-inner">
+                  <div class="item-title-row">
+                    <div class="item-title font-black">${armada.name}</div>
+                    <div class="item-after item-after-small">${armada.id}</div>
+                  </div>
+                  <div class="item-subtitle">Plat Nomor: ${armada.plate}</div>
+                  <div class="item-text admin-armada-meta">
+                    <span>Kapasitas: <strong>${armada.capacity}</strong> kursi</span>
+                    <span>Tahun: <strong>${armada.year || '-'}</strong></span>
+                  </div>
+                  <div class="item-text admin-armada-meta">
+                    Fasilitas: <strong>${armada.facilities || 'Standar'}</strong>
+                  </div>
+                  <div class="row admin-armada-actions">
+                    <div class="col-50">
+                      <button class="button button-small button-outline button-round button-block" @click="${() => editUnit(armada.id)}">Edit</button>
+                    </div>
+                    <div class="col-50">
+                      <button class="button button-small button-fill button-round button-block color-blue" @click="${() => viewSchedule(armada.id)}">Jadwal</button>
+                    </div>
+                  </div>
+                  <div class="row admin-armada-actions">
+                    <div class="col">
+                      <button class="button button-small button-fill color-red button-round button-block" @click="${() => toggleArmadaStatus(armada.id)}">${armada.status === 'Available' ? 'Nonaktifkan' : 'Aktifkan'}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          `) : $h`
+            <li>
+              <div class="card card-round admin-empty-card">
+                <div class="card-content">
+                  <div class="block-title">Armada Kosong</div>
+                  <div class="block-text">Belum ada armada terdaftar. Tekan tombol Tambah Unit untuk membuat armada baru.</div>
+                </div>
+              </div>
+            </li>
+          `}
+        </ul>
+      </div>
+
+      ${showForm ? $h`
+        <div class="block block-strong armada-form-block">
+          <div class="block-title">${isEditing ? 'Edit Armada' : 'Tambah Armada'}</div>
+          <div class="card card-round card-shadow form-card">
+            <div class="card-content card-content-padding">
+              <div class="list no-hairlines-md">
+                <ul>
+                  <li class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">Nama Armada</div>
+                      <div class="item-input-wrap">
+                        <input type="text" placeholder="Contoh: Hiace Premio Luxury" value="${unitForm.name}" @input="${updateField('name')}" />
+                      </div>
+                    </div>
+                  </li>
+                  <li class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">Plat Nomor</div>
+                      <div class="item-input-wrap">
+                        <input type="text" placeholder="Contoh: D 1990 ADO" value="${unitForm.plate}" @input="${updateField('plate')}" />
+                      </div>
+                    </div>
+                  </li>
+                  <li class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">Kapasitas Kursi</div>
+                      <div class="item-input-wrap">
+                        <input type="number" placeholder="Contoh: 12" value="${unitForm.capacity}" @input="${updateField('capacity')}" />
+                      </div>
+                    </div>
+                  </li>
+                  <li class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-row">
+                        <div class="item-title item-label">Tahun Unit</div>
+                        <div class="item-title item-label">Fasilitas</div>
+                      </div>
+                      <div class="item-input-wrap double-inputs">
+                        <input type="number" placeholder="2024" value="${unitForm.year}" @input="${updateField('year')}" />
+                        <input type="text" placeholder="Full AC, TV, WiFi" value="${unitForm.facilities}" @input="${updateField('facilities')}" />
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-footer form-actions">
+              <button class="button button-fill button-round" @click="${saveUnit}">${isEditing ? 'Simpan Perubahan' : 'Tambah Armada'}</button>
+              <button class="button button-outline button-round" @click="${closeForm}">Batal</button>
+            </div>
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  </div>
+</template>
+
+<style>
+  .bg-organization {
+    background: linear-gradient(180deg, #f4f8ff 0%, #ffffff 100%);
+  }
+  .admin-top-panel {
+    background: linear-gradient(135deg, #3b82f6 0%, #22c55e 100%);
+    border-radius: 22px;
+    color: #fff;
+    padding: 24px 18px;
+    margin-bottom: 16px;
+  }
+  .admin-top-panel .block-title {
+    font-size: 22px;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
+  .admin-top-panel .block-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 18px;
+  }
+  .admin-stat-row .col-50,
+  .admin-stat-row .tablet-col-25 {
+    margin-bottom: 12px;
+  }
+  .admin-summary-card {
+    border-radius: 18px;
+    box-shadow: 0 18px 40px rgba(34, 94, 255, 0.08);
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.95);
+  }
+  .admin-summary-action .card-content {
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+  .summary-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: #0f172a;
+  }
+  .summary-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #64748b;
+  }
+  .block-title-space {
+    padding-bottom: 0;
+    margin-bottom: 6px;
+  }
+  .admin-armada-card {
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px;
+  }
+  .admin-armada-media {
+    width: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #2563eb;
+  }
+  .admin-armada-media .icon-large {
+    font-size: 32px;
+  }
+  .admin-armada-inner {
+    flex: 1;
+  }
+  .item-after-small {
+    font-size: 11px;
+    color: #64748b;
+    letter-spacing: 0.5px;
+  }
+  .admin-armada-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 10px;
+    color: #475569;
+    font-size: 13px;
+  }
+  .admin-armada-actions {
+    margin-top: 18px;
+    gap: 8px;
+  }
+  .admin-armada-actions .button-block {
+    width: 100%;
+  }
+  .status-pill {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .status-pill.color-green { background: #dcfce7; color: #166534; }
+  .status-pill.color-orange { background: #fff7ed; color: #9a3412; }
+  .admin-empty-card {
+    border-radius: 20px;
+    background: #eff6ff;
+    padding: 24px;
+    border: 1px dashed #93c5fd;
+  }
+  .admin-empty-card .block-title {
+    margin-bottom: 8px;
+  }
+  .armada-form-block {
+    margin-top: 24px;
+  }
+  .form-card {
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .form-card .item-input .item-input-wrap {
+    border-radius: 14px;
+    background: #f8fafc;
+    padding: 8px 12px;
+  }
+  .form-card .item-input input {
+    border: none;
+    background: transparent;
+    color: #0f172a;
+  }
+  .double-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    padding: 18px;
+    background: #f8fafc;
+  }
+  .form-actions .button {
+    flex: 1;
+  }
+  @media (max-width: 620px) {
+    .admin-armada-card {
+      flex-direction: column;
+    }
+    .double-inputs {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  export default (props, { $store, $f7, $router, $update }) => {
+    let showForm = false;
+    let isEditing = false;
+    let editingId = null;
+    const armadas = $store.getters.armadas.value || [];
+
+    let unitForm = {
+      name: '',
+      plate: '',
+      capacity: '',
+      year: '',
+      facilities: '',
+      status: 'Available',
+    };
+
+    const updateField = (field) => (e) => {
+      unitForm[field] = e.target.value;
+      $update();
+    };
+
+    const openUnitForm = () => {
+      showForm = true;
+      isEditing = false;
+      editingId = null;
+      unitForm = { name: '', plate: '', capacity: '', year: '', facilities: '', status: 'Available' };
+      $update();
+    };
+
+    const closeForm = () => {
+      showForm = false;
+      isEditing = false;
+      editingId = null;
+      $update();
+    };
+
+    const saveUnit = () => {
+      if (!unitForm.name || !unitForm.plate || !unitForm.capacity) {
+        $f7.dialog.alert('Lengkapi nama, plat, dan kapasitas armada.');
+        return;
+      }
+      const armadaData = {
+        id: isEditing ? editingId : `ARM-${Date.now().toString().slice(-4)}`,
+        name: unitForm.name,
+        plate: unitForm.plate,
+        capacity: Number(unitForm.capacity),
+        year: unitForm.year,
+        facilities: unitForm.facilities,
+        status: unitForm.status,
+      };
+      if (isEditing) {
+        $store.dispatch('updateArmada', armadaData);
+        $f7.toast.create({ text: 'Armada berhasil diperbarui.', closeTimeout: 2000 }).open();
+      } else {
+        $store.dispatch('addArmada', armadaData);
+        $f7.toast.create({ text: 'Armada berhasil ditambahkan.', closeTimeout: 2000 }).open();
+      }
+      closeForm();
+    };
+
+    const editUnit = (id) => {
+      const armada = armadas.find((item) => item.id === id);
+      if (!armada) return;
+      showForm = true;
+      isEditing = true;
+      editingId = id;
+      unitForm = {
+        name: armada.name,
+        plate: armada.plate,
+        capacity: armada.capacity,
+        year: armada.year || '',
+        facilities: armada.facilities || '',
+        status: armada.status,
+      };
+      $update();
+    };
+
+    const viewSchedule = (id) => {
+      $router.navigate('/admin/schedules/');
+    };
+
+    const toggleArmadaStatus = (id) => {
+      const armada = armadas.find((item) => item.id === id);
+      if (!armada) return;
+      const newStatus = armada.status === 'Available' ? 'In Service' : 'Available';
+      $store.dispatch('updateArmada', { ...armada, status: newStatus });
+      $f7.toast.create({ text: `Status ${armada.name} sekarang ${newStatus}.`, closeTimeout: 2000 }).open();
+      $update();
+    };
+
+    return $render;
+  };
+</script>

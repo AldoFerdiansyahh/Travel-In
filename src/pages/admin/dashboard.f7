@@ -1,65 +1,87 @@
 <template>
   <div class="page" data-name="admin-dashboard">
     <div class="navbar">
-      <div class="navbar-bg"></div>
+      <div class="navbar-bg bg-color-ocean"></div>
       <div class="navbar-inner sliding">
-        <div class="title">Admin Dashboard</div>
+        <div class="title text-color-white">Admin Dashboard</div>
+        <div class="right">
+          <a href="#" class="link icon-only text-color-white admin-logout-btn" @click="${handleLogout}" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;">
+            <i class="icon f7-icons">rectangle_portrait_and_arrow_right</i>
+          </a>
+        </div>
       </div>
     </div>
-    <div class="page-content">
-      <div class="block block-strong">
-        <div class="block-title">Ringkasan Kontrol</div>
-      </div>
-      <div class="block grid grid-cols-2 grid-gap">
-        <div class="card card-rounded card-shadow stat-card">
-          <div class="card-content text-align-center">
-            <div class="stat-number">${schedules.length}</div>
-            <div class="stat-label">Jadwal Travel</div>
-          </div>
-        </div>
-        <div class="card card-rounded card-shadow stat-card">
-          <div class="card-content text-align-center">
-            <div class="stat-number">${tickets.length}</div>
-            <div class="stat-label">E-Tiket</div>
-          </div>
-        </div>
-        <div class="card card-rounded card-shadow stat-card">
-          <div class="card-content text-align-center">
-            <div class="stat-number">${armadas.length}</div>
-            <div class="stat-label">Armada</div>
-          </div>
-        </div>
-        <div class="card card-rounded card-shadow stat-card">
-          <div class="card-content text-align-center">
-            <div class="stat-number">${users.length}</div>
-            <div class="stat-label">Pengguna</div>
-          </div>
+
+    <div class="page-content bg-light-blue">
+      <div class="admin-welcome-header">
+        <div class="block">
+          <h1 class="no-margin text-color-white">Halo, ${currentUser.name || 'Admin'}!</h1>
+          <p class="no-margin text-color-white opacity-70">Kelola operasional Travel-In di sini.</p>
         </div>
       </div>
-      <div class="block block-strong">
-        <div class="block-title">Aksi Admin</div>
+
+      <div class="block no-margin-top">
+        <div class="row">
+          <div class="col-50">
+            <div class="card card-outline dashboard-stat-card">
+              <div class="card-content card-content-padding">
+                <i class="icon f7-icons color-ocean">calendar</i>
+                <div class="stat-number">${schedules.length || 0}</div>
+                <div class="stat-label">Jadwal</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-50">
+            <div class="card card-outline dashboard-stat-card">
+              <div class="card-content card-content-padding">
+                <i class="icon f7-icons color-ocean">ticket</i>
+                <div class="stat-number">${tickets.length || 0}</div>
+                <div class="stat-label">E-Tiket</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-50">
+            <div class="card card-outline dashboard-stat-card">
+              <div class="card-content card-content-padding">
+                <i class="icon f7-icons color-ocean">bus_fill</i>
+                <div class="stat-number">${armadas.length || 0}</div>
+                <div class="stat-label">Armada</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-50">
+            <div class="card card-outline dashboard-stat-card">
+              <div class="card-content card-content-padding">
+                <i class="icon f7-icons color-ocean">person_2_fill</i>
+                <div class="stat-number">${users.length || 0}</div>
+                <div class="stat-label">User</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="list inset list-strong">
+
+      <div class="block-title medium text-color-black">Manajemen Utama</div>
+      <div class="list inset list-strong-ios list-outline-ios custom-admin-list">
         <ul>
           <li>
-            <a href="/admin/schedules/" class="item-content item-link">
-              <div class="item-inner">
-                <div class="item-title">Kelola Jadwal Travel</div>
-              </div>
+            <a href="/admin/armadas/" class="item-link item-content">
+              <div class="item-media"><i class="icon f7-icons color-ocean">bus_fill</i></div>
+              <div class="item-inner"><div class="item-title">Manajemen Armada</div></div>
             </a>
           </li>
           <li>
-            <a href="/admin/armada/" class="item-content item-link">
-              <div class="item-inner">
-                <div class="item-title">Manajemen Armada</div>
-              </div>
+            <a href="/admin/schedules/" class="item-link item-content">
+              <div class="item-media"><i class="icon f7-icons color-ocean">calendar_badge_plus</i></div>
+              <div class="item-inner"><div class="item-title">Kelola Jadwal</div></div>
             </a>
           </li>
           <li>
-            <a href="/admin/tickets/" class="item-content item-link">
-              <div class="item-inner">
-                <div class="item-title">Monitoring E-Tiket</div>
-              </div>
+            <a href="/admin/tickets/" class="item-link item-content">
+              <div class="item-media"><i class="icon f7-icons color-ocean">doc_text_search</i></div>
+              <div class="item-inner"><div class="item-title">Monitoring Tiket</div></div>
             </a>
           </li>
         </ul>
@@ -67,12 +89,78 @@
     </div>
   </div>
 </template>
+
+<style>
+  /* Warna Custom Ocean Blue */
+  .bg-color-ocean { background-color: #0077b6 !important; }
+  .color-ocean { color: #0077b6 !important; }
+  .bg-light-blue { background-color: #f8fbff; }
+
+  /* Style Header */
+  .admin-welcome-header {
+    background: linear-gradient(180deg, #0077b6 0%, #00b4d8 100%);
+    padding: 30px 0 50px 0;
+    border-radius: 0 0 25px 25px;
+    margin-bottom: -20px;
+  }
+
+  /* Style Kartu Statistik */
+  .dashboard-stat-card {
+    border-radius: 16px !important;
+    border: 1px solid rgba(0, 119, 182, 0.1) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    text-align: center;
+    margin: 8px 0;
+  }
+  .stat-number { font-size: 22px; font-weight: 800; color: #0077b6; margin-top: 4px; }
+  .stat-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .custom-admin-list { border-radius: 16px !important; overflow: hidden; }
+</style>
+
 <script>
-  export default (props, { $store }) => {
-    const schedules = $store.getters.schedules.value;
-    const tickets = $store.getters.tickets.value;
-    const armadas = $store.getters.armadas.value;
-    const users = $store.getters.users.value;
+  import $ from 'dom7';
+  import { auth } from '../../js/firebase';
+  import { signOut } from 'firebase/auth';
+
+  export default (props, { $f7, $store, $router }) => {
+    // Ambil data dari store
+    const currentUser = $store.getters.currentUser.value || {};
+    const schedules = $store.getters.schedules.value || [];
+    const tickets = $store.getters.tickets.value || [];
+    const armadas = $store.getters.armadas.value || [];
+    const users = $store.getters.users.value || [];
+
+    // Fungsi Logout
+    const handleLogout = async () => {
+      $f7.confirm('Apakah anda yakin ingin keluar dari Admin Panel?', 'Logout', async () => {
+        $f7.preloader.show();
+        try {
+          await signOut(auth);
+        } catch (err) {
+          console.warn('Firebase signOut failed', err);
+        }
+        $store.dispatch('logoutUser');
+        $f7.preloader.hide();
+
+        const appRouter = $router || ($f7.views && $f7.views.main && $f7.views.main.router);
+        if (appRouter && appRouter.navigate) {
+          appRouter.navigate('/login/', {
+            reloadCurrent: true,
+            ignoreCache: true,
+          });
+        } else {
+          window.location.href = '/login/';
+        }
+      });
+    };
+
+    // Bind event click manual supaya tombol logout selalu responsif
+    $(document).off('click', '.admin-logout-btn').on('click', '.admin-logout-btn', (e) => {
+      e.preventDefault();
+      handleLogout();
+    });
+
     return $render;
   };
 </script>

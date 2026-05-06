@@ -4,7 +4,7 @@
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
         <div class="left">
-          <a href="/travel/${schedule.id}/" class="link icon-only">
+          <a href="/search-results/" class="link icon-only">
             <i class="icon f7-icons">arrow_left</i>
           </a>
         </div>
@@ -50,8 +50,17 @@
   export default (props, { $store, $f7, $router, $update }) => {
     const scheduleId = (props.route && props.route.params && props.route.params.id) || '';
     const schedule = $store.getters.schedules.value.find((item) => item.id === scheduleId) || { id: '', origin: '-', destination: '-', date: '-', time: '-', price: 0, vehicle: '-', seatsLeft: 0 };
+    const scheduleNotFound = !schedule.id;
 
     let form = { passenger: '', seats: '1' };
+
+    if (scheduleNotFound) {
+      setTimeout(() => {
+        $f7.dialog.alert('Jadwal tidak ditemukan. Silakan coba lagi dari halaman pencarian.', () => {
+          $router.navigate('/search-results/');
+        });
+      }, 0);
+    }
 
     const updateField = (field) => (e) => {
       form[field] = e.target.value;
@@ -61,6 +70,10 @@
     const submitBooking = () => {
       if (!form.passenger || !form.seats) {
         $f7.dialog.alert('Silakan isi nama penumpang dan jumlah kursi.');
+        return;
+      }
+      if (scheduleNotFound) {
+        $f7.dialog.alert('Jadwal tidak ditemukan. Silakan kembali ke halaman pencarian.');
         return;
       }
       const seats = Number(form.seats);

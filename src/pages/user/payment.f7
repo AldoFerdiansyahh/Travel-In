@@ -4,7 +4,7 @@
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
         <div class="left">
-          <a href="/booking/${ticket.id}/" class="link icon-only">
+          <a href="${ticket.id ? `/booking/${ticket.id}/` : '/home/'}" class="link icon-only">
             <i class="icon f7-icons">arrow_left</i>
           </a>
         </div>
@@ -69,8 +69,16 @@
 <script>
   export default (props, { $store, $f7, $router, $update }) => {
     const ticketId = (props.route && props.route.params && props.route.params.ticketId) || '';
-    const ticket = $store.getters.tickets.value.find((item) => item.id === ticketId) || { passenger: '-', route: '-', seats: 0, price: 0 };
+    const ticket = $store.getters.tickets.value.find((item) => item.id === ticketId) || { id: '', passenger: '-', route: '-', seats: 0, price: 0 };
     let paymentMethod = 'Transfer Bank';
+
+    if (!ticket.id) {
+      setTimeout(() => {
+        $f7.dialog.alert('Tiket tidak ditemukan. Silakan kembali ke halaman utama.', () => {
+          $router.navigate('/home/');
+        });
+      }, 0);
+    }
 
     const updateMethod = (e) => {
       paymentMethod = e.target.value;

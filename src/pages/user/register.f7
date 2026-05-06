@@ -79,6 +79,7 @@
 </template>
 
 <script>
+<<<<<<< HEAD
   export default (props, { $f7, $router, $update, $store }) => {
     let form = { nama: '', email: '', whatsapp: '', password: '' };
 
@@ -98,6 +99,35 @@
       } catch (error) {
         $f7.preloader.hide();
         $f7.dialog.alert('Gagal: ' + error.message, 'Travel-In');
+=======
+  import { registerWithFirebase } from '../../js/auth.js';
+
+  export default (props, { $store, $f7, $router, $update }) => {
+    let form = { name: '', email: '', password: '' };
+
+    const updateField = (field) => (e) => {
+      form[field] = e.target.value;
+      $update();
+    };
+
+    const submitRegister = async () => {
+      if (!form.name || !form.email || !form.password) {
+        $f7.dialog.alert('Mohon isi semua data pendaftaran.');
+        return;
+      }
+      try {
+        const profile = await registerWithFirebase({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+        });
+        $store.dispatch('loginUser', profile);
+        $f7.dialog.alert('Akun berhasil dibuat. Selamat datang!', () => {
+          $router.navigate('/home/');
+        });
+      } catch (error) {
+        $f7.dialog.alert(error.message || 'Registrasi gagal. Silakan coba lagi.');
+>>>>>>> d766c0889af0f8ce10bea172fe79279236405300
       }
     };
 
