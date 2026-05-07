@@ -8,38 +8,73 @@
             <i class="icon f7-icons">arrow_left</i>
           </a>
         </div>
-        <div class="title">Booking Tiket</div>
+        <div class="title">Booking</div>
       </div>
     </div>
     <div class="page-content">
-      <div class="block block-strong">
-        <div class="block-title">Data Penumpang</div>
+      <div class="card booking-promo-card card-shadow mb-4">
+        <div class="card-content">
+          <div class="flex justify-between items-start mb-4">
+            <span class="booking-promo-badge promo">Promo Hiace</span>
+            <span class="booking-promo-badge status">Tersedia</span>
+          </div>
+          <div class="text-[1.05rem] font-bold leading-tight mb-2">Diskon 30% untuk perjalanan pertama</div>
+          <div class="text-sm opacity-80">${schedule.origin} → ${schedule.destination} | ${schedule.date} (${schedule.time})</div>
+        </div>
       </div>
-      <div class="card card-rounded card-shadow">
+
+      <div class="card card-rounded card-shadow mb-4 booking-section">
         <div class="card-content card-content-padding">
+          <div class="block-title">Informasi Kontak</div>
           <div class="list no-hairlines-md">
             <ul>
               <li class="item-content item-input">
                 <div class="item-inner">
-                  <div class="item-title item-label">Nama Penumpang</div>
+                  <div class="item-title item-label">Nama Pemesan</div>
                   <div class="item-input-wrap">
-                    <input type="text" placeholder="Masukkan nama" value="${form.passenger}" @input="${updateField('passenger')}" />
-                  </div>
-                </div>
-              </li>
-              <li class="item-content item-input">
-                <div class="item-inner">
-                  <div class="item-title item-label">Jumlah Kursi</div>
-                  <div class="item-input-wrap">
-                    <input type="number" min="1" max="${schedule.seatsLeft}" placeholder="Jumlah kursi" value="${form.seats}" @input="${updateField('seats')}" />
+                    <input type="text" placeholder="Masukkan nama pemesan" value="${form.contactName}" @input="${updateField('contactName')}" />
                   </div>
                 </div>
               </li>
             </ul>
           </div>
         </div>
+      </div>
+
+      <div class="card card-rounded card-shadow mb-4 booking-section">
+        <div class="card-content card-content-padding">
+          <div class="block-title">Detail Penumpang</div>
+          <div class="list no-hairlines-md">
+            <ul>
+              <li class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-title item-label">Nama Lengkap Penumpang</div>
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Masukkan nama sesuai KTP" value="${form.passengerName}" @input="${updateField('passengerName')}" />
+                  </div>
+                </div>
+              </li>
+              <li class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-title item-label">Nomor Telepon</div>
+                  <div class="item-input-wrap">
+                    <input type="tel" placeholder="0812xxxx" value="${form.phone}" @input="${updateField('phone')}" />
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <p class="booking-note">*Pastikan data sesuai dengan kartu identitas untuk keperluan asuransi perjalanan.</p>
+        </div>
+      </div>
+
+      <div class="card card-rounded card-shadow">
+        <div class="card-content card-content-padding booking-total-row">
+          <div class="booking-total-title">Total Bayar</div>
+          <div class="booking-total-value">${formatPrice(getTotalPrice())}</div>
+        </div>
         <div class="card-footer">
-          <button class="button button-fill button-round" @click="${submitBooking}">Lanjut ke Pembayaran</button>
+          <button class="button button-fill button-round btn-yellow-shadow" @click="${submitBooking}">Lanjut ke Pembayaran</button>
         </div>
       </div>
     </div>
@@ -50,9 +85,10 @@
   export default (props, { $store, $f7, $router, $update }) => {
     const scheduleId = (props.route && props.route.params && props.route.params.id) || '';
     const schedule = $store.getters.schedules.value.find((item) => item.id === scheduleId) || { id: '', origin: '-', destination: '-', date: '-', time: '-', price: 0, vehicle: '-', seatsLeft: 0 };
+    const currentUser = $store.getters.currentUser || {};
     const scheduleNotFound = !schedule.id;
 
-    let form = { passenger: '', seats: '1' };
+    let form = { contactName: currentUser.name || '', passengerName: '', phone: '', seats: '1' };
 
     if (scheduleNotFound) {
       setTimeout(() => {
@@ -67,9 +103,16 @@
       $update();
     };
 
+    const getTotalPrice = () => schedule.price * Number(form.seats || 1);
+
+    const formatPrice = (value) => {
+      const amount = Number(value || 0);
+      return 'Rp ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
+
     const submitBooking = () => {
-      if (!form.passenger || !form.seats) {
-        $f7.dialog.alert('Silakan isi nama penumpang dan jumlah kursi.');
+      if (!form.contactName || !form.passengerName || !form.phone) {
+        $f7.dialog.alert('Silakan isi semua data penumpang dan kontak.');
         return;
       }
       if (scheduleNotFound) {
@@ -84,7 +127,9 @@
       const ticketId = `ETK-${Date.now()}`;
       $store.dispatch('addTicket', {
         id: ticketId,
-        passenger: form.passenger,
+        passenger: form.passengerName,
+        contactName: form.contactName,
+        phone: form.phone,
         route: `${schedule.origin} → ${schedule.destination}`,
         scheduleId: schedule.id,
         seats: seats,

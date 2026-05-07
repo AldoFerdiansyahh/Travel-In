@@ -3,7 +3,7 @@
     <div class="page-content" style="background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 0 40px; box-sizing: border-box;">
       
       <div style="margin-bottom: 30px; text-align: center;">
-        <img src="images/logo.png" style="height: 120px; width: auto; object-fit: contain;" alt="Logo Travel-In" />
+        <img src="logo.png" style="height: 120px; width: auto; object-fit: contain;" alt="Logo Travel-In" />
       </div>
 
       <div style="text-align: center; margin-bottom: 40px;">
@@ -51,42 +51,40 @@
   import { loginWithFirebase } from '../../js/auth.js';
 
   export default (props, { $f7, $router, $update, $store }) => {
-    const router = $router || ($f7.views && $f7.views.current && $f7.views.current.router) || ($f7.views && $f7.views.main && $f7.views.main.router);
     let form = { email: '', password: '' };
 
     const submitLogin = async () => {
       if (!form.email || !form.password) {
-        $f7.dialog.alert('Silakan lengkapi semua input.', 'Travel-In');
-        return;
-      }
-
-      if (!router || !router.navigate) {
-        $f7.dialog.alert('Router tidak tersedia. Silakan muat ulang aplikasi.', 'Travel-In');
+        $f7.dialog.alert('Silakan isi email dan password.', 'Travel-In');
         return;
       }
 
       $f7.preloader.show();
+
       try {
         const profile = await loginWithFirebase(form.email, form.password);
         const role = await $store.dispatch('loginUser', profile);
+        
         $f7.preloader.hide();
 
+        // LOGIKA NAVIGASI CRITICAL
         if (role === 'admin') {
-          router.navigate('/admin/');
+          // Navigasi paksa ke view utama untuk menghindari 404
+          $f7.views.main.router.navigate('/admin/', {
+            reloadCurrent: true,
+            ignoreCache: true
+          });
         } else {
-          router.navigate('/home/');
+          $f7.views.main.router.navigate('/home/', {
+            reloadCurrent: true,
+            ignoreCache: true
+          });
         }
+
       } catch (error) {
         $f7.preloader.hide();
-        console.error('Login Error:', error);
-
-        let msg = 'Email atau password salah.';
-        if (error.code === 'auth/user-not-found') msg = 'Email belum terdaftar.';
-        if (error.code === 'auth/wrong-password') msg = 'Password salah.';
-        if (error.message && error.message.includes('pengguna')) msg = error.message;
-        if (error.message && msg === 'Email atau password salah.') msg = error.message;
-
-        $f7.dialog.alert(msg, 'Gagal Masuk');
+        console.error('Error:', error);
+        $f7.dialog.alert('Email atau password salah.', 'Gagal Masuk');
       }
     };
 

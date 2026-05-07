@@ -1,135 +1,132 @@
 <template>
-  <div class="page no-toolbar" data-name="admin-dashboard">
-    <div class="navbar navbar-transparent">
-      <div class="navbar-bg custom-admin-nav"></div>
-      <div class="navbar-inner sliding">
-        <div class="title text-color-white font-black tracking-wide">Admin Panel</div>
-        <div class="right">
-          <a href="#" class="link icon-only text-color-white admin-logout-btn" @click="${handleLogout}" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center;">
-            <i class="icon f7-icons text-xl">rectangle_portrait_and_arrow_right</i>
-          </a>
+  <div class="page no-navbar no-toolbar" data-name="admin-dashboard">
+    <div class="page-content bg-apple-light">
+      
+      <div class="admin-brand-header">
+        <div class="block display-flex align-items-center justify-content-between">
+          <div class="display-flex align-items-center">
+            <img src="logo.png" class="brand-logo-mini" alt="Logo" />
+            <div class="margin-left-half">
+              <h2 class="no-margin font-sf-heavy tracking-tighter text-color-black" style="font-size: 18px;">Travel-In</h2>
+              <p class="no-margin font-sf-bold text-color-gray uppercase" style="font-size: 8px; letter-spacing: 1.5px;">Dashboard Admin</p>
+            </div>
+          </div>
+          <div class="status-indicator-mini">
+            <span class="dot-online"></span>
+            <span class="font-sf-heavy text-color-gray" style="font-size: 9px;">STABLE</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="page-content bg-light-gray">
-      <div class="admin-welcome-header">
+      <div class="admin-header-white">
         <div class="block">
-          <h1 class="no-margin text-color-white font-black">Halo, ${currentUser.name || 'Admin'}!</h1>
-          <p class="no-margin text-color-white opacity-80 font-semibold mt-1">Kelola operasional & armada Travel-In di sini.</p>
+          <p class="no-margin text-color-gray font-sf-bold tracking-tighter uppercase" style="font-size: 10px;">Executive Account</p>
+          <h1 class="no-margin text-color-black font-sf-heavy" style="font-size: 34px; letter-spacing: -1.8px; line-height: 1;">Halo, ${currentUser.name || 'Admin'}</h1>
         </div>
       </div>
 
-      <div class="block" style="margin-top: -35px !important; position: relative; z-index: 10; padding: 0 8px;">
+      <div class="block stats-container-white">
         <div class="grid grid-cols-2 grid-gap">
-          
-          <div class="card card-outline dashboard-stat-card shadow-sm no-margin">
-            <div class="card-content card-content-padding stat-card-inner">
-              <div class="stat-icon-wrapper bg-blue-tint">
-                <i class="icon f7-icons color-blue text-xl">calendar_badge_plus</i>
+          <div class="card stat-card-white no-margin shadow-premium">
+            <div class="card-content card-content-padding">
+              <div class="stat-icon-premium color-amber">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
               </div>
-              <div class="stat-info">
-                <span class="stat-label">Jadwal</span>
-                <span class="stat-number">${schedules.length || 0}</span>
-              </div>
+              <div class="stat-value font-sf-heavy">${armadas.length || 0}</div>
+              <div class="stat-label-white">Armada</div>
             </div>
           </div>
-
-          <div class="card card-outline dashboard-stat-card shadow-sm no-margin">
-            <div class="card-content card-content-padding stat-card-inner">
-              <div class="stat-icon-wrapper bg-green-tint">
-                <i class="icon f7-icons color-green text-xl">ticket_fill</i>
+          <div class="card stat-card-white no-margin shadow-premium">
+            <div class="card-content card-content-padding">
+              <div class="stat-icon-premium color-blue">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
               </div>
-              <div class="stat-info">
-                <span class="stat-label">E-Tiket</span>
-                <span class="stat-number">${tickets.length || 0}</span>
-              </div>
+              <div class="stat-value font-sf-heavy">${schedules.length || 0}</div>
+              <div class="stat-label-white">Jadwal</div>
             </div>
           </div>
-
-          <div class="card card-outline dashboard-stat-card shadow-sm no-margin">
-            <div class="card-content card-content-padding stat-card-inner">
-              <div class="stat-icon-wrapper bg-yellow-tint">
-                <i class="icon f7-icons color-yellow text-xl">bus_fill</i>
-              </div>
-              <div class="stat-info">
-                <span class="stat-label">Armada</span>
-                <span class="stat-number">${armadas.length || 0}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="card card-outline dashboard-stat-card shadow-sm no-margin">
-            <div class="card-content card-content-padding stat-card-inner">
-              <div class="stat-icon-wrapper bg-purple-tint">
-                <i class="icon f7-icons color-purple text-xl">person_2_fill</i>
-              </div>
-              <div class="stat-info">
-                <span class="stat-label">User</span>
-                <span class="stat-number">${users.length || 0}</span>
-              </div>
-            </div>
-          </div>
-
         </div>
       </div>
 
-      <div class="block-title medium text-color-black font-extrabold" style="padding-left: 10px; margin-top: 30px; margin-bottom: 10px;">Manajemen Sistem</div>
-      <div class="list inset list-strong list-outline custom-admin-list shadow-sm" style="margin-bottom: 30px;">
+      <div class="block-label-ios font-sf-heavy">COMMAND CENTER</div>
+      <div class="list inset ios-list-white no-chevron">
         <ul>
           <li>
-            <a href="/admin/armadas/" class="item-link item-content py-2">
+            <a href="/admin/armadas/" class="item-link item-content py-3">
               <div class="item-media">
-                <div class="menu-icon-wrapper bg-yellow-tint">
-                  <i class="icon f7-icons text-lg color-yellow">bus_fill</i>
+                <div class="icon-box-premium bg-amber-soft color-amber">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
                 </div>
               </div>
               <div class="item-inner">
-                <div class="item-title font-bold text-gray-800">Manajemen Armada</div>
+                <div class="item-title font-sf-bold">Manajemen Armada</div>
               </div>
             </a>
           </li>
-
           <li>
-            <a href="/admin/schedules/" class="item-link item-content py-2">
+            <a href="/admin/schedules/" class="item-link item-content py-3">
               <div class="item-media">
-                <div class="menu-icon-wrapper bg-blue-tint">
-                  <i class="icon f7-icons text-lg color-blue">calendar_badge_plus</i>
+                <div class="icon-box-premium bg-blue-soft color-blue">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                 </div>
               </div>
               <div class="item-inner">
-                <div class="item-title font-bold text-gray-800">Kelola Jadwal Perjalanan</div>
+                <div class="item-title font-sf-bold">Kelola Jadwal Perjalanan</div>
               </div>
             </a>
           </li>
-
           <li>
-            <a href="/admin/tickets/" class="item-link item-content py-2">
+            <a href="/admin/tickets/" class="item-link item-content py-3">
               <div class="item-media">
-                <div class="menu-icon-wrapper bg-purple-tint">
-                  <i class="icon f7-icons text-lg color-purple">doc_text_search</i>
+                <div class="icon-box-premium bg-green-soft color-green">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                 </div>
               </div>
               <div class="item-inner">
-                <div class="item-title font-bold text-gray-800">Monitoring Tiket Penjualan</div>
-              </div>
-            </a>
-          </li>
-
-          <li>
-            <a href="/admin/laporan/" class="item-link item-content py-2">
-              <div class="item-media">
-                <div class="menu-icon-wrapper bg-green-tint">
-                  <i class="icon f7-icons text-lg color-green">graph_square_fill</i>
-                </div>
-              </div>
-              <div class="item-inner">
-                <div class="item-title font-bold text-gray-800">Fitur Laporan</div>
-                <div class="after-title"><span class="badge color-green">Rp ${formatRupiah(calculateTotalRevenue())}</span></div>
+                <div class="item-title font-sf-bold">Kelola Pembayaran</div>
+                <div class="after"><span class="badge-ios-premium">${tickets.length || 0}</span></div>
               </div>
             </a>
           </li>
         </ul>
+      </div>
+
+      <div class="block-label-ios font-sf-heavy">ANALYTICS</div>
+      <div class="list inset ios-list-white no-chevron">
+        <ul>
+          <li>
+            <a href="/admin/laporan/mingguan/" class="item-link item-content py-3">
+              <div class="item-media">
+                <div class="icon-box-premium bg-gray-soft color-black">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                </div>
+              </div>
+              <div class="item-inner"><div class="item-title font-sf-bold">Laporan Mingguan</div></div>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/laporan/bulanan/" class="item-link item-content py-3">
+              <div class="item-media">
+                <div class="icon-box-premium bg-black color-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                </div>
+              </div>
+              <div class="item-inner"><div class="item-title font-sf-bold">Laporan Bulanan</div></div>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="block margin-vertical-xl">
+        <a href="#" @click="${handleLogout}" class="button button-large button-fill premium-logout-btn shadow-premium">
+          <div class="display-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="margin-right-half"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            <span class="font-sf-heavy uppercase tracking-widest" style="font-size: 13px;">Keluar dari Sistem</span>
+          </div>
+        </a>
+        <div class="text-align-center margin-top py-2 opacity-20">
+          <p class="font-sf-medium" style="font-size: 9px; letter-spacing: 2px;">SECURE ACCESS • TRAVEL-IN EXECUTIVE</p>
+        </div>
       </div>
 
     </div>
@@ -137,98 +134,73 @@
 </template>
 
 <style>
-  /* Admin Navbar Styling */
-  .custom-admin-nav {
-    background: linear-gradient(135deg, #111827 0%, #1f2937 100%) !important;
+  /* iOS Typography */
+  .font-sf-heavy { font-family: -apple-system, "SF Pro Display", sans-serif; font-weight: 900; }
+  .font-sf-bold { font-family: -apple-system, "SF Pro Display", sans-serif; font-weight: 700; }
+  .font-sf-medium { font-family: -apple-system, "SF Pro Text", sans-serif; font-weight: 500; }
+
+  /* Premium White Theme */
+  .bg-apple-light { background-color: #F8F9FA; }
+  .color-amber { color: #FFB300 !important; }
+  .color-blue { color: #007AFF !important; }
+  .color-green { color: #34C759 !important; }
+  .bg-amber-soft { background: rgba(255, 179, 0, 0.1); }
+  .bg-blue-soft { background: rgba(0, 122, 255, 0.1); }
+  .bg-green-soft { background: rgba(52, 199, 89, 0.1); }
+  .bg-gray-soft { background: #F2F2F7; }
+
+  /* Brand Header (Custom Navbar) */
+  .admin-brand-header {
+    background: #FFF;
+    padding-top: 20px;
+    padding-bottom: 10px;
   }
-
-  /* Admin Header */
-  .admin-welcome-header {
-    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-    padding: 35px 5px 75px 5px;
-    border-radius: 0 0 40px 40px;
+  .brand-logo-mini {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
   }
-
-  /* Dashboard Colors */
-  .bg-light-gray { background-color: #f9fafb; }
-
-  /* Grid Gap Spacing */
-  .grid-gap {
-    --f7-grid-gap: 12px;
+  .status-indicator-mini {
+    background: #F2F2F7;
+    padding: 4px 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
   }
+  .dot-online { height: 6px; width: 6px; background-color: #34C759; border-radius: 50%; margin-right: 6px; box-shadow: 0 0 8px rgba(52, 199, 89, 0.5); }
 
-  /* Stat Card Custom dengan Flexbox Horizontal */
-  .dashboard-stat-card {
+  /* Header Hero */
+  .admin-header-white { padding: 30px 10px 20px 10px; background: #FFF; border-radius: 0 0 40px 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+
+  /* Premium Cards */
+  .shadow-premium { box-shadow: 0 15px 35px rgba(0,0,0,0.04) !important; }
+  .stat-card-white { background: #FFF !important; border-radius: 28px !important; border: none !important; }
+  .stat-icon-premium { margin-bottom: 15px; }
+  .stat-value { font-size: 32px; color: #000; letter-spacing: -1px; }
+  .stat-label-white { font-size: 11px; color: #8E8E93; font-weight: 700; text-transform: uppercase; margin-top: 2px; }
+
+  /* List Styling */
+  .block-label-ios { color: #000; opacity: 0.3; font-size: 10px; font-weight: 800; margin: 40px 24px 12px 24px; letter-spacing: 1.5px; }
+  .ios-list-white { margin: 0 16px !important; background: #FFF !important; border-radius: 24px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.03) !important; }
+  .ios-list-white li { border-bottom: 1px solid #F8F9FA !important; }
+  .icon-box-premium { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+
+  /* Premium Badge */
+  .badge-ios-premium { background: #000; color: #FFF; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; }
+
+  /* Logout Button Premium */
+  .premium-logout-btn {
+    background: #000 !important;
+    color: #FFF !important;
+    height: 64px !important;
     border-radius: 20px !important;
-    border: none !important;
-    background: #ffffff !important;
-    transition: all 0.3s ease;
-  }
-
-  .stat-card-inner {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 16px 14px !important;
-  }
-
-  /* Ikon di bagian kiri */
-  .stat-icon-wrapper {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    margin-right: 12px;
+    border: none;
+    transition: all 0.3s;
   }
+  .premium-logout-btn:active { transform: scale(0.96); opacity: 0.9; }
 
-  /* Ikon Tint Background */
-  .bg-blue-tint { background-color: #eff6ff; }
-  .bg-green-tint { background-color: #f0fdf4; }
-  .bg-yellow-tint { background-color: #fefce8; }
-  .bg-purple-tint { background-color: #faf5ff; }
-
-  /* Info Teks di bagian kanan */
-  .stat-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .stat-label { 
-    font-size: 11px; 
-    color: #9ca3af; 
-    font-weight: 700; 
-    text-transform: uppercase; 
-    letter-spacing: 0.05em; 
-  }
-
-  .stat-number { 
-    font-size: 22px; 
-    font-weight: 900; 
-    color: #111827; 
-    line-height: 1.1;
-    margin-top: 2px;
-  }
-
-  /* Menu List Styling */
-  .custom-admin-list { 
-    border-radius: 20px !important; 
-    overflow: hidden; 
-    border: none !important;
-    background: #ffffff !important;
-  }
-
-  .menu-icon-wrapper {
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .grid-gap { --f7-grid-gap: 16px; }
 </style>
 
 <script>
@@ -241,51 +213,18 @@
     const schedules = $store.getters.schedules.value || [];
     const tickets = $store.getters.tickets.value || [];
     const armadas = $store.getters.armadas.value || [];
-    const users = $store.getters.users.value || [];
 
-    // Hitung Total Pendapatan dari Tiket yang sukses / lunas
-    const calculateTotalRevenue = () => {
-      return tickets
-        .filter(ticket => ticket.status === 'success' || ticket.status === 'completed' || ticket.status === 'PAID')
-        .reduce((sum, ticket) => sum + (Number(ticket.totalPrice) || Number(ticket.price) || 0), 0);
-    };
-
-    // Format Mata Uang Rupiah sederhana
-    const formatRupiah = (value) => {
-      if (!value) return '0';
-      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    };
-
-    // Fungsi Logout Admin
     const handleLogout = () => {
-      $f7.dialog.confirm('Apakah Anda yakin ingin keluar dari Admin Panel?', 'Logout', async () => {
-        $f7.preloader.show();
+      $f7.dialog.confirm('Konfirmasi Keluar Sesi?', 'Travel-In Executive', async () => {
         try {
           await signOut(auth);
+          await $store.dispatch('logoutUser');
+          $f7.views.main.router.navigate('/login/', { reloadCurrent: true, ignoreCache: true });
         } catch (err) {
-          console.warn('Firebase signOut failed', err);
-        }
-        
-        await $store.dispatch('logoutUser');
-        $f7.preloader.hide();
-
-        const appRouter = $router || ($f7.views && $f7.views.main && $f7.views.main.router);
-        if (appRouter && appRouter.navigate) {
-          appRouter.navigate('/login/', {
-            reloadCurrent: true,
-            ignoreCache: true,
-          });
-        } else {
-          window.location.href = '/login/';
+          console.error(err);
         }
       });
     };
-
-    // Bind event klik manual
-    $(document).off('click', '.admin-logout-btn').on('click', '.admin-logout-btn', (e) => {
-      e.preventDefault();
-      handleLogout();
-    });
 
     return $render;
   };

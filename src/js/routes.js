@@ -1,3 +1,4 @@
+// 1. Import Halaman Utama User
 import LoginPage from "../pages/user/login.f7";
 import RegisterPage from "../pages/user/register.f7";
 import HomePage from "../pages/user/home.f7";
@@ -22,6 +23,7 @@ import SettingsPage from "../pages/settings.f7";
 import NotFoundPage from "../pages/404.f7";
 
 var routes = [
+  // --- AUTH & USER ROUTES ---
   {
     path: "/",
     component: LoginPage,
@@ -58,10 +60,8 @@ var routes = [
     path: "/e-ticket/:ticketId/",
     component: ETicketPage,
   },
-  {
-    path: "/settings/",
-    component: SettingsPage,
-  },
+
+  // --- ADMIN ROUTES ---
   {
     path: "/admin/",
     component: AdminDashboardPage,
@@ -86,6 +86,14 @@ var routes = [
     path: "/admin/laporan/",
     component: AdminLaporan,
   },
+
+  // --- GLOBAL ROUTES ---
+  {
+    path: "/settings/",
+    component: SettingsPage,
+  },
+  
+  // Default 404 (Harus diletakkan paling bawah)
   {
     path: "(.*)",
     component: NotFoundPage,
