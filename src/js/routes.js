@@ -14,9 +14,11 @@ import ETicketPage from "../pages/user/e-ticket.f7";
 import AdminDashboardPage from "../pages/admin/dashboard.f7";
 import AdminLaporan from "../pages/admin/laporan.f7";
 import AdminArmadaPage from "../pages/admin/armada-management.f7";
+import AdminEditArmadaPage from "../pages/admin/edit.f7";
 import AdminSchedulePage from "../pages/admin/schedule-management.f7";
 import AdminScheduleDetailPage from "../pages/admin/schedule-detail.f7";
 import AdminTicketMonitoringPage from "../pages/admin/ticket-monitoring.f7";
+import ArmadaEditPage from "../pages/admin/edit.f7";
 
 // 4. Import Halaman Global
 import SettingsPage from "../pages/settings.f7";
@@ -71,6 +73,10 @@ var routes = [
     component: AdminArmadaPage,
   },
   {
+    path: "/admin/armada-edit/",
+    component: AdminEditArmadaPage,
+  },
+  {
     path: "/admin/schedules/",
     component: AdminSchedulePage,
   },
@@ -86,13 +92,17 @@ var routes = [
     path: "/admin/laporan/",
     component: AdminLaporan,
   },
+  {
+    path: "/admin/armada-edit/",
+    component: ArmadaEditPage,
+  },
 
   // --- GLOBAL ROUTES ---
   {
     path: "/settings/",
     component: SettingsPage,
   },
-  
+
   // Default 404 (Harus diletakkan paling bawah)
   {
     path: "(.*)",

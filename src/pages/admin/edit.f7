@@ -1,0 +1,152 @@
+<template>
+  <div class="page no-toolbar" data-name="admin-armada-edit">
+    <div class="navbar navbar-transparent">
+      <div class="navbar-bg custom-admin-navbar"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back text-color-black nav-back">
+            <i class="icon f7-icons font-bold text-xl">arrow_left</i>
+          </a>
+        </div>
+        <div class="title page-title">${isEditing ? 'Ubah Armada' : 'Tambah Armada'}</div>
+        <div class="right"></div>
+      </div>
+    </div>
+
+    <div class="page-content admin-armada-edit-content">
+      <div class="form-section">
+        <h3 class="form-title">${isEditing ? 'Ubah Informasi Armada' : 'Registrasi Armada Baru'}</h3>
+        <div class="form-card">
+          <div class="form-grid">
+            <div class="form-row">
+              <label class="form-label">Nama Armada</label>
+              <input type="text" class="form-input" placeholder="Contoh: Hiace Premio Luxury" .value="${unitForm.name}" @input="${updateField('name')}" required />
+            </div>
+            <div class="form-row">
+              <label class="form-label">Plat Nomor</label>
+              <input type="text" class="form-input" placeholder="Contoh: D 1990 ADO" .value="${unitForm.plate}" @input="${updateField('plate')}" required />
+            </div>
+            <div class="form-row form-row-half">
+              <label class="form-label">Kapasitas Kursi</label>
+              <input type="number" class="form-input" placeholder="12" .value="${unitForm.capacity}" @input="${updateField('capacity')}" required />
+            </div>
+            <div class="form-row form-row-half">
+              <label class="form-label">Tahun Unit</label>
+              <input type="number" class="form-input" placeholder="2024" .value="${unitForm.year}" @input="${updateField('year')}" />
+            </div>
+            <div class="form-row form-full">
+              <label class="form-label">Fasilitas Utama</label>
+              <input type="text" class="form-input" placeholder="Full AC, TV, WiFi, Charger USB" .value="${unitForm.facilities}" @input="${updateField('facilities')}" />
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button class="button button-fill button-large button-round button-save" @click="${saveUnit}">
+              ${isEditing ? 'SIMPAN PERUBAHAN' : 'TAMBAH ARMADA'}
+            </button>
+            <button class="button button-outline button-large button-round button-cancel" @click="${() => $router.back()}">
+              BATAL
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+  .custom-admin-navbar { background: #ffffff !important; border-bottom: 1px solid #f1f5f9; }
+  .page-title { color: #111827; font-weight: 900; font-size: 16px; }
+  .nav-back { padding-left: 10px; }
+  .admin-armada-edit-content { background-color: #f8fafc; padding: 20px 16px 40px; min-height: 100vh; }
+  .form-title { margin: 0 0 12px; font-size: 18px; font-weight: 900; color: #111827; }
+  .form-card { background: #ffffff; border-radius: 22px; padding: 22px; box-shadow: 0 15px 40px rgba(15, 23, 42, 0.06); }
+  .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .form-row { display: flex; flex-direction: column; gap: 8px; }
+  .form-row.form-full { grid-column: span 2; }
+  .form-label { font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #94a3b8; }
+  .form-input { width: 100%; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px 16px; background: #f8fafc; color: #111827; font-weight: 700; outline: none; transition: all 0.3s; }
+  .form-input:focus { border-color: #2563eb; background: #ffffff; }
+  .form-actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+  .button-save { flex: 1; background-color: #111827 !important; font-weight: 800; }
+  .button-cancel { flex: 1; border-color: #cbd5e1 !important; color: #111827 !important; font-weight: 800; }
+
+  @media (max-width: 740px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-row.form-full { grid-column: span 1; }
+  }
+</style>
+
+<script>
+  export default (props, { $store, $f7, $router, $f7route, $update }) => {
+    // PENTING: Gunakan $f7route.query untuk mengambil parameter dari router Framework7
+    const editingId = $f7route.query.id;
+    const isEditing = !!editingId;
+    
+    let unitForm = {
+      name: '',
+      plate: '',
+      capacity: '',
+      year: '',
+      facilities: '',
+      status: 'Available',
+    };
+
+    // Mengambil data awal jika mode edit
+    if (isEditing) {
+      const armadas = $store.getters.armadas.value || [];
+      const armada = armadas.find((item) => item.id === editingId);
+      if (armada) {
+        unitForm = { ...armada }; // Salin data agar tidak langsung mengubah store sebelum disimpan
+      } else {
+        // Jika ID tidak ditemukan, beri peringatan dan kembali
+        $f7.dialog.alert('Data armada tidak ditemukan', () => $router.back());
+      }
+    }
+
+    const updateField = (field) => (e) => {
+      unitForm[field] = e.target.value;
+      $update();
+    };
+
+    const saveUnit = () => {
+      // Validasi input wajib
+      if (!unitForm.name || !unitForm.plate || !unitForm.capacity) {
+        $f7.dialog.alert('Mohon lengkapi Nama, Plat, dan Kapasitas.', 'Travel-In');
+        return;
+      }
+
+      $f7.preloader.show(); // Tampilkan loading
+
+      const armadaData = {
+        ...unitForm,
+        id: isEditing ? editingId : `ARM-${Date.now().toString().slice(-6)}`,
+        capacity: Number(unitForm.capacity),
+      };
+
+      // Jalankan dispatch sesuai mode
+      const action = isEditing ? 'updateArmada' : 'addArmada';
+      
+      try {
+        $store.dispatch(action, armadaData);
+        
+        $f7.preloader.hide();
+        $f7.toast.create({ 
+          text: isEditing ? 'Armada berhasil diperbarui' : 'Armada berhasil ditambahkan', 
+          closeTimeout: 2000,
+          cssClass: 'success-toast'
+        }).open();
+
+        // Navigasi kembali ke halaman sebelumnya
+        setTimeout(() => {
+          $router.back();
+        }, 300);
+      } catch (err) {
+        $f7.preloader.hide();
+        $f7.dialog.alert('Gagal menyimpan data: ' + err.message);
+      }
+    };
+
+    return $render;
+  };
+</script>

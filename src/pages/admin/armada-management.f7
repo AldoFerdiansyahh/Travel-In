@@ -7,589 +7,169 @@
           <a href="#" class="link back text-color-black nav-back">
             <i class="icon f7-icons font-bold text-xl">arrow_left</i>
           </a>
+          <span class="navbar-title-custom">Manajemen Armada</span>
         </div>
-        <div class="title page-title">Manajemen Armada</div>
+        
         <div class="right">
-          <button @click="${openUnitForm}" class="button add-unit-button">
-            + UNIT
-          </button>
+          <a @click="${openUnitForm}" class="link add-armada-btn">
+            <span class="add-label">Tambah</span>
+            <i class="icon f7-icons">plus_app_fill</i>
+          </a>
         </div>
       </div>
     </div>
 
     <div class="page-content admin-armada-content">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">Kelola Armada</h2>
-          <p class="section-subtitle">Kelola dan pantau seluruh operasional unit armada Travel-In.</p>
-        </div>
-      </div>
-
-      <div class="stat-grid">
-        <div class="stat-card">
-          <span class="stat-label">Total</span>
-          <span class="stat-number">${armadas.length || 0}</span>
-        </div>
-        <div class="stat-card stat-card-success">
-          <span class="stat-label">Tersedia</span>
-          <span class="stat-number">${armadas.filter((item) => item.status === 'Available').length || 0}</span>
-        </div>
-        <div class="stat-card stat-card-warning">
-          <span class="stat-label">Servis</span>
-          <span class="stat-number">${armadas.filter((item) => item.status !== 'Available').length || 0}</span>
-        </div>
-      </div>
-
-      <div class="section-subheader">Daftar Unit Aktif</div>
-
-      <div class="armada-list">
-        <ul>
-          ${armadas.length > 0 ? armadas.map((armada) => $h`
-            <li class="armada-item">
-              <div class="armada-card">
-                <div class="armada-card-header">
-                  <div class="armada-meta">
-                    <div class="armada-icon ${armada.status === 'Available' ? 'bg-blue-tint' : 'bg-orange-tint'}">
-                      <i class="icon f7-icons ${armada.status === 'Available' ? 'color-blue' : 'color-orange'}">bus_fill</i>
-                    </div>
-                    <div>
-                      <h3 class="armada-name">${armada.name}</h3>
-                      <p class="armada-subtitle">Plat: ${armada.plate}</p>
-                    </div>
-                  </div>
-                  <span class="status-pill ${armada.status === 'Available' ? 'color-green' : 'color-orange'}">${armada.status}</span>
-                </div>
-
-                <div class="armada-card-body">
-                  <div class="armada-info">
-                    <span class="info-label">Kapasitas</span>
-                    <span class="info-value">${armada.capacity} Kursi</span>
-                  </div>
-                  <div class="armada-info">
-                    <span class="info-label">Tahun Unit</span>
-                    <span class="info-value">${armada.year || '-'}</span>
-                  </div>
-                  <div class="armada-info flex-grow">
-                    <span class="info-label">Fasilitas</span>
-                    <span class="info-value info-ellipsis">${armada.facilities || 'Standar'}</span>
-                  </div>
-                </div>
-
-                <div class="armada-card-actions">
-                  <button class="button button-small button-outline action-button" @click="${() => editUnit(armada.id)}">Edit</button>
-                  <button class="button button-small button-fill action-button button-blue" @click="${() => viewSchedule(armada.id)}">Jadwal</button>
-                  <button class="button button-small button-fill action-button ${armada.status === 'Available' ? 'button-red' : 'button-green'}" @click="${() => toggleArmadaStatus(armada.id)}">
-                    ${armada.status === 'Available' ? 'Nonaktifkan' : 'Aktifkan'}
-                  </button>
-                </div>
-              </div>
-            </li>
-          `) : $h`
-            <li class="armada-empty">
-              <div class="empty-card">
-                <i class="icon f7-icons text-5xl color-gray">bus_fill</i>
-                <h3 class="empty-title">Armada Belum Terdaftar</h3>
-                <p class="empty-text">Belum ada unit armada yang terdaftar. Tekan tombol Tambah Unit di atas untuk memulai.</p>
-              </div>
-            </li>
-          `}
-        </ul>
-      </div>
-
-      ${showForm ? $h`
-        <div class="armada-form-section">
-          <h3 class="form-title">${isEditing ? 'Ubah Informasi Armada' : 'Registrasi Armada Baru'}</h3>
-          <div class="form-card">
-            <div class="form-grid">
-              <div class="form-row">
-                <label class="form-label">Nama Armada</label>
-                <input type="text" class="form-input" placeholder="Contoh: Hiace Premio Luxury" .value="${unitForm.name}" @input="${updateField('name')}" required />
-              </div>
-              <div class="form-row">
-                <label class="form-label">Plat Nomor</label>
-                <input type="text" class="form-input" placeholder="Contoh: D 1990 ADO" .value="${unitForm.plate}" @input="${updateField('plate')}" required />
-              </div>
-              <div class="form-row form-row-half">
-                <label class="form-label">Kapasitas Kursi</label>
-                <input type="number" class="form-input" placeholder="12" .value="${unitForm.capacity}" @input="${updateField('capacity')}" required />
-              </div>
-              <div class="form-row form-row-half">
-                <label class="form-label">Tahun Unit</label>
-                <input type="number" class="form-input" placeholder="2024" .value="${unitForm.year}" @input="${updateField('year')}" />
-              </div>
-              <div class="form-row form-full">
-                <label class="form-label">Fasilitas Utama</label>
-                <input type="text" class="form-input" placeholder="Full AC, TV, WiFi, Charger USB" .value="${unitForm.facilities}" @input="${updateField('facilities')}" />
-              </div>
-            </div>
-            <div class="form-actions">
-              <button class="button button-fill button-large button-round button-save" @click="${saveUnit}">${isEditing ? 'SIMPAN' : 'TAMBAH ARMADA'}</button>
-              <button class="button button-outline button-large button-round button-cancel" @click="${closeForm}">BATAL</button>
-            </div>
+      <div class="stats-header-v3">
+        <div class="stat-item-v3">
+          <div class="stat-icon-bg bg-blue-light">
+            <i class="icon f7-icons color-blue">bus</i>
+          </div>
+          <div class="stat-info-v3">
+            <span class="stat-label-v3">Total Unit</span>
+            <span class="stat-count-v3">${armadas ? armadas.length : 0}</span>
           </div>
         </div>
-      ` : ''}
+
+        <div class="stat-item-v3">
+          <div class="stat-icon-bg bg-green-light">
+            <i class="icon f7-icons color-green">checkmark_seal_fill</i>
+          </div>
+          <div class="stat-info-v3">
+            <span class="stat-label-v3">Tersedia</span>
+            <span class="stat-count-v3">${armadas ? armadas.filter(item => item.status === 'Available').length : 0}</span>
+          </div>
+        </div>
+
+        <div class="stat-item-v3">
+          <div class="stat-icon-bg bg-orange-light">
+            <i class="icon f7-icons color-orange">wrench_fill</i>
+          </div>
+          <div class="stat-info-v3">
+            <span class="stat-label-v3">Servis</span>
+            <span class="stat-count-v3">${armadas ? armadas.filter(item => item.status !== 'Available').length : 0}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-container">
+        <div class="section-subheader">Daftar Unit Aktif</div>
+
+        <div class="armada-grid">
+          ${armadas && armadas.length > 0 ? armadas.map((armada) => $h`
+            <div class="armada-card-v2">
+              <div class="card-top">
+                <div class="bus-icon-wrapper ${armada.status === 'Available' ? 'bg-blue-tint' : 'bg-orange-tint'}">
+                  <i class="icon f7-icons ${armada.status === 'Available' ? 'color-blue' : 'color-orange'}">bus_fill</i>
+                </div>
+                <div class="armada-info-main">
+                  <div class="status-indicator ${armada.status === 'Available' ? 'status-online' : 'status-offline'}">
+                    ${armada.status}
+                  </div>
+                  <h3 class="armada-name-v2">${armada.name}</h3>
+                  <p class="armada-plate-v2">${armada.plate}</p>
+                </div>
+              </div>
+
+              <div class="card-details">
+                <div class="detail-item">
+                  <i class="icon f7-icons">person_2_fill</i>
+                  <span>${armada.capacity} Kursi</span>
+                </div>
+                <div class="detail-item">
+                  <i class="icon f7-icons">calendar_today</i>
+                  <span>Tahun ${armada.year || '-'}</span>
+                </div>
+              </div>
+
+              <div class="card-actions-v2">
+                <button class="action-btn-outline" @click="${() => editUnit(armada.id)}">
+                  <i class="icon f7-icons">pencil</i>
+                </button>
+                <button class="action-btn-fill button-blue" @click="${() => viewSchedule(armada.id)}">
+                  <i class="icon f7-icons size-12">calendar_badge_plus</i> <span>Jadwal</span>
+                </button>
+                <button class="action-btn-status ${armada.status === 'Available' ? 'status-red' : 'status-green'}" @click="${() => toggleArmadaStatus(armada.id)}">
+                  <i class="icon f7-icons">${armada.status === 'Available' ? 'stop_fill' : 'play_fill'}</i>
+                </button>
+              </div>
+            </div>
+          `) : $h`
+            <div class="empty-state">
+              <i class="icon f7-icons size-50 color-gray">bus_fill</i>
+              <p>Belum ada armada terdaftar</p>
+            </div>
+          `}
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style>
-  .custom-admin-navbar {
-    background: #ffffff !important;
-    border-bottom: 1px solid #f1f5f9;
-  }
+  /* NAVBAR */
+  .custom-admin-navbar { background: #ffffff !important; border-bottom: 1px solid #f1f5f9; }
+  .navbar-title-custom { font-size: 18px; font-weight: 800; color: #111827; margin-left: 10px; }
+  .add-armada-btn { display: flex; align-items: center; gap: 6px; background: #f1f5f9; padding: 6px 12px; border-radius: 10px; color: #111827; }
+  .add-label { font-size: 12px; font-weight: 700; text-transform: uppercase; }
 
-  .page-title {
-    color: #111827;
-    font-weight: 900;
-    font-size: 16px;
-  }
+  /* STATS */
+  .stats-header-v3 { display: flex; justify-content: space-between; padding: 16px; background: #ffffff; gap: 8px; border-bottom: 1px solid #f1f5f9; }
+  .stat-item-v3 { display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 10px 8px; border-radius: 12px; flex: 1; }
+  .stat-icon-bg { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .stat-label-v3 { font-size: 8px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+  .stat-count-v3 { font-size: 15px; font-weight: 900; color: #111827; line-height: 1; }
 
-  .nav-back {
-    padding-left: 10px;
-  }
+  /* CARDS */
+  .admin-armada-content { background-color: #f8fafc; }
+  .list-container { padding: 0 16px; }
+  .section-subheader { padding: 16px 0 8px; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
+  .armada-grid { display: grid; gap: 12px; padding-bottom: 30px; }
+  .armada-card-v2 { background: white; border-radius: 20px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+  .card-top { display: flex; gap: 12px; margin-bottom: 12px; }
+  .bus-icon-wrapper { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+  .status-indicator { font-size: 8px; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; display: inline-block; }
+  .status-online { background: #dcfce7; color: #166534; }
+  .status-offline { background: #fee2e2; color: #991b1b; }
+  .armada-name-v2 { margin: 0; font-size: 16px; font-weight: 800; }
+  .armada-plate-v2 { font-size: 12px; color: #64748b; margin: 2px 0 0; }
 
-  .add-unit-button {
-    background-color: #111827;
-    color: #ffffff;
-    border-radius: 10px;
-    text-transform: uppercase;
-    font-size: 11px;
-    padding: 0 14px;
-    font-weight: 800;
-  }
+  /* DETAILS & ACTIONS */
+  .card-details { display: flex; gap: 15px; padding: 10px 0; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; margin-bottom: 12px; }
+  .detail-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #475569; font-weight: 600; }
+  .detail-item i { font-size: 16px; color: #94a3b8; }
+  .card-actions-v2 { display: flex; gap: 8px; }
+  .action-btn-outline { background: none; border: 1px solid #e2e8f0; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; }
+  .action-btn-fill { flex-grow: 1; border: none; border-radius: 10px; color: white; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; font-size: 12px; text-transform: uppercase; }
+  .action-btn-status { width: 40px; height: 40px; border-radius: 10px; border: none; color: white; cursor: pointer; }
 
-  .admin-armada-content {
-    background-color: #f8fafc;
-    padding-bottom: 40px;
-  }
-
-  .section-header {
-    padding: 22px 16px 0;
-  }
-
-  .section-title {
-    font-size: 24px;
-    font-weight: 900;
-    margin-bottom: 8px;
-    color: #111827;
-  }
-
-  .section-subtitle {
-    color: #64748b;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  .stat-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    padding: 20px 16px 0;
-  }
-
-  .stat-card {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 18px;
-    text-align: center;
-    box-shadow: 0 15px 40px rgba(15, 23, 42, 0.06);
-  }
-
-  .stat-card-success {
-    border: 1px solid #d1fae5;
-  }
-
-  .stat-card-warning {
-    border: 1px solid #fed7aa;
-  }
-
-  .stat-label {
-    display: block;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: #94a3b8;
-    margin-bottom: 8px;
-  }
-
-  .stat-number {
-    display: block;
-    font-size: 24px;
-    font-weight: 900;
-    color: #111827;
-  }
-
-  .section-subheader {
-    padding: 28px 16px 10px;
-    color: #475569;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-weight: 800;
-  }
-
-  .armada-list {
-    padding: 0 16px;
-  }
-
-  .armada-item {
-    margin-bottom: 16px;
-    list-style: none;
-  }
-
-  .armada-card {
-    background: #ffffff;
-    border-radius: 22px;
-    padding: 20px;
-    box-shadow: 0 15px 40px rgba(15, 23, 42, 0.06);
-  }
-
-  .armada-card-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 14px;
-    margin-bottom: 16px;
-  }
-
-  .armada-meta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .armada-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .armada-name {
-    margin: 0;
-    font-size: 17px;
-    font-weight: 900;
-    color: #111827;
-  }
-
-  .armada-subtitle {
-    margin: 4px 0 0;
-    color: #64748b;
-    font-size: 12px;
-  }
-
-  .status-pill {
-    padding: 6px 12px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .status-pill.color-green {
-    background-color: #dcfce7;
-    color: #166534;
-  }
-
-  .status-pill.color-orange {
-    background-color: #ffedd5;
-    color: #c2410c;
-  }
-
-  .armada-card-body {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-    margin-bottom: 18px;
-  }
-
-  .armada-info {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .info-label {
-    font-size: 10px;
-    color: #94a3b8;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .info-value {
-    color: #0f172a;
-    font-size: 14px;
-    font-weight: 900;
-  }
-
-  .info-ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .armada-card-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: flex-end;
-  }
-
-  .action-button {
-    text-transform: uppercase;
-    font-size: 10px;
-    padding: 0 14px;
-    min-width: 88px;
-  }
-
-  .button-blue {
-    background-color: #2563eb !important;
-  }
-
-  .button-green {
-    background-color: #22c55e !important;
-  }
-
-  .button-red {
-    background-color: #ef4444 !important;
-  }
-
-  .armada-empty {
-    list-style: none;
-  }
-
-  .empty-card {
-    background: #ffffff;
-    border-radius: 22px;
-    padding: 30px;
-    border: 1px dashed #cbd5e1;
-    text-align: center;
-    box-shadow: 0 15px 40px rgba(15, 23, 42, 0.06);
-  }
-
-  .empty-title {
-    margin: 18px 0 8px;
-    font-size: 16px;
-    font-weight: 900;
-    color: #111827;
-  }
-
-  .empty-text {
-    color: #64748b;
-    font-size: 12px;
-    line-height: 1.6;
-  }
-
-  .armada-form-section {
-    padding: 0 16px 40px;
-  }
-
-  .form-title {
-    margin: 0 0 12px;
-    font-size: 18px;
-    font-weight: 900;
-    color: #111827;
-  }
-
-  .form-card {
-    background: #ffffff;
-    border-radius: 22px;
-    padding: 22px;
-    box-shadow: 0 15px 40px rgba(15, 23, 42, 0.06);
-  }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-
-  .form-row {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .form-row-half {
-    width: 100%;
-  }
-
-  .form-row.form-row-half {
-    display: block;
-  }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-  }
-
-  .form-row.form-full {
-    grid-column: span 2;
-  }
-
-  .form-label {
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #94a3b8;
-  }
-
-  .form-input {
-    width: 100%;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 14px 16px;
-    background: #f8fafc;
-    color: #111827;
-    font-weight: 700;
-    outline: none;
-  }
-
-  .form-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 18px;
-    flex-wrap: wrap;
-  }
-
-  .button-save {
-    flex: 1;
-    background-color: #111827 !important;
-  }
-
-  .button-cancel {
-    flex: 1;
-    border-color: #cbd5e1 !important;
-    color: #111827 !important;
-  }
-
-  @media (max-width: 740px) {
-    .stat-grid {
-      grid-template-columns: 1fr;
-    }
-    .armada-card-body {
-      grid-template-columns: 1fr;
-    }
-    .form-grid {
-      grid-template-columns: 1fr;
-    }
-    .form-row.form-full {
-      grid-column: span 1;
-    }
-  }
+  /* COLORS */
+  .bg-blue-light { background: #dbeafe; }
+  .bg-green-light { background: #dcfce7; }
+  .bg-orange-light { background: #ffedd5; }
+  .color-blue { color: #2563eb; }
+  .color-green { color: #166534; }
+  .color-orange { color: #c2410c; }
+  .button-blue { background-color: #2563eb; }
+  .status-red { background: #ef4444; }
+  .status-green { background: #22c55e; }
+  .bg-blue-tint { background: #eff6ff; }
+  .bg-orange-tint { background: #fff7ed; }
 </style>
 
 <script>
-  import $ from 'dom7'; // Mengimpor Dom7 untuk manipulasi scroll halaman
+  import $ from 'dom7';
 
   export default (props, { $store, $f7, $router, $update }) => {
-    let showForm = false;
-    let isEditing = false;
-    let editingId = null;
-    const armadas = $store.getters.armadas.value || [];
+    // Ambil data dari store, berikan default array kosong agar tidak error saat loading
+    let armadas = $store.getters.armadas.value || [];
 
-    let unitForm = {
-      name: '',
-      plate: '',
-      capacity: '',
-      year: '',
-      facilities: '',
-      status: 'Available',
-    };
-
-    const updateField = (field) => (e) => {
-      unitForm[field] = e.target.value;
-      $update();
-    };
-
-    // Scroll Otomatis (Smooth Scroll) ke area form penambahan unit
     const openUnitForm = () => {
-      showForm = true;
-      isEditing = false;
-      editingId = null;
-      unitForm = { name: '', plate: '', capacity: '', year: '', facilities: '', status: 'Available' };
-      $update();
-
-      // Bergeser ke bawah (lokasi form baru dibuat di DOM)
-      setTimeout(() => {
-        $('.page-content').animate(
-          {
-            scrollTop: $('.armada-form-block').offset().top + $('.page-content').scrollTop() - 100
-          },
-          600 // durasi scroll 0.6 detik
-        );
-      }, 100);
+      $router.navigate('/admin/armada-edit/');
     };
 
-    const closeForm = () => {
-      showForm = false;
-      isEditing = false;
-      editingId = null;
-      $update();
-      
-      // Scroll kembali ke atas daftar unit saat form ditutup
-      setTimeout(() => {
-        $('.page-content').animate({ scrollTop: 0 }, 400);
-      }, 100);
-    };
-
-    const saveUnit = () => {
-      if (!unitForm.name || !unitForm.plate || !unitForm.capacity) {
-        $f7.dialog.alert('Lengkapi nama, plat, dan kapasitas armada.', 'Travel-In');
-        return;
-      }
-      const armadaData = {
-        id: isEditing ? editingId : `ARM-${Date.now().toString().slice(-4)}`,
-        name: unitForm.name,
-        plate: unitForm.plate,
-        capacity: Number(unitForm.capacity),
-        year: unitForm.year,
-        facilities: unitForm.facilities,
-        status: unitForm.status,
-      };
-      if (isEditing) {
-        $store.dispatch('updateArmada', armadaData);
-        $f7.toast.create({ text: 'Armada berhasil diperbarui.', closeTimeout: 2000 }).open();
-      } else {
-        $store.dispatch('addArmada', armadaData);
-        $f7.toast.create({ text: 'Armada berhasil ditambahkan.', closeTimeout: 2000 }).open();
-      }
-      closeForm();
-    };
-
-    // Scroll Otomatis saat mode Edit Unit diaktifkan
     const editUnit = (id) => {
-      const armada = armadas.find((item) => item.id === id);
-      if (!armada) return;
-      showForm = true;
-      isEditing = true;
-      editingId = id;
-      unitForm = {
-        name: armada.name,
-        plate: armada.plate,
-        capacity: armada.capacity,
-        year: armada.year || '',
-        facilities: armada.facilities || '',
-        status: armada.status,
-      };
-      $update();
-
-      setTimeout(() => {
-        $('.page-content').animate(
-          {
-            scrollTop: $('.armada-form-block').offset().top + $('.page-content').scrollTop() - 100
-          },
-          600
-        );
-      }, 100);
+      $router.navigate(`/admin/armada-edit/?id=${id}`);
     };
 
     const viewSchedule = (id) => {
@@ -599,9 +179,15 @@
     const toggleArmadaStatus = (id) => {
       const armada = armadas.find((item) => item.id === id);
       if (!armada) return;
+      
       const newStatus = armada.status === 'Available' ? 'In Service' : 'Available';
       $store.dispatch('updateArmada', { ...armada, status: newStatus });
-      $f7.toast.create({ text: `Status ${armada.name} sekarang ${newStatus}.`, closeTimeout: 2000 }).open();
+      
+      $f7.toast.create({ 
+        text: `Status ${armada.name} diubah ke ${newStatus}`, 
+        closeTimeout: 2000 
+      }).open();
+      
       $update();
     };
 
