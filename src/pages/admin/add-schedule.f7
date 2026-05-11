@@ -1,0 +1,213 @@
+<template>
+  <div class="page no-navbar no-toolbar" data-name="add-schedule">
+    <div class="page-content bg-ios-system" style="padding-top: 0;">
+      
+      <div class="ios-header-premium-add">
+        <div class="header-inner-add">
+          <div class="header-left-add">
+            <a href="#" class="link back color-black">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </a>
+            <h1 class="font-sf-heavy main-title-add">Tambah <span class="text-gold">Jadwal</span></h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-container-add">
+        <div class="ios-section-label font-sf-bold">DETAIL RUTE PERJALANAN</div>
+        
+        <div class="list inset ios-list-premium no-hairlines-md">
+          <ul>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label font-sf-bold">KOTA ASAL</div>
+                <div class="item-input-wrap">
+                  <select @change="${handleRouteChange}" id="origin-select" class="font-sf-medium">
+                    <option value="" disabled selected>Pilih Kota Asal</option>
+                    ${cities.map((city) => $h`
+                      <option value="${city}">${city}</option>
+                    `)}
+                  </select>
+                </div>
+              </div>
+            </li>
+
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label font-sf-bold">KOTA TUJUAN</div>
+                <div class="item-input-wrap">
+                  <select @change="${handleRouteChange}" id="destination-select" class="font-sf-medium">
+                    <option value="" disabled selected>Pilih Kota Tujuan</option>
+                    ${cities.map((city) => $h`
+                      <option value="${city}">${city}</option>
+                    `)}
+                  </select>
+                </div>
+              </div>
+            </li>
+
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label font-sf-bold">HARGA (RP)</div>
+                <div class="item-input-wrap">
+                  <input 
+                    type="number" 
+                    id="price-input" 
+                    placeholder="0" 
+                    /* WAJIB PAKAI TITIK DI DEPAN VALUE */
+                    .value="${form.price}" 
+                    @input="${(e) => form.price = parseInt(e.target.value) || 0}" 
+                    class="font-sf-medium" 
+                  />
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="ios-section-label font-sf-bold margin-top">WAKTU & ARMADA</div>
+        <div class="list inset ios-list-premium no-hairlines-md">
+          <ul>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label font-sf-bold">JAM KEBERANGKATAN</div>
+                <div class="item-input-wrap">
+                  <input type="time" @input="${(e) => form.time = e.target.value}" class="font-sf-medium" />
+                </div>
+              </div>
+            </li>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label font-sf-bold">JENIS ARMADA</div>
+                <div class="item-input-wrap">
+                  <input type="text" placeholder="Contoh: Hiace Luxury" @input="${(e) => form.vehicle = e.target.value}" class="font-sf-medium" />
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="block margin-top-xl">
+          <button @click="${saveSchedule}" class="button button-large button-fill btn-save-premium shadow-premium">
+            <span class="font-sf-heavy">SIMPAN JADWAL</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+  /* --- iOS ENGINE STYLE --- */
+  .font-sf-heavy { font-family: -apple-system, "SF Pro Display", sans-serif !important; font-weight: 800; letter-spacing: -0.04em; }
+  .font-sf-bold { font-family: -apple-system, "SF Pro Display", sans-serif !important; font-weight: 700; }
+  .font-sf-medium { font-family: -apple-system, "SF Pro Text", sans-serif !important; font-weight: 500; }
+  
+  .bg-ios-system { background-color: #F2F2F7; }
+  .text-gold { color: #FFB300 !important; }
+
+  .ios-header-premium-add {
+    background: #FFFFFF;
+    padding: 50px 20px 20px 20px !important;
+    border-bottom: 0.5px solid rgba(0,0,0,0.1);
+    position: sticky; top: 0; z-index: 500;
+  }
+  .header-inner-add { display: flex; align-items: center; justify-content: space-between; }
+  .main-title-add { font-size: 26px; margin: 0 0 0 10px; color: #000; }
+
+  .main-container-add { padding: 10px 0 40px 0; }
+  .ios-section-label { font-size: 11px; color: #8E8E93; margin: 25px 24px 8px 24px; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.7; }
+
+  .ios-list-premium { margin: 0 16px !important; background: #FFF !important; border-radius: 16px !important; overflow: hidden; }
+  .item-label { color: #8E8E93 !important; font-size: 10px !important; letter-spacing: 1px; padding-top: 10px !important; }
+  
+  select, input { -webkit-appearance: none; background: none; border: none; width: 100%; height: 44px; font-size: 16px; color: #000; outline: none; }
+
+  .btn-save-premium { background: #000 !important; height: 58px !important; border-radius: 18px !important; font-size: 15px; letter-spacing: 1px; }
+  .shadow-premium { box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important; }
+</style>
+<script>
+  import $ from 'dom7';
+
+  export default (props, { $f7, $store, $router, $update }) => {
+    // 1. Definisikan cities di dalam export default agar terbaca oleh template
+    const cities = ['Bandung', 'Jakarta', 'Sumedang', 'Bekasi', 'Tangerang', 'Depok', 'Bogor'];
+
+    const priceList = {
+      'Bandung-Jakarta': 185000,
+      'Jakarta-Bandung': 185000,
+      'Bandung-Sumedang': 50000,
+      'Sumedang-Bandung': 50000,
+      'Bandung-Bekasi': 150000,
+      'Bekasi-Bandung': 150000,
+      'Jakarta-Sumedang': 200000,
+      'Sumedang-Jakarta': 200000
+    };
+
+    let form = { 
+      origin: '', 
+      destination: '', 
+      price: 0, 
+      time: '', 
+      vehicle: '', 
+      status: 'Available' 
+    };
+
+    const handleRouteChange = () => {
+      const origin = $('#origin-select').val();
+      const destination = $('#destination-select').val();
+      
+      form.origin = origin;
+      form.destination = destination;
+
+      if (origin && destination) {
+        const routeKey = `${origin}-${destination}`;
+        form.price = priceList[routeKey] || 0;
+        
+        // Memaksa UI untuk render ulang nilai form.price ke input
+        $update(); 
+      }
+    };
+
+    const saveSchedule = async () => {
+      if (!form.origin || !form.destination || !form.price || !form.time) {
+        $f7.dialog.alert('Lengkapi semua data dulu, Kang!', 'Travel-In');
+        return;
+      }
+
+      $f7.preloader.show();
+      try {
+        await $store.dispatch('addSchedule', form);
+        $f7.preloader.hide();
+
+        $f7.dialog.create({
+          title: 'Sukses',
+          text: 'Jadwal Berhasil Disimpan!',
+          buttons: [
+            {
+              text: 'OK',
+              bold: true,
+              onClick: () => {
+                setTimeout(() => {
+                  $router.back();
+                }, 150);
+              }
+            }
+          ],
+          on: {
+            closed: () => {
+              $f7.dialog.destroy();
+            }
+          }
+        }).open();
+
+      } catch (err) {
+        $f7.preloader.hide();
+        $f7.dialog.alert('Gagal: ' + err.message);
+      }
+    };
+
+    // Pastikan semua variabel & fungsi ini dikembalikan ke template
+    return $render;
+  };
+</script>

@@ -1,0 +1,120 @@
+<template>
+  <div class="page no-navbar no-toolbar" data-name="edit-schedule">
+    <div class="page-content bg-ios-system" style="padding-top: 0;">
+      
+      <div class="ios-header-flush">
+        <div class="header-inner">
+          <div class="header-left">
+            <a href="#" class="link back color-black">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+            </a>
+            <h1 class="font-sf-heavy main-title margin-left-half">Edit <span class="text-gold">Jadwal</span></h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-container">
+        <div class="ios-sub-label font-sf-bold">UBAH DETAIL PERJALANAN</div>
+        
+        <div class="list inset ios-list-premium no-hairlines">
+          <ul>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label font-sf-bold text-10">KOTA ASAL</div>
+                <div class="item-input-wrap">
+                  <input type="text" placeholder="Asal" .value="${form.origin}" @input="${(e) => form.origin = e.target.value}" />
+                </div>
+              </div>
+            </li>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label font-sf-bold text-10">KOTA TUJUAN</div>
+                <div class="item-input-wrap">
+                  <input type="text" placeholder="Tujuan" .value="${form.destination}" @input="${(e) => form.destination = e.target.value}" />
+                </div>
+              </div>
+            </li>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label font-sf-bold text-10">HARGA (Rp)</div>
+                <div class="item-input-wrap">
+                  <input type="number" placeholder="Harga" .value="${form.price}" @input="${(e) => form.price = parseInt(e.target.value)}" />
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="ios-sub-label font-sf-bold margin-top">WAKTU & ARMADA</div>
+        <div class="list inset ios-list-premium no-hairlines">
+          <ul>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label font-sf-bold text-10">JAM</div>
+                <div class="item-input-wrap">
+                  <input type="time" .value="${form.time}" @input="${(e) => form.time = e.target.value}" />
+                </div>
+              </div>
+            </li>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label font-sf-bold text-10">ARMADA</div>
+                <div class="item-input-wrap">
+                  <input type="text" placeholder="Armada" .value="${form.vehicle}" @input="${(e) => form.vehicle = e.target.value}" />
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="block margin-top-xl">
+          <button @click="${updateData}" class="button button-large button-fill btn-save-premium">
+            <span class="font-sf-heavy">PERBARUI JADWAL</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+  .font-sf-heavy { font-family: -apple-system, "SF Pro Display", sans-serif; font-weight: 800; }
+  .font-sf-bold { font-family: -apple-system, "SF Pro Display", sans-serif; font-weight: 700; }
+  .bg-ios-system { background-color: #F2F2F7; }
+  .text-gold { color: #FFB300 !important; }
+  .ios-header-flush { background: #FFF; padding: 10px 20px 15px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+  .main-title { font-size: 20px; margin: 0; color: #000; }
+  .ios-list-premium { margin: 0 16px !important; background: #FFF !important; border-radius: 16px !important; }
+  .item-label { color: #8E8E93 !important; font-size: 10px; letter-spacing: 1px; }
+  .btn-save-premium { background: #000 !important; height: 55px !important; border-radius: 16px !important; }
+</style>
+
+<script>
+  export default (props, { $f7, $store, $router, $update }) => {
+    // Ambil ID dari URL
+    const scheduleId = props.id;
+    
+    // Cari data lama di Store berdasarkan ID
+    const currentSchedules = $store.getters.schedules.value;
+    const oldData = currentSchedules.find(s => s.id === scheduleId) || {};
+
+    // Inisialisasi form dengan data lama
+    let form = { ...oldData };
+
+    const updateData = async () => {
+      $f7.preloader.show();
+      try {
+        await $store.dispatch('updateSchedule', { id: scheduleId, ...form });
+        $f7.preloader.hide();
+        $f7.dialog.alert('Data Berhasil Diperbarui!', 'Sukses', () => {
+          $router.back();
+        });
+      } catch (err) {
+        $f7.preloader.hide();
+        $f7.dialog.alert('Gagal update: ' + err.message);
+      }
+    };
+
+    return $render;
+  };
+</script>

@@ -1,196 +1,187 @@
 <template>
   <div class="page no-navbar no-toolbar" data-name="admin-schedules">
-    <div class="page-content bg-apple-white" style="padding-top: 0;">
+    <div class="page-content bg-ios-system" style="padding-top: 0;">
       
-      <div class="ios-ultra-top-header">
-        <div class="header-inner-wrap">
-          <div class="left-section">
-            <a href="/admin/" class="link icon-only color-black back-btn-ios">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      <div class="ios-header-flush-v2">
+        <div class="header-inner-v2">
+          <div class="header-left-v2">
+            <a href="/admin/" class="link back-link-ios">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </a>
-            <h1 class="no-margin font-sf-bold tracking-tight text-color-black header-title">
-              Kelola <span class="text-color-amber">Jadwal</span>
-            </h1>
+            <h1 class="font-sf-heavy main-title-v2">Kelola <span class="text-gold">Jadwal</span></h1>
           </div>
-          
-          <div class="right-section">
-            <a href="/admin/schedules/add/" class="button button-fill btn-gold-ios shadow-gold-premium">
-              <div class="display-flex align-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="margin-right-xs"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span class="font-sf-bold btn-text">JADWAL</span>
-              </div>
+          <div class="header-right-v2">
+            <a href="/admin/schedules/add/" class="btn-ios-add-v2 shadow-premium">
+              <span class="font-sf-heavy">+ JADWAL</span>
             </a>
           </div>
         </div>
       </div>
 
-      <div class="main-content-ios">
-        <div class="block-label-ios font-sf-bold">DAFTAR AKTIF</div>
-        
-        <div class="block no-margin-top px-3">
+      <div class="main-container-v2">
+        <div class="ios-sub-label-v2 font-sf-bold">DAFTAR AKTIF</div>
+
+        <div class="schedule-wrapper-v2">
           ${schedules.length > 0 ? schedules.map((item, index) => $h`
             
-            <div class="card ios-card-premium shadow-luxury" @click="${() => viewDetail(item.id)}">
-              <div class="side-border-ios ${index % 2 === 0 ? 'bg-amber' : 'bg-black'}"></div>
-              
-              <div class="card-content card-content-padding display-flex justify-content-between align-items-center">
-                <div class="info-group">
-                  <div class="font-sf-semibold text-color-black display-flex align-items-center rute-text">
-                    ${item.origin} 
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFB300" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="margin-horizontal-xs"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    ${item.destination}
+            <div class="ios-premium-card-v2" @click="${() => viewDetail(item.id)}">
+              <div class="accent-line-v2 ${index % 2 === 0 ? 'bg-gold' : 'bg-black'}"></div>
+              <div class="card-body-ios-v2">
+                <div class="display-flex justify-content-between align-items-start">
+                  
+                  <div class="route-info-v2" style="flex: 1; min-width: 0;">
+                    <div class="font-sf-heavy text-18-v2 display-flex align-items-center">
+                      <span class="text-truncate">${item.origin}</span>
+                      <svg class="margin-horizontal-xs-v2" style="flex-shrink: 0;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFB300" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                      <span class="text-truncate">${item.destination}</span>
+                    </div>
+                    <div class="display-flex align-items-center margin-top-half">
+                      <div class="badge-time-ios-v2 font-sf-heavy">${item.time}</div>
+                      <div class="font-sf-medium text-gray text-13-v2 margin-left-half">${item.vehicle}</div>
+                    </div>
                   </div>
                   
-                  <div class="display-flex align-items-center margin-top-half">
-                    <div class="pill-time-premium font-sf-bold">${item.time}</div>
-                    <div class="font-sf-medium text-color-gray margin-left-half vehicle-text">${item.vehicle}</div>
-                  </div>
-
-                  <div class="margin-top">
-                    <a href="#" class="link-edit-ios font-sf-bold" @click="${(e) => editSchedule(e, item.id)}">
-                      Edit Jadwal
-                    </a>
+                  <div class="price-info-v2 text-align-right" style="width: 110px; flex-shrink: 0; margin-left: 10px;">
+                    <div class="price-tag-v2 font-sf-bold">HARGA</div>
+                    <div class="font-sf-heavy text-22-v2 text-gold" style="white-space: nowrap;">Rp ${formatK(item.price)}</div>
                   </div>
                 </div>
 
-                <div class="price-group text-align-right">
-                  <div class="price-label uppercase">Harga</div>
-                  <div class="price-val font-sf-bold text-color-amber">Rp ${formatK(item.price)}</div>
-                  
-                  <div class="margin-top-half opacity-15">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 16 12 12 16"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                <div class="ios-line-divider-v2"></div>
+                
+                <div class="display-flex justify-content-between align-items-center">
+                  <div class="display-flex">
+                    <a href="#" class="action-btn-ios-v2 text-blue font-sf-bold" @click="${(e) => editSchedule(e, item.id)}">EDIT JADWAL</a>
+                    <a href="#" class="action-btn-ios-v2 text-red font-sf-bold margin-left" @click="${(e) => confirmDelete(e, item.id)}">HAPUS</a>
                   </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CCC" stroke-width="3"><path d="m9 18 6-6-6-6"/></svg>
                 </div>
               </div>
             </div>
 
           `) : $h`
-            <div class="block text-align-center py-5 opacity-20">
-              <p class="font-sf-medium">Tidak ada jadwal.</p>
+            <div class="block text-align-center py-5 opacity-40">
+              <p class="font-sf-medium">Jadwal masih kosong.</p>
             </div>
           `}
         </div>
       </div>
-
     </div>
   </div>
 </template>
 
 <style>
-  /* Typography SF Pro */
-  .font-sf-bold { font-family: -apple-system, "SF Pro Display", sans-serif; font-weight: 700; }
-  .font-sf-semibold { font-family: -apple-system, "SF Pro Display", sans-serif; font-weight: 600; }
-  .font-sf-medium { font-family: -apple-system, "SF Pro Text", sans-serif; font-weight: 500; }
+  /* --- SF PRO ENGINE --- */
+  .font-sf-heavy { font-family: -apple-system, "SF Pro Display", sans-serif !important; font-weight: 800; letter-spacing: -0.04em; }
+  .font-sf-bold { font-family: -apple-system, "SF Pro Display", sans-serif !important; font-weight: 700; }
+  .font-sf-medium { font-family: -apple-system, "SF Pro Text", sans-serif !important; font-weight: 500; }
 
-  .bg-apple-white { background-color: #FFFFFF; }
-  .text-color-amber { color: #FFB300 !important; }
-  .bg-amber { background-color: #FFB300 !important; }
+  .bg-ios-system { background-color: #F2F2F7; }
+  .text-gold { color: #FFB300 !important; }
+  .bg-gold { background-color: #FFB300 !important; }
   .bg-black { background-color: #000000 !important; }
+  .text-blue { color: #007AFF !important; }
+  .text-red { color: #FF3B30 !important; }
 
-  /* --- HEADER FIX --- */
-  .ios-ultra-top-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 600;
+  /* --- HEADER: PERBESAR & NAVIGASI --- */
+  .ios-header-flush-v2 {
     background: #FFFFFF;
-    padding-top: 55px; /* Sesuaikan dengan safe area iPhone */
-    padding-bottom: 12px;
-    border-bottom: 0.5px solid rgba(0,0,0,0.08);
+    padding: 50px 20px 20px 20px !important; /* Padding diperbesar untuk visibilitas */
+    border-bottom: 0.5px solid rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 500;
   }
+  .header-inner-v2 { display: flex; align-items: center; justify-content: space-between; }
+  .header-left-v2 { display: flex; align-items: center; }
+  .back-link-ios { color: #000; margin-right: 12px; display: flex; align-items: center; }
+  .main-title-v2 { font-size: 24px; margin: 0; color: #000; }
 
-  .header-inner-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px; /* Padding sisi kiri dan kanan */
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .left-section {
-    display: flex;
-    align-items: center;
-  }
-
-  .header-title {
-    font-size: 21px;
-    margin-left: 10px;
-  }
-
-  /* Tombol Gold Premium */
-  .btn-gold-ios {
-    background: #FFD646 !important;
-    color: #000 !important;
-    height: 32px !important;
-    border-radius: 9px !important;
-    padding: 0 12px !important;
-    box-shadow: 0 4px 12px rgba(255, 214, 70, 0.3) !important;
-    border: none;
-    white-space: nowrap;
-  }
-
-  .btn-text { font-size: 11px; letter-spacing: 0.5px; }
-
-  /* --- CONTENT FIX --- */
-  .main-content-ios { padding-top: 110px; }
-
-  .block-label-ios {
-    color: #8E8E93;
+  .btn-ios-add-v2 {
+    background: #000;
+    color: #FFF;
+    padding: 10px 18px;
+    border-radius: 12px;
     font-size: 11px;
-    letter-spacing: 0.5px;
-    margin: 20px 24px 12px 24px;
-    font-weight: 700;
-    opacity: 0.4;
+    text-decoration: none;
   }
+  .shadow-premium { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
-  .ios-card-premium {
-    background: #FFF !important;
-    border-radius: 20px !important;
-    margin-bottom: 16px !important;
-    overflow: hidden;
+  /* --- BODY & CONTAINER --- */
+  .main-container-v2 { padding: 15px 0; }
+  .ios-sub-label-v2 { font-size: 11px; color: #8E8E93; margin: 10px 20px 12px 20px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.7; }
+  .schedule-wrapper-v2 { padding: 0 16px; }
+
+  /* --- CARD DESIGN --- */
+  .ios-premium-card-v2 {
+    background: #FFFFFF;
+    border-radius: 20px;
+    margin-bottom: 16px;
     position: relative;
-    border: 0.5px solid #F2F2F7 !important;
-  }
-  .shadow-luxury { box-shadow: 0 8px 25px rgba(0,0,0,0.03) !important; }
-
-  .side-border-ios {
-    position: absolute;
-    left: 0;
-    top: 30%;
-    height: 40%;
-    width: 4px;
-    border-radius: 0 100px 100px 0;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
   }
 
-  .rute-text { font-size: 18px; letter-spacing: -0.5px; }
-  .pill-time-premium { background: #000; color: #FFF; padding: 2px 10px; border-radius: 6px; font-size: 12px; }
-  .vehicle-text { font-size: 13px; opacity: 0.6; }
-  .link-edit-ios { color: #007AFF; text-decoration: none; font-size: 13px; }
+  .accent-line-v2 { position: absolute; left: 0; top: 25px; height: 25px; width: 4px; border-radius: 0 4px 4px 0; }
+  .card-body-ios-v2 { padding: 20px 24px; }
+  
+  .price-tag-v2 { font-size: 9px; color: #8E8E93; margin-bottom: 0px; letter-spacing: 1px; }
+  .badge-time-ios-v2 { background: #000; color: #FFF; padding: 3px 12px; border-radius: 8px; font-size: 12px; }
 
-  .price-label { font-size: 8px; font-weight: 700; color: #8E8E93; opacity: 0.4; letter-spacing: 0.8px; }
-  .price-val { font-size: 20px; }
+  .ios-line-divider-v2 { height: 0.5px; background: rgba(0,0,0,0.06); margin: 15px 0; }
+  .action-btn-ios-v2 { font-size: 13px; text-decoration: none; }
+  .text-truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  .margin-horizontal-xs { margin-left: 5px; margin-right: 5px; }
+  /* UTILS */
+  .text-18-v2 { font-size: 19px; color: #000; }
+  .text-22-v2 { font-size: 22px; white-space: nowrap; }
+  .text-13-v2 { font-size: 14px; }
+  .margin-horizontal-xs-v2 { margin: 0 8px; flex-shrink: 0; }
 </style>
 
 <script>
-  export default (props, { $f7, $store, $router }) => {
-    const schedules = $store.getters.schedules.value || [];
+  export default (props, { $f7, $store, $router, $update, $on }) => {
+    // 1. Definisikan variabel schedules agar reaktif
+    let schedules = $store.getters.schedules.value || [];
+
+    // 2. Fungsi untuk refresh data lokal dari Store
+    const refreshUI = () => {
+      schedules = $store.getters.schedules.value || [];
+      $update();
+    };
+
+    // 3. LISTEN: Setiap kali halaman akan ditampilkan, tarik data terbaru dari Firebase
+    $on('pageBeforeIn', () => {
+      // Panggil action fetchSchedules yang sudah kita buat di store.js
+      $store.dispatch('fetchSchedules').then(() => {
+        refreshUI();
+      });
+    });
 
     const formatK = (val) => {
       if(!val) return '0';
       return (val / 1000) + 'k';
     };
 
-    const viewDetail = (id) => {
-      $router.navigate(`/admin/schedules/${id}/`);
+    const confirmDelete = (e, id) => {
+      e.stopPropagation();
+      $f7.dialog.confirm('Hapus jadwal perjalanan ini?', 'Travel-In Executive', () => {
+        $f7.preloader.show();
+        $store.dispatch('deleteSchedule', id).then(() => {
+          $f7.preloader.hide();
+          refreshUI(); // Update UI setelah hapus
+          $f7.toast.create({ text: 'Jadwal dihapus', closeTimeout: 2000 }).open();
+        });
+      });
     };
 
     const editSchedule = (e, id) => {
       e.stopPropagation();
       $router.navigate(`/admin/schedules/edit/${id}/`);
+    };
+
+    const viewDetail = (id) => {
+      $router.navigate(`/admin/schedules/${id}/`);
     };
 
     return $render;

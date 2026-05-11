@@ -14,10 +14,13 @@ import ETicketPage from "../pages/user/e-ticket.f7";
 import AdminDashboardPage from "../pages/admin/dashboard.f7";
 import AdminLaporan from "../pages/admin/laporan.f7";
 import AdminArmadaPage from "../pages/admin/armada-management.f7";
-import AdminEditArmadaPage from "../pages/admin/edit.f7";
 import AdminSchedulePage from "../pages/admin/schedule-management.f7";
 import AdminScheduleDetailPage from "../pages/admin/schedule-detail.f7";
 import AdminTicketMonitoringPage from "../pages/admin/ticket-monitoring.f7";
+
+// --- IMPORT HALAMAN CRUD BARU ---
+import AdminAddSchedulePage from "../pages/admin/add-schedule.f7";
+import AdminEditSchedulePage from "../pages/admin/edit-schedule.f7";
 import ArmadaEditPage from "../pages/admin/edit.f7";
 
 // 4. Import Halaman Global
@@ -74,16 +77,27 @@ var routes = [
   },
   {
     path: "/admin/armada-edit/",
-    component: AdminEditArmadaPage,
+    component: ArmadaEditPage,
   },
+  
+  // --- SCHEDULES CRUD ROUTES ---
   {
     path: "/admin/schedules/",
     component: AdminSchedulePage,
   },
   {
+    path: "/admin/schedules/add/",
+    component: AdminAddSchedulePage,
+  },
+  {
+    path: "/admin/schedules/edit/:id/",
+    component: AdminEditSchedulePage,
+  },
+  {
     path: "/admin/schedules/:id/",
     component: AdminScheduleDetailPage,
   },
+
   {
     path: "/admin/tickets/",
     component: AdminTicketMonitoringPage,
@@ -91,10 +105,6 @@ var routes = [
   {
     path: "/admin/laporan/",
     component: AdminLaporan,
-  },
-  {
-    path: "/admin/armada-edit/",
-    component: ArmadaEditPage,
   },
 
   // --- GLOBAL ROUTES ---

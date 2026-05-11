@@ -1,59 +1,28 @@
 import { createStore } from 'framework7';
 import { auth, db } from './firebase.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { 
+  doc, 
+  setDoc, 
+  getDoc, 
+  collection, 
+  addDoc, 
+  updateDoc, 
+  deleteDoc, 
+  getDocs,
+  query,
+  orderBy 
+} from "firebase/firestore";
 
 const persistedUser = localStorage.getItem('travelin-current-user');
 
 const store = createStore({
   state: {
     currentUser: persistedUser ? JSON.parse(persistedUser) : null,
-    users: [
-      {
-        id: 'u1',
-        name: 'Admin Travel',
-        email: 'admin@travel-in.com',
-        password: 'admin123',
-        role: 'admin',
-      },
-      {
-        id: 'u2',
-        name: 'Anton Wisata',
-        email: 'user@travel-in.com',
-        password: 'user123',
-        role: 'user',
-      },
-    ],
-    schedules: [
-      {
-        id: '1',
-        origin: 'Jakarta',
-        destination: 'Bandung',
-        date: '2026-05-12',
-        time: '08:00',
-        price: 185000,
-        vehicle: 'Bus',
-        capacity: 45,
-        filledSeats: 12,
-        seatsLeft: 33,
-        status: 'Available',
-        plate: 'B 1234 XYZ',
-        description: 'Bus eksekutif dengan AC dingin, reclining seat, dan fasilitas bagasi luas.',
-        passengers: [],
-      }
-    ],
+    users: [],
+    schedules: [], // Akan diisi dari Firebase
     tickets: [],
-    armadas: [
-      {
-        id: 'a1',
-        name: 'Armada Travel-In 1',
-        plate: 'B 2345 YZX',
-        capacity: 45,
-        year: 2024,
-        facilities: 'AC, Reclining Seat, Audio',
-        status: 'Available',
-      },
-    ],
+    armadas: [],
   },
   getters: {
     currentUser: ({ state }) => state.currentUser,
@@ -63,6 +32,7 @@ const store = createStore({
     armadas: ({ state }) => state.armadas,
   },
   actions: {
+    // --- AUTH ACTIONS ---
     async registerUser({ state }, { nama, email, whatsapp, password }) {
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -83,30 +53,25 @@ const store = createStore({
 
     async loginUser({ state }, payload) {
       if (payload && payload.uid && payload.email) {
-        const role = payload.role || 'user';
         state.currentUser = payload;
         localStorage.setItem('travelin-current-user', JSON.stringify(payload));
-        return role;
+        return payload.role || 'user';
       }
 
       const { email, password } = payload || {};
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
         const userDoc = await getDoc(doc(db, "users", user.uid));
-        let role = 'user';
-        let userData = { email: user.email, uid: user.uid };
-
+        
+        let userData = { email: user.email, uid: user.uid, role: 'user' };
         if (userDoc.exists()) {
-          const data = userDoc.data();
-          role = data.role;
-          userData = { ...userData, ...data };
+          userData = { ...userData, ...userDoc.data() };
         }
 
         state.currentUser = userData;
         localStorage.setItem('travelin-current-user', JSON.stringify(userData));
-        return role;
+        return userData.role;
       } catch (error) {
         throw error;
       }
@@ -118,43 +83,62 @@ const store = createStore({
       localStorage.removeItem('travelin-current-user');
     },
 
+    // --- SCHEDULES CRUD (FIREBASE) ---
+    
+    // 1. Ambil Semua Jadwal dari Firebase
+    async fetchSchedules({ state }) {
+      try {
+        const q = query(collection(db, "schedules"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        const data = [];
+        querySnapshot.forEach((doc) => {
+          data.push({ id: doc.id, ...doc.data() });
+        });
+        state.schedules = data;
+      } catch (error) {
+        console.error("Error fetching schedules:", error);
+      }
+    },
+
+    // 2. Tambah Jadwal ke Firebase
+    async addSchedule({ dispatch }, scheduleData) {
+      try {
+        await addDoc(collection(db, "schedules"), {
+          ...scheduleData,
+          createdAt: new Date(),
+          filledSeats: 0,
+          passengers: []
+        });
+        await dispatch('fetchSchedules'); // Refresh data lokal otomatis
+      } catch (error) {
+        throw error;
+      }
+    },
+
+    // 3. Update Jadwal di Firebase
+    async updateSchedule({ dispatch }, { id, ...updatedData }) {
+      try {
+        const scheduleRef = doc(db, "schedules", id);
+        await updateDoc(scheduleRef, updatedData);
+        await dispatch('fetchSchedules');
+      } catch (error) {
+        throw error;
+      }
+    },
+
+    // 4. Hapus Jadwal dari Firebase
+    async deleteSchedule({ dispatch }, id) {
+      try {
+        await deleteDoc(doc(db, "schedules", id));
+        await dispatch('fetchSchedules');
+      } catch (error) {
+        throw error;
+      }
+    },
+
+    // --- TICKETS & ARMADA ACTIONS ---
     addTicket({ state }, ticket) {
       state.tickets = [...state.tickets, ticket];
-      return ticket;
-    },
-
-    updateScheduleSeats({ state }, { id, seats }) {
-      state.schedules = state.schedules.map((schedule) => {
-        if (schedule.id !== id) return schedule;
-        return {
-          ...schedule,
-          filledSeats: (schedule.filledSeats || 0) + seats,
-          seatsLeft: Math.max((schedule.seatsLeft || schedule.capacity || 0) - seats, 0),
-        };
-      });
-    },
-
-    payTicket({ state }, { id, method }) {
-      state.tickets = state.tickets.map((ticket) => {
-        if (ticket.id !== id) return ticket;
-        return {
-          ...ticket,
-          paymentStatus: 'Paid',
-          paymentMethod: method,
-        };
-      });
-    },
-
-    addSchedule({ state }, schedule) {
-      state.schedules = [...state.schedules, schedule];
-    },
-
-    updateSchedule({ state }, updatedSchedule) {
-      state.schedules = state.schedules.map((schedule) => (schedule.id === updatedSchedule.id ? updatedSchedule : schedule));
-    },
-
-    deleteSchedule({ state }, id) {
-      state.schedules = state.schedules.filter((schedule) => schedule.id !== id);
     },
 
     addArmada({ state }, armada) {
@@ -162,10 +146,11 @@ const store = createStore({
     },
 
     updateArmada({ state }, updatedArmada) {
-      state.armadas = state.armadas.map((armada) => (armada.id === updatedArmada.id ? updatedArmada : armada));
+      state.armadas = state.armadas.map((armada) => 
+        armada.id === updatedArmada.id ? updatedArmada : armada
+      );
     },
   },
 });
 
 export default store;
-
