@@ -1,14 +1,14 @@
 <template>
   <div class="page no-navbar no-toolbar" data-name="admin-dashboard">
-    <div class="page-content bg-apple-light">
+    <div class="page-content bg-apple-light" style="padding-top: 0;">
       
       <div class="admin-brand-header">
-        <div class="block display-flex align-items-center justify-content-between">
+        <div class="header-inner-flex">
           <div class="display-flex align-items-center">
             <img src="logo.png" class="brand-logo-mini" alt="Logo" />
             <div class="margin-left-half">
-              <h2 class="no-margin font-sf-heavy tracking-tighter text-color-black" style="font-size: 18px;">Travel-In</h2>
-              <p class="no-margin font-sf-bold text-color-gray uppercase" style="font-size: 8px; letter-spacing: 1.5px;">Dashboard Admin</p>
+              <h2 class="no-margin font-sf-heavy tracking-tighter text-color-black" style="font-size: 16px;">Travel-In</h2>
+              <p class="no-margin font-sf-bold text-color-gray uppercase" style="font-size: 8px; letter-spacing: 1px;">Admin Executive</p>
             </div>
           </div>
           <div class="status-indicator-mini">
@@ -19,18 +19,18 @@
       </div>
 
       <div class="admin-header-white">
-        <div class="block">
-          <p class="no-margin text-color-gray font-sf-bold tracking-tighter uppercase" style="font-size: 10px;">Executive Account</p>
-          <h1 class="no-margin text-color-black font-sf-heavy" style="font-size: 34px; letter-spacing: -1.8px; line-height: 1;">Halo, ${currentUser.name || 'Admin'}</h1>
+        <div class="block no-margin-top" style="padding-top: 10px;">
+          <p class="no-margin text-color-gray font-sf-bold tracking-tighter uppercase" style="font-size: 10px; opacity: 0.5;">Executive Account</p>
+          <h1 class="no-margin text-color-black font-sf-heavy" style="font-size: 32px; letter-spacing: -1.5px; line-height: 1.1;">Halo, ${currentUser.nama || 'Admin'}</h1>
         </div>
       </div>
 
-      <div class="block stats-container-white">
+      <div class="block stats-container-white" style="margin-top: -20px; position: relative; z-index: 10;">
         <div class="grid grid-cols-2 grid-gap">
           <div class="card stat-card-white no-margin shadow-premium">
             <div class="card-content card-content-padding">
               <div class="stat-icon-premium color-amber">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
               </div>
               <div class="stat-value font-sf-heavy">${armadas.length || 0}</div>
               <div class="stat-label-white">Armada</div>
@@ -39,7 +39,7 @@
           <div class="card stat-card-white no-margin shadow-premium">
             <div class="card-content card-content-padding">
               <div class="stat-icon-premium color-blue">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
               </div>
               <div class="stat-value font-sf-heavy">${schedules.length || 0}</div>
               <div class="stat-label-white">Jadwal</div>
@@ -58,21 +58,17 @@
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
                 </div>
               </div>
-              <div class="item-inner">
-                <div class="item-title font-sf-bold">Manajemen Armada</div>
-              </div>
+              <div class="item-inner"><div class="item-title font-sf-bold">Manajemen Armada</div></div>
             </a>
-          </li>
+          </li> 
           <li>
             <a href="/admin/schedules/" class="item-link item-content py-3">
-              <div class="item-media">
+              <div class="item-media">  
                 <div class="icon-box-premium bg-blue-soft color-blue">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                 </div>
               </div>
-              <div class="item-inner">
-                <div class="item-title font-sf-bold">Kelola Jadwal Perjalanan</div>
-              </div>
+              <div class="item-inner"><div class="item-title font-sf-bold">Kelola Jadwal</div></div>
             </a>
           </li>
           <li>
@@ -105,7 +101,7 @@
             </a>
           </li>
           <li>
-            <a href="/admin/laporan/" class="item-link item-content py-3">
+            <a href="/admin/laporan/bulanan/" class="item-link item-content py-3">
               <div class="item-media">
                 <div class="icon-box-premium bg-black color-white">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
@@ -134,12 +130,10 @@
 </template>
 
 <style>
-  /* iOS Typography */
   .font-sf-heavy { font-family: -apple-system, "SF Pro Display", sans-serif; font-weight: 900; }
   .font-sf-bold { font-family: -apple-system, "SF Pro Display", sans-serif; font-weight: 700; }
   .font-sf-medium { font-family: -apple-system, "SF Pro Text", sans-serif; font-weight: 500; }
 
-  /* Premium White Theme */
   .bg-apple-light { background-color: #F8F9FA; }
   .color-amber { color: #FFB300 !important; }
   .color-blue { color: #007AFF !important; }
@@ -149,17 +143,19 @@
   .bg-green-soft { background: rgba(52, 199, 89, 0.1); }
   .bg-gray-soft { background: #F2F2F7; }
 
-  /* Brand Header (Custom Navbar) */
   .admin-brand-header {
     background: #FFF;
-    padding-top: 20px;
-    padding-bottom: 10px;
+    padding-top: 45px; 
+    padding-bottom: 15px;
+    border-bottom: 1px solid #F2F2F7;
   }
-  .brand-logo-mini {
-    height: 32px;
-    width: auto;
-    object-fit: contain;
+  .header-inner-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
   }
+  .brand-logo-mini { height: 28px; width: auto; }
   .status-indicator-mini {
     background: #F2F2F7;
     padding: 4px 10px;
@@ -167,59 +163,51 @@
     display: flex;
     align-items: center;
   }
-  .dot-online { height: 6px; width: 6px; background-color: #34C759; border-radius: 50%; margin-right: 6px; box-shadow: 0 0 8px rgba(52, 199, 89, 0.5); }
+  .dot-online { height: 6px; width: 6px; background-color: #34C759; border-radius: 50%; margin-right: 6px; }
 
-  /* Header Hero */
-  .admin-header-white { padding: 30px 10px 20px 10px; background: #FFF; border-radius: 0 0 40px 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+  .admin-header-white { 
+    padding: 15px 10px 40px 10px; 
+    background: #FFF; 
+    border-radius: 0 0 35px 35px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02); 
+  }
 
-  /* Premium Cards */
-  .shadow-premium { box-shadow: 0 15px 35px rgba(0,0,0,0.04) !important; }
-  .stat-card-white { background: #FFF !important; border-radius: 28px !important; border: none !important; }
-  .stat-icon-premium { margin-bottom: 15px; }
-  .stat-value { font-size: 32px; color: #000; letter-spacing: -1px; }
-  .stat-label-white { font-size: 11px; color: #8E8E93; font-weight: 700; text-transform: uppercase; margin-top: 2px; }
+  .stat-card-white { background: #FFF !important; border-radius: 24px !important; }
+  .stat-value { font-size: 28px; color: #000; letter-spacing: -1px; }
+  .stat-label-white { font-size: 10px; color: #8E8E93; font-weight: 700; text-transform: uppercase; }
 
-  /* List Styling */
-  .block-label-ios { color: #000; opacity: 0.3; font-size: 10px; font-weight: 800; margin: 40px 24px 12px 24px; letter-spacing: 1.5px; }
-  .ios-list-white { margin: 0 16px !important; background: #FFF !important; border-radius: 24px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.03) !important; }
-  .ios-list-white li { border-bottom: 1px solid #F8F9FA !important; }
-  .icon-box-premium { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+  .block-label-ios { color: #000; opacity: 0.3; font-size: 10px; font-weight: 800; margin: 30px 24px 10px 24px; letter-spacing: 1.2px; }
+  .ios-list-white { margin: 0 16px !important; background: #FFF !important; border-radius: 20px !important; }
+  .icon-box-premium { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
 
-  /* Premium Badge */
   .badge-ios-premium { background: #000; color: #FFF; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; }
 
-  /* Logout Button Premium */
   .premium-logout-btn {
     background: #000 !important;
-    color: #FFF !important;
-    height: 64px !important;
-    border-radius: 20px !important;
-    justify-content: center;
-    border: none;
-    transition: all 0.3s;
+    height: 58px !important;
+    border-radius: 18px !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
   }
-  .premium-logout-btn:active { transform: scale(0.96); opacity: 0.9; }
 
-  .grid-gap { --f7-grid-gap: 16px; }
+  .grid-gap { --f7-grid-gap: 12px; }
 </style>
 
 <script>
-  import $ from 'dom7';
   import { auth } from '../../js/firebase';
   import { signOut } from 'firebase/auth';
 
   export default (props, { $f7, $store, $router }) => {
-    const currentUser = $store.getters.currentUser.value || {};
+    const currentUser = $store.getters.currentUser.value || { nama: 'Admin' };
     const schedules = $store.getters.schedules.value || [];
     const tickets = $store.getters.tickets.value || [];
     const armadas = $store.getters.armadas.value || [];
 
     const handleLogout = () => {
-      $f7.dialog.confirm('Konfirmasi Keluar Sesi?', 'Travel-In Executive', async () => {
+      $f7.dialog.confirm('Keluar dari dashboard executive?', 'Travel-In', async () => {
         try {
           await signOut(auth);
           await $store.dispatch('logoutUser');
-          $f7.views.main.router.navigate('/login/', { reloadCurrent: true, ignoreCache: true });
+          $router.navigate('/login/', { reloadCurrent: true });
         } catch (err) {
           console.error(err);
         }
