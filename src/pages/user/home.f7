@@ -1,61 +1,105 @@
 <template>
-  <div class="page page-with-navbar page-with-toolbar" data-name="home">
+  <div class="page no-navbar page-with-toolbar" data-name="home">
     
-    <div class="navbar navbar-transparent">
-      <div class="navbar-inner sliding px-4" style="background: #ffffff; border-bottom: 1px solid #f1f5f9;">
-        <div class="title home-title no-margin" style="font-size: 18px; font-weight: 900; letter-spacing: 0.15em; color: #111827;">TRAVEL-IN</div>
-        <div class="right">
-          <a href="#" class="logout-button" @click="${logoutUser}">
-            <i class="icon f7-icons" style="font-size: 18px;">arrow_right_to_line</i>
-          </a>
+    <div class="ios-header-home">
+      <div class="header-inner">
+        <div class="title-wrap">
+          <div class="font-sf-heavy text-12 tracking-widest text-gold opacity-50">TRAVEL-IN</div>
+          <h1 class="font-sf-heavy text-22 no-margin">Halo, <span class="text-gold">${currentUser.nama || 'User'}</span></h1>
+        </div>
+        <div class="profile-pic shadow-sm">
+          <img src="https://ui-avatars.com/api/?name=${currentUser.nama || 'U'}&background=FFB300&color=fff" alt="Profile" />
         </div>
       </div>
     </div>
 
-    <div class="page-content home-page-content" style="padding-bottom: 90px !important;">
+    <div class="page-content home-page-content" style="padding-top: 0;">
       
       <div class="block promo-block">
-        <div class="promo-card card-shadow">
-          <div class="promo-badge">PROMO NEW MEMBER</div>
-          <div class="promo-copy">Diskon 30% untuk perjalanan pertama Anda</div>
+        <div class="promo-card-ios shadow-luxury">
+          <div class="promo-content">
+            <div class="promo-badge font-sf-heavy">SPECIAL OFFER</div>
+            <div class="promo-title font-sf-heavy">Diskon 30% Perjalanan Pertama</div>
+            <div class="promo-subtitle font-sf-medium">Gunakan kode: TRAVELNEW2026</div>
+          </div>
+          <div class="promo-bg-icon">
+            <i class="f7-icons">ticket_fill</i>
+          </div>
         </div>
       </div>
 
       <div class="block search-block">
-        <div class="search-card card-shadow">
-          <div class="field-row">
-            <div class="field-label">DARI (ASAL)</div>
-            <input
-              type="text"
-              placeholder="Pilih kota asal..."
-              .value="${search.origin}"
-              @input="${updateSearch('origin')}"
-            />
+        <div class="search-card-ios shadow-luxury">
+          <div class="field-group">
+            <div class="field-item">
+              <span class="field-label font-sf-bold">DARI</span>
+              <input type="text" placeholder="Asal..." .value="${search.origin}" @input="${updateSearch('origin')}" class="font-sf-bold" />
+            </div>
+            <div class="field-divider">
+              <i class="f7-icons text-gold">arrow_right_arrow_left</i>
+            </div>
+            <div class="field-item">
+              <span class="field-label font-sf-bold">KE</span>
+              <input type="text" placeholder="Tujuan..." .value="${search.destination}" @input="${updateSearch('destination')}" class="font-sf-bold" />
+            </div>
           </div>
-          <div class="field-row">
-            <div class="field-label">KE (TUJUAN)</div>
-            <input
-              type="text"
-              placeholder="Pilih kota tujuan..."
-              .value="${search.destination}"
-              @input="${updateSearch('destination')}"
-            />
+          
+          <div class="field-single margin-top">
+            <span class="field-label font-sf-bold">TANGGAL KEBERANGKATAN</span>
+            <input type="date" .value="${search.date}" @input="${updateSearch('date')}" class="font-sf-bold" />
           </div>
-          <div class="field-row">
-            <div class="field-label">TANGGAL</div>
-            <input
-              type="date"
-              .value="${search.date}"
-              @input="${updateSearch('date')}"
-            />
-          </div>
-          <button
-            class="button button-fill button-large primary-button"
-            @click="${searchTickets}"
-          >
-            Cari Jadwal
+
+          <button class="button button-fill btn-search-premium font-sf-heavy margin-top" @click="${searchTickets}">
+            CARI JADWAL TERBAIK
           </button>
         </div>
+      </div>
+
+      <div class="block-title font-sf-heavy text-14 margin-top-xl display-flex justify-content-between align-items-center">
+        <span>JADWAL TERSEDIA</span>
+        <a href="#" class="text-gold text-11 font-sf-bold">LIHAT SEMUA</a>
+      </div>
+
+      <div class="block recommendation-list">
+        ${schedules && schedules.length > 0 ? schedules.map((item, index) => $h`
+          <div class="ios-schedule-card shadow-sm" @click="${() => goToDetail(item.id)}">
+            <div class="card-left">
+              <div class="time-badge font-sf-heavy">${item.time}</div>
+              <div class="vehicle-info font-sf-medium">${item.vehicle}</div>
+            </div>
+            <div class="card-center">
+              <div class="route-text font-sf-bold">${item.origin} → ${item.destination}</div>
+              <div class="status-badge font-sf-bold">Available</div>
+            </div>
+            <div class="card-right">
+              <div class="price-val font-sf-heavy text-gold">Rp ${formatK(item.price)}</div>
+              <i class="f7-icons text-gray text-14">chevron_right</i>
+            </div>
+          </div>
+        `) : $h`
+          <div class="text-align-center opacity-30 padding-vertical">
+            <i class="f7-icons text-44">calendar_badge_minus</i>
+            <p class="font-sf-medium">Belum ada jadwal hari ini</p>
+          </div>
+        `}
+      </div>
+
+    </div>
+
+    <div class="toolbar toolbar-bottom ios-floating-toolbar">
+      <div class="toolbar-inner">
+        <a href="/home/" class="tab-link tab-link-active">
+          <i class="f7-icons">house_fill</i>
+          <span class="tabbar-label">Beranda</span>
+        </a>
+        <a href="/my-tickets/" class="tab-link">
+          <i class="f7-icons">ticket</i>
+          <span class="tabbar-label">Tiket Saya</span>
+        </a>
+        <a href="#" class="tab-link" @click="${openProfileMenu}">
+          <i class="f7-icons">person_crop_circle</i>
+          <span class="tabbar-label">Profil</span>
+        </a>
       </div>
     </div>
 
@@ -63,200 +107,142 @@
 </template>
 
 <style>
-  .home-page-content {
-    background: #f8fafc;
-  }
-
-  .logout-button {
-    width: 38px;
-    height: 38px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    background: #f1f5f9;
-    color: #111827;
-    transition: background 0.2s;
-  }
+  /* --- CUSTOM CSS PREMIUM --- */
+  .home-page-content { background: #F2F2F7; }
   
-  .logout-button:active {
-    background: #e2e8f0;
+  .ios-header-home {
+    background: #FFF;
+    padding: 60px 20px 20px 20px;
+    border-bottom: 0.5px solid rgba(0,0,0,0.05);
   }
+  .header-inner { display: flex; justify-content: space-between; align-items: center; }
+  .profile-pic { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 2px solid #FFF; }
+  .profile-pic img { width: 100%; height: 100%; object-fit: cover; }
 
-  .promo-block,
-  .search-block {
-    padding: 0 16px;
-  }
-
-  .promo-card,
-  .search-card {
-    background: #ffffff;
+  /* Promo Card */
+  .promo-card-ios {
+    background: linear-gradient(135deg, #000 0%, #333 100%);
     border-radius: 20px;
-    border: 1px solid #f1f5f9;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    padding: 20px;
+    color: #FFF;
+    position: relative;
+    overflow: hidden;
   }
+  .promo-badge { background: #FFB300; color: #000; padding: 2px 8px; border-radius: 6px; font-size: 9px; display: inline-block; margin-bottom: 10px; }
+  .promo-title { font-size: 18px; line-height: 1.2; width: 70%; }
+  .promo-subtitle { font-size: 11px; opacity: 0.6; margin-top: 5px; }
+  .promo-bg-icon { position: absolute; right: -10px; bottom: -10px; font-size: 80px; opacity: 0.1; transform: rotate(-15deg); }
 
-  .promo-card {
-    padding: 16px;
-    margin-top: 16px;
-    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-    color: #ffffff;
-  }
+  /* Search Card */
+  .search-card-ios { background: #FFF; border-radius: 24px; padding: 20px; }
+  .field-group { display: flex; align-items: center; gap: 10px; }
+  .field-item { flex: 1; }
+  .field-label { font-size: 9px; color: #8E8E93; letter-spacing: 0.5px; display: block; margin-bottom: 5px; }
+  .search-card-ios input { width: 100%; border: none; background: #F2F2F7; padding: 12px; border-radius: 12px; font-size: 14px; outline: none; }
+  .field-divider { margin-top: 15px; }
+  .btn-search-premium { background: #000 !important; height: 52px !important; border-radius: 16px !important; font-size: 14px; letter-spacing: 1px; }
 
-  .promo-badge {
-    display: inline-flex;
-    padding: 4px 8px;
-    border-radius: 8px;
-    background: #f7c910; /* Menggunakan aksen kuning emas khas Travel-In */
-    color: #111827;
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .promo-copy {
-    font-size: 15px;
-    font-weight: 800;
-    line-height: 1.3;
-  }
-
-  .search-block {
-    margin-top: 16px;
-  }
-
-  .search-card {
-    padding: 18px;
-  }
-
-  .field-row {
+  /* Schedule Cards */
+  .ios-schedule-card {
+    background: #FFF;
+    border-radius: 16px;
+    padding: 15px;
     display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 16px;
+    align-items: center;
+    margin-bottom: 12px;
   }
+  .time-badge { background: #000; color: #FFF; padding: 4px 8px; border-radius: 6px; font-size: 11px; text-align: center; }
+  .vehicle-info { font-size: 10px; color: #8E8E93; margin-top: 4px; text-align: center; }
+  .card-center { flex: 1; margin-left: 15px; }
+  .route-text { font-size: 15px; color: #000; }
+  .status-badge { font-size: 9px; color: #34C759; }
+  .price-val { font-size: 16px; margin-right: 5px; }
 
-  .field-label {
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: #64748b;
+  /* Floating Toolbar */
+  .ios-floating-toolbar {
+    margin: 0 16px 20px 16px;
+    width: auto;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: none;
   }
+  .ios-floating-toolbar .tabbar-label { font-size: 10px; font-weight: 700; }
+  .ios-floating-toolbar .tab-link-active { color: #FFB300 !important; }
 
-  .search-card input {
-    width: 100%;
-    height: 46px;
-    padding: 0 14px;
-    border: 1.5px solid #f1f5f9;
-    border-radius: 12px;
-    background: #f8fafc;
-    color: #111827;
-    font-weight: 700;
-    outline: none;
-    font-size: 14px;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
-  }
-
-  .search-card input:focus {
-    border-color: #111827;
-    background: #ffffff;
-  }
-
-  .primary-button {
-    width: 100%;
-    border-radius: 12px !important;
-    background-color: #111827 !important;
-    color: #ffffff !important;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    height: 48px !important;
-    font-size: 14px;
-    text-transform: uppercase;
-  }
+  /* Utilities */
+  .text-gold { color: #FFB300 !important; }
+  .shadow-luxury { box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
 </style>
 
 <script>
-export default (props, { $f7, $router, $store, $update }) => {
+export default (props, { $f7, $router, $store, $update, $on }) => {
     const currentUser = $store.getters.currentUser.value || {};
+    let schedules = $store.getters.schedules.value || [];
     
-    // State Pencarian
     let search = {
       origin: "",
       destination: "",
-      query: "",
-      date: new Date().toISOString().split("T")[0], // Menggunakan tanggal hari ini sebagai default
+      date: new Date().toISOString().split("T")[0],
     };
 
-    // Fungsi untuk memperbarui state pencarian
+    // Ambil data terbaru saat halaman dibuka
+    $on('pageBeforeIn', () => {
+      $store.dispatch('fetchSchedules').then(() => {
+        schedules = $store.getters.schedules.value;
+        $update();
+      });
+    });
+
     const updateSearch = (field) => (e) => {
       search[field] = e.target.value;
       $update(); 
     };
 
-    const router = $router || ($f7.views && $f7.views.current && $f7.views.current.router) || ($f7.views && $f7.views.main && $f7.views.main.router);
+    const formatK = (val) => {
+      if(!val) return '0';
+      return (val / 1000) + 'k';
+    };
 
-    // Fungsi untuk memvalidasi dan melakukan pencarian
     const searchTickets = () => {
-      if (!search.origin || !search.destination || !search.date) {
-        $f7.dialog.alert(
-          "Mohon lengkapi asal, tujuan, dan tanggal perjalanan Anda.",
-          "Form Belum Lengkap"
-        );
+      if (!search.origin || !search.destination) {
+        $f7.dialog.alert("Pilih rute dulu, Bos!");
         return;
       }
-
-      if (
-        search.origin.trim().toLowerCase() ===
-        search.destination.trim().toLowerCase()
-      ) {
-        $f7.dialog.alert(
-          "Kota asal dan tujuan tidak boleh sama.",
-          "Input Tidak Valid"
-        );
-        return;
-      }
-
       $f7.dialog.preloader("Mencari Jadwal...");
       setTimeout(() => {
         $f7.dialog.close();
-        if (router && router.navigate) {
-          router.navigate(
-            `/search-results/?origin=${encodeURIComponent(
-              search.origin
-            )}&destination=${encodeURIComponent(search.destination)}&date=${
-              search.date
-            }`
-          );
-        }
-      }, 1500); 
+        $router.navigate(`/search-results/?origin=${search.origin}&destination=${search.destination}&date=${search.date}`);
+      }, 1000);
     };
 
-    // Fungsi Navigasi Tab Bar
-    const goTo = (path) => (e) => {
-      if (e) e.preventDefault();
-      if (!router || !router.navigate) {
-        $f7.dialog.alert('Router tidak tersedia. Silakan muat ulang aplikasi.');
-        return;
-      }
-      router.navigate(path);
+    const openProfileMenu = () => {
+      $f7.actions.create({
+        buttons: [
+          [
+            { text: `Halo, ${currentUser.nama}`, label: true },
+            { text: 'Edit Profil', icon: '<i class="f7-icons">person</i>' },
+            { text: 'Pusat Bantuan', icon: '<i class="f7-icons">question_circle</i>' },
+          ],
+          [
+            { 
+              text: 'Logout', 
+              color: 'red',
+              bold: true,
+              onClick: () => {
+                $f7.dialog.confirm('Yakin mau logout?', 'Travel-In', () => {
+                  $store.dispatch('logoutUser').then(() => $router.navigate('/'));
+                });
+              }
+            }
+          ]
+        ]
+      }).open();
     };
 
-    // Fungsi untuk logout
-    const logoutUser = () => {
-      $f7.dialog.confirm('Apakah Anda yakin ingin logout?', 'Logout', async () => {
-        try {
-          await $store.dispatch('logoutUser');
-          if (router && router.navigate) {
-            router.navigate('/');
-          }
-        } catch (error) {
-          console.error('Logout error:', error);
-          $f7.dialog.alert('Gagal logout. Silakan coba lagi.', 'Error');
-        }
-      });
+    const goToDetail = (id) => {
+      $router.navigate(`/travel/${id}/`);
     };
 
     return $render;
