@@ -133,7 +133,6 @@
   .font-sf-heavy { font-family: -apple-system, "SF Pro Display", sans-serif; font-weight: 900; }
   .font-sf-bold { font-family: -apple-system, "SF Pro Display", sans-serif; font-weight: 700; }
   .font-sf-medium { font-family: -apple-system, "SF Pro Text", sans-serif; font-weight: 500; }
-
   .bg-apple-light { background-color: #F8F9FA; }
   .color-amber { color: #FFB300 !important; }
   .color-blue { color: #007AFF !important; }
@@ -142,53 +141,20 @@
   .bg-blue-soft { background: rgba(0, 122, 255, 0.1); }
   .bg-green-soft { background: rgba(52, 199, 89, 0.1); }
   .bg-gray-soft { background: #F2F2F7; }
-
-  .admin-brand-header {
-    background: #FFF;
-    padding-top: 45px; 
-    padding-bottom: 15px;
-    border-bottom: 1px solid #F2F2F7;
-  }
-  .header-inner-flex {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-  }
+  .admin-brand-header { background: #FFF; padding-top: 45px; padding-bottom: 15px; border-bottom: 1px solid #F2F2F7; }
+  .header-inner-flex { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
   .brand-logo-mini { height: 28px; width: auto; }
-  .status-indicator-mini {
-    background: #F2F2F7;
-    padding: 4px 10px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-  }
+  .status-indicator-mini { background: #F2F2F7; padding: 4px 10px; border-radius: 8px; display: flex; align-items: center; }
   .dot-online { height: 6px; width: 6px; background-color: #34C759; border-radius: 50%; margin-right: 6px; }
-
-  .admin-header-white { 
-    padding: 15px 10px 40px 10px; 
-    background: #FFF; 
-    border-radius: 0 0 35px 35px; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.02); 
-  }
-
+  .admin-header-white { padding: 15px 10px 40px 10px; background: #FFF; border-radius: 0 0 35px 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
   .stat-card-white { background: #FFF !important; border-radius: 24px !important; }
   .stat-value { font-size: 28px; color: #000; letter-spacing: -1px; }
   .stat-label-white { font-size: 10px; color: #8E8E93; font-weight: 700; text-transform: uppercase; }
-
   .block-label-ios { color: #000; opacity: 0.3; font-size: 10px; font-weight: 800; margin: 30px 24px 10px 24px; letter-spacing: 1.2px; }
   .ios-list-white { margin: 0 16px !important; background: #FFF !important; border-radius: 20px !important; }
   .icon-box-premium { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-
   .badge-ios-premium { background: #000; color: #FFF; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; }
-
-  .premium-logout-btn {
-    background: #000 !important;
-    height: 58px !important;
-    border-radius: 18px !important;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
-  }
-
+  .premium-logout-btn { background: #000 !important; height: 58px !important; border-radius: 18px !important; box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important; }
   .grid-gap { --f7-grid-gap: 12px; }
 </style>
 
@@ -196,22 +162,27 @@
   import { auth } from '../../js/firebase';
   import { signOut } from 'firebase/auth';
 
-  export default (props, { $f7, $store, $router }) => {
+  export default (props, { $f7, $store, $f7router }) => {
     const currentUser = $store.getters.currentUser.value || { nama: 'Admin' };
     const schedules = $store.getters.schedules.value || [];
     const tickets = $store.getters.tickets.value || [];
     const armadas = $store.getters.armadas.value || [];
 
-    const handleLogout = () => {
-      $f7.dialog.confirm('Keluar dari dashboard executive?', 'Travel-In', async () => {
-        try {
-          await signOut(auth);
-          await $store.dispatch('logoutUser');
-          $router.navigate('/login/', { reloadCurrent: true });
-        } catch (err) {
-          console.error(err);
-        }
-      });
+    const handleLogout = async () => {
+      try {
+        await signOut(auth);
+        await $store.dispatch('logoutUser');
+        
+        // PERBAIKAN DI SINI: Pakai $f7router agar pasti terbaca
+        $f7router.navigate('/login/', { reloadCurrent: true });
+        
+      } catch (err) {
+        console.error(err);
+        $f7.toast.create({
+          text: 'Gagal keluar sistem: ' + err.message,
+          closeTimeout: 2000,
+        }).open();
+      }
     };
 
     return $render;
