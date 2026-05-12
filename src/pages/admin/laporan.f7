@@ -8,20 +8,21 @@
             <i class="icon f7-icons font-bold text-xl">arrow_left</i>
           </a>
         </div>
-        <div class="title page-title">Statistik & Laporan</div>
+        <div class="title page-title">Laporan Penjualan</div>
         <div class="right"></div>
       </div>
     </div>
 
     <div class="page-content admin-laporan-content">
-      <div class="section-header">
-        <h2 class="section-title">${periodTitle}</h2>
-        <p class="section-subtitle">${periodSubtitle}</p>
+      <div class="tab-navigation">
+        <button class="tab-btn ${period === 'harian' ? 'active' : ''}" @click="${() => changePeriod('harian')}">HARIAN</button>
+        <button class="tab-btn ${period === 'mingguan' ? 'active' : ''}" @click="${() => changePeriod('mingguan')}">MINGGUAN</button>
+        <button class="tab-btn ${period === 'bulanan' ? 'active' : ''}" @click="${() => changePeriod('bulanan')}">BULANAN</button>
       </div>
 
       <div class="revenue-card">
         <div class="revenue-info">
-          <span class="revenue-label">Total Pendapatan Terkumpul</span>
+          <span class="revenue-label">TOTAL PENDAPATAN (${period.toUpperCase()})</span>
           <h1 class="revenue-amount">Rp ${formatRupiah(calculateTotalRevenue())}</h1>
         </div>
         <div class="revenue-icon-box">
@@ -29,43 +30,52 @@
         </div>
         <div class="revenue-divider"></div>
         <div class="revenue-footer">
-          <span class="status-badge">STATUS AKTIF</span>
-          <span class="footer-text">Berdasarkan tiket berstatus lunas</span>
+          <span class="footer-text-white">Total Tiket Terjual: <b>${filterTicketsByPeriod().length} Tiket</b></span>
         </div>
       </div>
 
-      <div class="section-subheader">Pilih Format Laporan</div>
+      <div class="section-subheader-row">
+        <div class="sub-indicator"></div>
+        <span>REKAP PERJALANAN</span>
+      </div>
       
+      <div class="table-container">
+        <table class="rekap-table">
+          <thead>
+            <tr>
+              <th class="text-left">TANGGAL</th>
+              <th class="text-center">TIKET</th>
+              <th class="text-right">OMSET</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${getGroupedData().map((item) => `
+              <tr>
+                <td class="text-left">${item.date}</td>
+                <td class="text-center">${item.count}</td>
+                <td class="text-right font-bold">Rp ${formatShortRupiah(item.revenue)}</td>
+              </tr>
+              `).join('')}
+            ${getGroupedData().length === 0 ? `<tr><td colspan="3" class="text-center">Tidak ada data</td></tr>` : ''}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="download-section">
+        <button class="button button-large button-outline color-black" @click="${exportToPDF}">
+          DOWNLOAD LAPORAN (PDF)
+        </button>
+      </div>
+
+      <div class="section-subheader">Format Laporan Lainnya</div>
       <div class="report-list">
         <a href="#" class="report-item" @click="${exportToExcel}">
           <div class="report-icon-wrapper bg-gray-soft">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
           </div>
           <div class="report-text">
-            <span class="report-title">Laporan Mingguan</span>
-            <span class="report-desc">Rekapitulasi transaksi 7 hari terakhir</span>
-          </div>
-          <i class="icon f7-icons report-chevron">chevron_right</i>
-        </a>
-
-        <a href="#" class="report-item" @click="${exportToExcel}">
-          <div class="report-icon-wrapper bg-blue-soft">
-            <i class="icon f7-icons color-blue">calendar_today</i>
-          </div>
-          <div class="report-text">
-            <span class="report-title">Laporan Bulanan</span>
-            <span class="report-desc">Analisis performa keuangan bulanan</span>
-          </div>
-          <i class="icon f7-icons report-chevron">chevron_right</i>
-        </a>
-
-        <a href="#" class="report-item" @click="${exportToPDF}">
-          <div class="report-icon-wrapper bg-red-soft">
-            <i class="icon f7-icons color-red">doc_text_fill</i>
-          </div>
-          <div class="report-text">
-            <span class="report-title">Manifes Penumpang (PDF)</span>
-            <span class="report-desc">Format cetak untuk manifes keberangkatan</span>
+            <span class="report-title">Ekspor ke Excel</span>
+            <span class="report-desc">Data mentah untuk pengolahan lanjut</span>
           </div>
           <i class="icon f7-icons report-chevron">chevron_right</i>
         </a>
@@ -77,76 +87,115 @@
 <style>
   .custom-admin-navbar { background: #ffffff !important; border-bottom: 1px solid #f1f5f9; }
   .page-title { color: #111827; font-weight: 900; font-size: 16px; }
-  .admin-laporan-content { background-color: #f8fafc; padding-bottom: 30px; }
+  .admin-laporan-content { background-color: #fcfcfc; padding-bottom: 40px; }
 
-  .section-header { padding: 24px 20px 10px; }
-  .section-title { font-size: 24px; font-weight: 900; margin: 0; color: #111827; }
-  .section-subtitle { color: #64748b; font-size: 13px; margin-top: 4px; font-weight: 500; }
+  /* TAB NAVIGATION STYLING */
+  .tab-navigation {
+    display: flex;
+    padding: 20px;
+    gap: 10px;
+  }
+  .tab-btn {
+    flex: 1;
+    background: #ffffff;
+    border: 1.5px solid #111827;
+    color: #111827;
+    padding: 8px 0;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: #111827;
+    color: #ffffff;
+  }
 
-  /* REVENUE CARD STYLING */
+  /* REVENUE CARD */
   .revenue-card {
-    margin: 20px;
+    margin: 0 20px 24px;
     background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
     border-radius: 24px;
     padding: 24px 20px;
     position: relative;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   }
-  .revenue-label { font-size: 10px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.15em; }
+  .revenue-label { font-size: 10px; font-weight: 800; color: #9ca3af; letter-spacing: 0.1em; }
   .revenue-amount { font-size: 28px; color: #ffffff; margin: 4px 0 0; font-weight: 900; }
   .revenue-icon-box {
     position: absolute; top: 24px; right: 20px;
     background: rgba(247, 201, 16, 0.15);
-    width: 48px; height: 48px; border-radius: 16px;
+    width: 44px; height: 44px; border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
   }
-  .revenue-icon-box i { color: #f7c910; font-size: 24px; }
+  .revenue-icon-box i { color: #f7c910; font-size: 22px; }
   .revenue-divider { height: 1px; background: rgba(255, 255, 255, 0.1); margin: 20px 0 16px; }
-  .revenue-footer { display: flex; justify-content: space-between; align-items: center; }
-  .status-badge { background: #22c55e; color: #ffffff; font-size: 9px; padding: 4px 10px; border-radius: 8px; font-weight: 800; }
-  .footer-text { font-size: 11px; color: #9ca3af; font-weight: 600; }
+  .footer-text-white { font-size: 13px; color: #ffffff; font-weight: 500; }
 
-  /* REPORT LIST STYLING (SESUAI GAMBAR) */
-  .section-subheader { padding: 10px 20px; font-size: 12px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+  /* TABLE REKAP STYLING */
+  .section-subheader-row {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 900;
+    color: #111827;
+  }
+  .sub-indicator { width: 4px; height: 16px; background: #111827; border-radius: 2px; }
+  
+  .table-container { padding: 0 20px; margin-bottom: 20px; }
+  .rekap-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .rekap-table th {
+    padding: 12px 0;
+    border-bottom: 2px solid #111827;
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 800;
+  }
+  .rekap-table td {
+    padding: 16px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+    color: #111827;
+    font-weight: 600;
+  }
+
+  .download-section { padding: 10px 20px 30px; }
+  .download-section .button {
+    border: 1.5px solid #e2e8f0 !important;
+    font-weight: 800;
+    border-radius: 12px;
+    text-transform: uppercase;
+    font-size: 12px;
+    height: 50px;
+  }
+
+  /* LIST STYLE REUSE */
+  .section-subheader { padding: 10px 20px; font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; }
   .report-list { padding: 0 20px; }
   .report-item {
     display: flex; align-items: center; background: #ffffff;
-    padding: 16px; border-radius: 20px; margin-bottom: 12px;
+    padding: 14px; border-radius: 16px; margin-bottom: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.03); text-decoration: none;
+    border: 1px solid #f1f5f9;
   }
-  .report-icon-wrapper {
-    width: 46px; height: 46px; border-radius: 14px;
-    display: flex; align-items: center; justify-content: center; margin-right: 16px;
-  }
-  .report-text { flex-grow: 1; display: flex; flex-direction: column; }
-  .report-title { font-size: 15px; font-weight: 800; color: #111827; }
-  .report-desc { font-size: 11px; color: #64748b; font-weight: 500; margin-top: 2px; }
-  .report-chevron { font-size: 14px; color: #cbd5e1; }
-
-  /* ICON BOX COLORS */
+  .report-icon-wrapper { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 14px; }
+  .report-title { font-size: 14px; font-weight: 800; color: #111827; }
+  .report-desc { font-size: 11px; color: #64748b; }
   .bg-gray-soft { background-color: #f1f5f9; color: #475569; }
-  .bg-blue-soft { background-color: #eff6ff; color: #2563eb; }
-  .bg-red-soft { background-color: #fef2f2; color: #dc2626; }
-  .color-blue { color: #2563eb; }
-  .color-red { color: #dc2626; }
 </style>
 
 <script>
   export default (props, { $f7, $store, $on, $update }) => {
-    const period = (props.route && props.route.params && props.route.params.period) || 'ringkasan';
+    // Default period berubah ke harian agar match dengan gambar 2
+    let period = 'harian'; 
     let tickets = $store.getters.tickets.value || [];
 
-    const periodTitle = period === 'mingguan'
-      ? 'Laporan Mingguan'
-      : period === 'bulanan'
-      ? 'Laporan Bulanan'
-      : 'Laporan Ringkasan';
-
-    const periodSubtitle = period === 'mingguan'
-      ? 'Rekapitulasi transaksi 7 hari terakhir'
-      : period === 'bulanan'
-      ? 'Analisis performa transaksi 30 hari terakhir'
-      : 'Pantau dan unduh data transaksi operasional Travel-In';
+    const changePeriod = (p) => {
+      period = p;
+      $update();
+    };
 
     const parseTicketDate = (ticket) => {
       if (!ticket.createdAt) return null;
@@ -159,18 +208,56 @@
       return tickets.filter((ticket) => {
         const ticketDate = parseTicketDate(ticket);
         if (!ticketDate) return false;
+        
+        // Filter Sukses Saja
+        const isPaid = ['success', 'completed', 'PAID'].includes(ticket.status);
+        if (!isPaid) return false;
+
+        if (period === 'harian') {
+          return ticketDate.toDateString() === now.toDateString();
+        }
         if (period === 'mingguan') {
           const sevenDaysAgo = new Date(now);
           sevenDaysAgo.setDate(now.getDate() - 7);
           return ticketDate >= sevenDaysAgo && ticketDate <= now;
         }
         if (period === 'bulanan') {
-          const thirtyDaysAgo = new Date(now);
-          thirtyDaysAgo.setDate(now.getDate() - 30);
-          return ticketDate >= thirtyDaysAgo && ticketDate <= now;
+          return ticketDate.getMonth() === now.getMonth() && ticketDate.getFullYear() === now.getFullYear();
         }
         return true;
       });
+    };
+
+    // Fungsi tambahan untuk mengelompokkan data di tabel (Simulasi Data Per Hari)
+    const getGroupedData = () => {
+      const filtered = filterTicketsByPeriod();
+      const groups = {};
+      
+      filtered.forEach(t => {
+        const d = parseTicketDate(t);
+        const dateStr = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+        if (!groups[dateStr]) {
+          groups[dateStr] = { date: dateStr, count: 0, revenue: 0 };
+        }
+        groups[dateStr].count += 1;
+        groups[dateStr].revenue += (Number(t.totalPrice) || Number(t.price) || 0);
+      });
+
+      return Object.values(groups).sort((a, b) => new Date(b.date) - new Date(a.date));
+    };
+
+    const calculateTotalRevenue = () => {
+      return filterTicketsByPeriod()
+        .reduce((sum, t) => sum + (Number(t.totalPrice) || Number(t.price) || 0), 0);
+    };
+
+    const formatRupiah = (val) => Number(val || 0).toLocaleString('id-ID');
+    
+    // Format K (misal 2.450k) sesuai gambar 2
+    const formatShortRupiah = (val) => {
+        const num = Number(val || 0);
+        if (num >= 1000) return (num/1000).toLocaleString('id-ID') + 'k';
+        return num;
     };
 
     $on('pageBeforeIn', async () => {
@@ -179,33 +266,16 @@
       $update();
     });
 
-    const calculateTotalRevenue = () => {
-      return filterTicketsByPeriod()
-        .filter(t => t.status === 'success' || t.status === 'completed' || t.status === 'PAID')
-        .reduce((sum, t) => sum + (Number(t.totalPrice) || Number(t.price) || 0), 0);
-    };
-
-    const formatRupiah = (val) => {
-      const number = Number(val || 0);
-      return number.toLocaleString('id-ID');
-    };
-
     const exportToExcel = (e) => {
       if (e) e.preventDefault();
-      $f7.dialog.preloader('Menyiapkan Laporan...');
-      setTimeout(() => {
-        $f7.preloader.hide();
-        $f7.dialog.alert('Laporan berhasil diekspor ke Excel (XLSX)!', 'Sukses');
-      }, 1500);
+      $f7.dialog.preloader('Menyiapkan Excel...');
+      setTimeout(() => { $f7.preloader.hide(); $f7.dialog.alert('Berhasil diekspor!', 'Sukses'); }, 1000);
     };
 
     const exportToPDF = (e) => {
       if (e) e.preventDefault();
       $f7.dialog.preloader('Menghasilkan PDF...');
-      setTimeout(() => {
-        $f7.preloader.hide();
-        $f7.dialog.alert('Manifes Penumpang berhasil diunduh (PDF)!', 'Sukses');
-      }, 1500);
+      setTimeout(() => { $f7.preloader.hide(); $f7.dialog.alert('PDF berhasil diunduh!', 'Sukses'); }, 1000);
     };
 
     return $render;

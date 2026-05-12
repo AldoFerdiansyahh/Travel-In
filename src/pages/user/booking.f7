@@ -1,144 +1,207 @@
 <template>
-  <div class="page page-with-navbar page-with-toolbar" data-name="booking">
-    <div class="navbar">
-      <div class="navbar-bg"></div>
-      <div class="navbar-inner sliding">
-        <div class="left">
-          <a href="/search-results/" class="link icon-only">
-            <i class="icon f7-icons">arrow_left</i>
-          </a>
+  <div class="page no-toolbar bg-white" data-name="booking">
+    
+    <div class="wireframe-header-ios">
+      <div class="header-inner-sketsa">
+        <a href="#" class="link back text-black">
+          <iconify-icon icon="solar:alt-arrow-left-outline" class="text-28"></iconify-icon>
+        </a>
+        <h1 class="font-sf-heavy text-18 uppercase no-margin tracking-tighter">DATA PENUMPANG</h1>
+        <div style="width: 28px;"></div> </div>
+    </div>
+
+    <div class="page-content bg-white" style="padding-top: 0;">
+      
+      <div class="block margin-top">
+        <div class="booking-summary-box">
+          <h2 class="font-sf-heavy no-margin text-18 uppercase">${schedule.vehicle || 'Hiace Luxury'}</h2>
+          <p class="font-sf-bold no-margin text-14 text-gray margin-top-xs">
+            ${schedule.origin} → ${schedule.destination} | ${schedule.date || '10 Apr 2026'} (${schedule.time})
+          </p>
         </div>
-        <div class="title">Booking</div>
+      </div>
+
+      <div class="block-title font-sf-heavy text-16 text-black margin-top-lg">INFORMASI KONTAK</div>
+      <div class="list no-hairlines-md margin-horizontal">
+        <div class="input-group-sketsa">
+          <label class="font-sf-heavy text-11 text-black uppercase">NAMA PEMESAN</label>
+          <input type="text" placeholder="Nama Anda" .value="${currentUser.nama}" class="input-sketsa font-sf-bold" readonly />
+        </div>
+      </div>
+
+      <div class="block-title font-sf-heavy text-16 text-black margin-top-lg">DETAIL PENUMPANG</div>
+      <div class="list no-hairlines-md margin-horizontal">
+        <div class="input-group-sketsa">
+          <label class="font-sf-heavy text-11 text-black uppercase">NAMA LENGKAP PENUMPANG</label>
+          <input type="text" placeholder="Input nama lengkap..." @input="${(e) => passenger.name = e.target.value}" class="input-sketsa font-sf-bold" />
+        </div>
+
+        <div class="input-group-sketsa margin-top">
+          <label class="font-sf-heavy text-11 text-black uppercase">NOMOR TELEPON</label>
+          <input type="tel" placeholder="0812xxxx" @input="${(e) => passenger.phone = e.target.value}" class="input-sketsa font-sf-bold" />
+        </div>
+      </div>
+
+      <div class="block margin-top">
+        <p class="font-sf-medium italic text-11 text-gray">
+          *Pastikan data sesuai dengan kartu identitas untuk keperluan asuransi perjalanan.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="toolbar toolbar-bottom booking-footer-ios">
+      <div class="footer-inner">
+        <div class="price-summary-flex">
+          <span class="font-sf-heavy text-18">Total Bayar</span>
+          <span class="font-sf-heavy text-20">Rp ${schedule.price ? schedule.price.toLocaleString('id-ID') : '0'}</span>
+        </div>
+        <button class="button button-fill btn-pembayaran-ios font-sf-heavy margin-top-sm" @click="${processBooking}">
+          LANJUT KE PEMBAYARAN
+        </button>
       </div>
     </div>
-    <div class="page-content">
-      <div class="card booking-promo-card card-shadow mb-4">
-        <div class="card-content">
-          <div class="flex justify-between items-start mb-4">
-            <span class="booking-promo-badge promo">Promo Hiace</span>
-            <span class="booking-promo-badge status">Tersedia</span>
-          </div>
-          <div class="text-[1.05rem] font-bold leading-tight mb-2">Diskon 30% untuk perjalanan pertama</div>
-          <div class="text-sm opacity-80">${schedule.origin} → ${schedule.destination} | ${schedule.date} (${schedule.time})</div>
-        </div>
-      </div>
 
-      <div class="card card-rounded card-shadow mb-4 booking-section">
-        <div class="card-content card-content-padding">
-          <div class="block-title">Informasi Kontak</div>
-          <div class="list no-hairlines-md">
-            <ul>
-              <li class="item-content item-input">
-                <div class="item-inner">
-                  <div class="item-title item-label">Nama Pemesan</div>
-                  <div class="item-input-wrap">
-                    <input type="text" placeholder="Masukkan nama pemesan" value="${form.contactName}" @input="${updateField('contactName')}" />
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="card card-rounded card-shadow mb-4 booking-section">
-        <div class="card-content card-content-padding">
-          <div class="block-title">Detail Penumpang</div>
-          <div class="list no-hairlines-md">
-            <ul>
-              <li class="item-content item-input">
-                <div class="item-inner">
-                  <div class="item-title item-label">Nama Lengkap Penumpang</div>
-                  <div class="item-input-wrap">
-                    <input type="text" placeholder="Masukkan nama sesuai KTP" value="${form.passengerName}" @input="${updateField('passengerName')}" />
-                  </div>
-                </div>
-              </li>
-              <li class="item-content item-input">
-                <div class="item-inner">
-                  <div class="item-title item-label">Nomor Telepon</div>
-                  <div class="item-input-wrap">
-                    <input type="tel" placeholder="0812xxxx" value="${form.phone}" @input="${updateField('phone')}" />
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <p class="booking-note">*Pastikan data sesuai dengan kartu identitas untuk keperluan asuransi perjalanan.</p>
-        </div>
-      </div>
-
-      <div class="card card-rounded card-shadow">
-        <div class="card-content card-content-padding booking-total-row">
-          <div class="booking-total-title">Total Bayar</div>
-          <div class="booking-total-value">${formatPrice(getTotalPrice())}</div>
-        </div>
-        <div class="card-footer">
-          <button class="button button-fill button-round btn-yellow-shadow" @click="${submitBooking}">Lanjut ke Pembayaran</button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
+<style>
+  .bg-white { background: #FFFFFF !important; }
+  .text-black { color: #000000 !important; }
+  .text-gray { color: #8E8E93 !important; }
+
+  .font-sf-heavy { font-family: -apple-system, sans-serif !important; font-weight: 900; letter-spacing: -0.02em; }
+  .font-sf-bold { font-family: -apple-system, sans-serif !important; font-weight: 700; }
+  .font-sf-medium { font-family: -apple-system, sans-serif !important; font-weight: 500; }
+
+  /* HEADER */
+  .wireframe-header-ios {
+    padding: 60px 20px 15px 20px;
+    border-bottom: 2.5px solid #000;
+    background: #FFF;
+  }
+  .header-inner-sketsa { display: flex; justify-content: space-between; align-items: center; }
+
+  /* DASHED BOX */
+  .booking-summary-box {
+    border: 2px dashed #000;
+    border-radius: 16px;
+    padding: 20px;
+    background: #FAFAFA;
+  }
+
+  /* INPUT SKETSA */
+  .input-group-sketsa { margin-bottom: 5px; }
+  .input-sketsa {
+    width: 100%;
+    border: 2px solid #000;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 15px;
+    margin-top: 5px;
+    outline: none;
+    background: #FFF;
+  }
+  .input-sketsa:focus { background: #F2F2F7; }
+
+  /* FOOTER & BUTTON */
+  .booking-footer-ios {
+    height: 160px !important;
+    background: #FFF !important;
+    border-top: 2.5px solid #000;
+    padding: 20px;
+  }
+  .price-summary-flex { display: flex; justify-content: space-between; align-items: center; }
+  
+  .btn-pembayaran-ios {
+    background: #000 !important;
+    color: #FFF !important;
+    height: 60px !important;
+    border-radius: 14px !important;
+    font-size: 16px;
+    letter-spacing: 1px;
+    width: 100%;
+  }
+
+  .text-28 { font-size: 28px; }
+  .margin-top-xs { margin-top: 4px; }
+</style>
+
 <script>
-  export default (props, { $store, $f7, $router, $update }) => {
-    const scheduleId = (props.route && props.route.params && props.route.params.id) || '';
-    const schedule = $store.getters.schedules.value.find((item) => item.id === scheduleId) || { id: '', origin: '-', destination: '-', date: '-', time: '-', price: 0, vehicle: '-', seatsLeft: 0 };
-    const currentUser = $store.getters.currentUser || {};
-    const scheduleNotFound = !schedule.id;
+export default (props, { $f7, $router, $store, $update, $on }) => {
+    // Ambil ID dari props router
+    const { id } = props;
+    const currentUser = $store.getters.currentUser.value || {};
+    
+    // State lokal untuk menampung data
+    let schedule = {};
+    let passenger = {
+      name: "",
+      phone: ""
+    };
 
-    let form = { contactName: currentUser.name || '', passengerName: '', phone: '', seats: '1' };
-
-    if (scheduleNotFound) {
-      setTimeout(() => {
-        $f7.dialog.alert('Jadwal tidak ditemukan. Silakan coba lagi dari halaman pencarian.', () => {
-          $router.navigate('/search-results/');
+    // PERBAIKAN: Gunakan pageBeforeIn agar data siap sebelum halaman tampil
+    $on('pageBeforeIn', () => {
+      const allSchedules = $store.getters.schedules.value || [];
+      // Cari data jadwal yang sesuai dengan ID dari URL
+      schedule = allSchedules.find(s => s.id === id) || {};
+      
+      // Jika jadwal tidak ketemu, tarik ulang dari store (opsional tapi aman)
+      if (!schedule.id) {
+        $store.dispatch('fetchSchedules').then(() => {
+          const updatedSchedules = $store.getters.schedules.value || [];
+          schedule = updatedSchedules.find(s => s.id === id) || {};
+          $update();
         });
-      }, 0);
-    }
-
-    const updateField = (field) => (e) => {
-      form[field] = e.target.value;
+      }
       $update();
-    };
+    });
 
-    const getTotalPrice = () => schedule.price * Number(form.seats || 1);
-
-    const formatPrice = (value) => {
-      const amount = Number(value || 0);
-      return 'Rp ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    };
-
-    const submitBooking = () => {
-      if (!form.contactName || !form.passengerName || !form.phone) {
-        $f7.dialog.alert('Silakan isi semua data penumpang dan kontak.');
+    const processBooking = async () => {
+      // Validasi Input
+      if (!passenger.name || !passenger.phone) {
+        $f7.dialog.alert("Lengkapi data penumpang dulu, Kang!");
         return;
       }
-      if (scheduleNotFound) {
-        $f7.dialog.alert('Jadwal tidak ditemukan. Silakan kembali ke halaman pencarian.');
-        return;
+
+      $f7.preloader.show();
+      
+      try {
+        // Buat ID Tiket unik
+        const ticketId = `ETK-${Date.now()}`;
+        
+        const bookingData = {
+          id: ticketId,
+          scheduleId: id,
+          passengerName: passenger.name,
+          passengerPhone: passenger.phone,
+          customerName: currentUser.nama || 'User',
+          customerEmail: currentUser.email || '',
+          price: schedule.price || 0,
+          vehicle: schedule.vehicle || 'Bus',
+          route: `${schedule.origin} → ${schedule.destination}`,
+          date: schedule.date || new Date().toISOString().split('T')[0],
+          time: schedule.time || '--:--',
+          status: 'Pending',
+          paymentStatus: 'Unpaid'
+        };
+
+        // Jalankan action addTicket di store.js
+        await $store.dispatch('addTicket', bookingData);
+        
+        $f7.preloader.hide();
+
+        // Navigasi ke halaman pembayaran sesuai routes.js
+        $router.navigate(`/payment/${ticketId}/`, {
+          reloadCurrent: false,
+          ignoreCache: true
+        });
+
+      } catch (err) {
+        $f7.preloader.hide();
+        console.error("Booking Error:", err);
+        $f7.dialog.alert("Gagal memproses booking: " + err.message);
       }
-      const seats = Number(form.seats);
-      if (seats < 1 || seats > schedule.seatsLeft) {
-        $f7.dialog.alert('Jumlah kursi tidak valid.');
-        return;
-      }
-      const ticketId = `ETK-${Date.now()}`;
-      $store.dispatch('addTicket', {
-        id: ticketId,
-        passenger: form.passengerName,
-        contactName: form.contactName,
-        phone: form.phone,
-        route: `${schedule.origin} → ${schedule.destination}`,
-        scheduleId: schedule.id,
-        seats: seats,
-        price: schedule.price * seats,
-        paymentStatus: 'Pending',
-        verified: false,
-      });
-      $store.dispatch('updateScheduleSeats', { id: schedule.id, seats: seats });
-      $router.navigate(`/payment/${ticketId}/`);
     };
 
     return $render;

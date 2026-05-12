@@ -1,172 +1,7 @@
 <template>
   <div id="app">
-    <div class="panel panel-left panel-cover panel-init">
-      <div class="view">
-        <div class="page">
-          <div class="navbar">
-            <div class="navbar-inner">
-              <div class="title">Menu Travel-In</div>
-            </div>
-          </div>
-          <div class="page-content">
-            <div class="list list-strong list-dividers-ios">
-              <ul>
-                <li>
-                  <a
-                    href="#view-home"
-                    class="item-link item-content tab-link panel-close"
-                  >
-                    <div class="item-media">
-                      <i class="icon f7-icons">house_fill</i>
-                    </div>
-                    <div class="item-inner">
-                      <div class="item-title">Beranda</div>
-                    </div>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#view-schedules"
-                    class="item-link item-content tab-link panel-close"
-                  >
-                    <div class="item-media">
-                      <i class="icon f7-icons">calendar</i>
-                    </div>
-                    <div class="item-inner">
-                      <div class="item-title">Lihat Jadwal</div>
-                    </div>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#view-booking"
-                    class="item-link item-content tab-link panel-close"
-                  >
-                    <div class="item-media">
-                      <i class="icon f7-icons">doc_text_fill</i>
-                    </div>
-                    <div class="item-inner">
-                      <div class="item-title">Booking</div>
-                    </div>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#view-payment"
-                    class="item-link item-content tab-link panel-close"
-                  >
-                    <div class="item-media">
-                      <i class="icon f7-icons">creditcard_fill</i>
-                    </div>
-                    <div class="item-inner">
-                      <div class="item-title">Pembayaran</div>
-                    </div>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#view-eticket"
-                    class="item-link item-content tab-link panel-close"
-                  >
-                    <div class="item-media">
-                      <i class="icon f7-icons">ticket_fill</i>
-                    </div>
-                    <div class="item-inner">
-                      <div class="item-title">E-Tiket</div>
-                    </div>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#view-settings"
-                    class="item-link item-content tab-link panel-close"
-                  >
-                    <div class="item-media">
-                      <i class="icon f7-icons">person_fill</i>
-                    </div>
-                    <div class="item-inner">
-                      <div class="item-title">Akun</div>
-                    </div>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+    <div class="view view-main view-init safe-areas" data-url="/">
       </div>
-    </div>
-
-    <div class="views tabs safe-areas">
-      <div class="toolbar tabbar toolbar-bottom tabbar-icons">
-        <div class="toolbar-inner">
-          <a href="#view-home" class="tab-link tab-link-active">
-            <i class="icon f7-icons">house_fill</i>
-            <span class="tabbar-label">Beranda</span>
-          </a>
-          <a href="#view-schedules" class="tab-link">
-            <i class="icon f7-icons">map_fill</i>
-            <span class="tabbar-label">Jadwal</span>
-          </a>
-          <a href="#view-booking" class="tab-link">
-            <i class="icon f7-icons">doc_text_fill</i>
-            <span class="tabbar-label">Booking</span>
-          </a>
-          <a href="#view-payment" class="tab-link">
-            <i class="icon f7-icons">creditcard_fill</i>
-            <span class="tabbar-label">Bayar</span>
-          </a>
-          <a href="#view-eticket" class="tab-link">
-            <i class="icon f7-icons">ticket_fill</i>
-            <span class="tabbar-label">E-Tiket</span>
-          </a>
-          <a href="#view-settings" class="tab-link">
-            <i class="icon f7-icons">person_fill</i>
-            <span class="tabbar-label">Profil</span>
-          </a>
-        </div>
-      </div>
-
-      <div
-        id="view-home"
-        class="view view-main view-init tab tab-active"
-        data-url="/"
-      ></div>
-
-      <div
-        id="view-schedules"
-        class="view view-init tab"
-        data-name="search-results"
-        data-url="/search-results/"
-      ></div>
-
-      <div
-        id="view-booking"
-        class="view view-init tab"
-        data-name="booking"
-        data-url="/booking/"
-      ></div>
-
-      <div
-        id="view-payment"
-        class="view view-init tab"
-        data-name="payment"
-        data-url="/payment/"
-      ></div>
-
-      <div
-        id="view-eticket"
-        class="view view-init tab"
-        data-name="e-ticket"
-        data-url="/e-ticket/"
-      ></div>
-
-      <div
-        id="view-settings"
-        class="view view-init tab"
-        data-name="settings"
-        data-url="/settings/"
-      ></div>
-    </div>
   </div>
 </template>
 
@@ -175,3 +10,48 @@
     return $render;
   };
 </script>
+
+<style>
+  /* GLOBAL PREMIUM STYLING (iOS SF PRO)
+  */
+  :root {
+    --f7-theme-color: #000000;
+    /* Emulasi Font SF Pro Apple */
+    --f7-font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --f7-bars-bg-color: #ffffff;
+  }
+
+  /* Mencegah Toolbar/Tabbar sistem muncul secara otomatis 
+    yang bisa menyebabkan tampilan menu jadi double (dobel).
+  */
+  .tabbar, .toolbar-tabbar, .toolbar-bottom {
+    display: none !important;
+  }
+
+  /* Kecualikan toolbar custom kita agar tetap muncul.
+    Kita menggunakan class khusus di home.f7 agar tidak ikut tersembunyi.
+  */
+  .ios-premium-nav-container, .ios-premium-toolbar {
+    display: flex !important;
+  }
+
+  /* Reset standar agar padding iOS lebih rapi */
+  .page {
+    background-color: #F8F9FA;
+  }
+
+  /* Utility untuk teks tebal khas iOS */
+  .font-sf-heavy { 
+    font-weight: 900 !important; 
+    letter-spacing: -0.03em !important; 
+  }
+  
+  .font-sf-bold { 
+    font-weight: 700 !important; 
+  }
+
+  /* Animasi halus saat pindah halaman */
+  .view-main {
+    transition-duration: 400ms;
+  }
+</style>
