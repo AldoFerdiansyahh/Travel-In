@@ -103,6 +103,10 @@ var routes = [
     component: AdminTicketMonitoringPage,
   },
   {
+    path: "/admin/laporan/:period/",
+    component: AdminLaporan,
+  },
+  {
     path: "/admin/laporan/",
     component: AdminLaporan,
   },

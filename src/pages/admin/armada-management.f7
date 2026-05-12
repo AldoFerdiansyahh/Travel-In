@@ -11,7 +11,7 @@
         </div>
         
         <div class="right">
-          <a @click="${openUnitForm}" class="link add-armada-btn">
+          <a href="/admin/armada-edit/" @click="${openUnitForm}" class="link add-armada-btn">
             <span class="add-label">Tambah</span>
             <i class="icon f7-icons">plus_app_fill</i>
           </a>
@@ -83,13 +83,13 @@
               </div>
 
               <div class="card-actions-v2">
-                <button class="action-btn-outline" @click="${() => editUnit(armada.id)}">
+                <a href="/admin/armada-edit/?id=${armada.id}" class="action-btn-outline" @click="${(e) => editUnit(armada.id, e)}">
                   <i class="icon f7-icons">pencil</i>
-                </button>
-                <button class="action-btn-fill button-blue" @click="${() => viewSchedule(armada.id)}">
+                </a>
+                <button type="button" class="action-btn-fill button-blue" @click="${() => viewSchedule(armada.id)}">
                   <i class="icon f7-icons size-12">calendar_badge_plus</i> <span>Jadwal</span>
                 </button>
-                <button class="action-btn-status ${armada.status === 'Available' ? 'status-red' : 'status-green'}" @click="${() => toggleArmadaStatus(armada.id)}">
+                <button type="button" class="action-btn-status ${armada.status === 'Available' ? 'status-red' : 'status-green'}" @click="${() => toggleArmadaStatus(armada.id)}">
                   <i class="icon f7-icons">${armada.status === 'Available' ? 'stop_fill' : 'play_fill'}</i>
                 </button>
               </div>
@@ -160,15 +160,23 @@
 <script>
   import $ from 'dom7';
 
-  export default (props, { $store, $f7, $router, $update }) => {
+  export default (props, { $store, $f7, $router, $update, $on }) => {
     // Ambil data dari store, berikan default array kosong agar tidak error saat loading
     let armadas = $store.getters.armadas.value || [];
 
-    const openUnitForm = () => {
+    $on('pageBeforeIn', async () => {
+      await $store.dispatch('fetchArmadas');
+      armadas = $store.getters.armadas.value || [];
+      $update();
+    });
+
+    const openUnitForm = (e) => {
+      if (e && e.preventDefault) e.preventDefault();
       $router.navigate('/admin/armada-edit/');
     };
 
-    const editUnit = (id) => {
+    const editUnit = (id, e) => {
+      if (e && e.preventDefault) e.preventDefault();
       $router.navigate(`/admin/armada-edit/?id=${id}`);
     };
 

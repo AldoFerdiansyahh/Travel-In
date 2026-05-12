@@ -1,0 +1,118 @@
+<template>
+  <div class="page page-with-navbar" data-name="admin-schedule-detail">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="/admin/schedules/" class="link icon-only">
+            <i class="icon f7-icons">arrow_left</i>
+          </a>
+        </div>
+        <div class="title">Detail Jadwal</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="block">
+        <div class="block-title">Rute</div>
+        <div class="block-content">
+          <div class="row">
+            <div class="col-50"><strong>Asal</strong><p>${schedule.origin}</p></div>
+            <div class="col-50"><strong>Tujuan</strong><p>${schedule.destination}</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-title">Informasi Jadwal</div>
+        <div class="list no-hairlines-md">
+          <ul>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Tanggal</div>
+                <div class="item-input-wrap"><input type="text" readonly value="${schedule.date}" /></div>
+              </div>
+            </li>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Jam</div>
+                <div class="item-input-wrap"><input type="text" readonly value="${schedule.time}" /></div>
+              </div>
+            </li>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Armada</div>
+                <div class="item-input-wrap"><input type="text" readonly value="${schedule.vehicle}" /></div>
+              </div>
+            </li>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Harga</div>
+                <div class="item-input-wrap"><input type="text" readonly value="${formatPrice(schedule.price)}" /></div>
+              </div>
+            </li>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Kapasitas</div>
+                <div class="item-input-wrap"><input type="text" readonly value="${schedule.capacity || 0} Kursi" /></div>
+              </div>
+            </li>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Sisa Kursi</div>
+                <div class="item-input-wrap"><input type="text" readonly value="${schedule.seatsLeft || 0} Kursi" /></div>
+              </div>
+            </li>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Terisi</div>
+                <div class="item-input-wrap"><input type="text" readonly value="${schedule.filledSeats || 0} Kursi" /></div>
+              </div>
+            </li>
+            <li class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Status</div>
+                <div class="item-input-wrap"><input type="text" readonly value="${schedule.status}" /></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="block">
+        <a href="/admin/schedules/" class="button button-fill">Kembali ke Daftar Jadwal</a>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default (props, { $store, $on, $update, $f7 }) => {
+    const scheduleId = (props.route && props.route.params && props.route.params.id) || '';
+    let schedule = {
+      origin: '-',
+      destination: '-',
+      date: '-',
+      time: '-',
+      vehicle: '-',
+      price: 0,
+      capacity: 0,
+      seatsLeft: 0,
+      filledSeats: 0,
+      status: 'Tidak tersedia',
+    };
+
+    $on('pageBeforeIn', async () => {
+      await $store.dispatch('fetchSchedules');
+      schedule = $store.getters.schedules.value.find((item) => item.id === scheduleId) || schedule;
+      if (!schedule.id) {
+        $f7.dialog.alert('Jadwal tidak ditemukan.');
+      }
+      $update();
+    });
+
+    const formatPrice = (value) => {
+      const amount = Number(value || 0);
+      return 'Rp ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    };
+
+    return $render;
+  };
+</script>

@@ -136,19 +136,96 @@ const store = createStore({
       }
     },
 
-    // --- TICKETS & ARMADA ACTIONS ---
-    addTicket({ state }, ticket) {
-      state.tickets = [...state.tickets, ticket];
+    async fetchArmadas({ state }) {
+      try {
+        const q = query(collection(db, "armadas"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        const data = [];
+        querySnapshot.forEach((doc) => {
+          data.push({ id: doc.id, ...doc.data() });
+        });
+        state.armadas = data;
+      } catch (error) {
+        console.error("Error fetching armadas:", error);
+      }
     },
 
-    addArmada({ state }, armada) {
-      state.armadas = [...state.armadas, armada];
+    async addArmada({ dispatch }, armada) {
+      try {
+        await addDoc(collection(db, "armadas"), {
+          ...armada,
+          createdAt: new Date(),
+          status: armada.status || 'Available',
+        });
+        await dispatch('fetchArmadas');
+      } catch (error) {
+        throw error;
+      }
     },
 
-    updateArmada({ state }, updatedArmada) {
-      state.armadas = state.armadas.map((armada) => 
-        armada.id === updatedArmada.id ? updatedArmada : armada
-      );
+    async updateArmada({ dispatch }, updatedArmada) {
+      try {
+        const armadaRef = doc(db, "armadas", updatedArmada.id);
+        const { id, ...updatedData } = updatedArmada;
+        await updateDoc(armadaRef, updatedData);
+        await dispatch('fetchArmadas');
+      } catch (error) {
+        throw error;
+      }
+    },
+
+    async deleteArmada({ dispatch }, id) {
+      try {
+        await deleteDoc(doc(db, "armadas", id));
+        await dispatch('fetchArmadas');
+      } catch (error) {
+        throw error;
+      }
+    },
+
+    async fetchTickets({ state }) {
+      try {
+        const q = query(collection(db, "tickets"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        const data = [];
+        querySnapshot.forEach((doc) => {
+          data.push({ id: doc.id, ...doc.data() });
+        });
+        state.tickets = data;
+      } catch (error) {
+        console.error("Error fetching tickets:", error);
+      }
+    },
+
+    async addTicket({ state, dispatch }, ticket) {
+      try {
+        const ticketId = ticket.id || `ETK-${Date.now()}`;
+        const ticketData = {
+          ...ticket,
+          id: ticketId,
+          createdAt: new Date(),
+        };
+        await setDoc(doc(db, "tickets", ticketId), ticketData);
+        state.tickets = [...state.tickets, ticketData];
+        return ticketData;
+      } catch (error) {
+        throw error;
+      }
+    },
+
+    async payTicket({ dispatch }, { id, method }) {
+      try {
+        const ticketRef = doc(db, "tickets", id);
+        await updateDoc(ticketRef, {
+          paymentStatus: 'Paid',
+          verified: true,
+          paymentMethod: method,
+          paidAt: new Date(),
+        });
+        await dispatch('fetchTickets');
+      } catch (error) {
+        throw error;
+      }
     },
   },
 });
