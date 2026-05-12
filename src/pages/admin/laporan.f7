@@ -15,8 +15,8 @@
 
     <div class="page-content admin-laporan-content">
       <div class="section-header">
-        <h2 class="section-title">Laporan Ringkasan</h2>
-        <p class="section-subtitle">Pantau dan unduh data transaksi operasional Travel-In</p>
+        <h2 class="section-title">${periodTitle}</h2>
+        <p class="section-subtitle">${periodSubtitle}</p>
       </div>
 
       <div class="revenue-card">
@@ -132,18 +132,62 @@
 </style>
 
 <script>
-  export default (props, { $f7, $store }) => {
-    const tickets = $store.getters.tickets.value || [];
+  export default (props, { $f7, $store, $on, $update }) => {
+    const period = (props.route && props.route.params && props.route.params.period) || 'ringkasan';
+    let tickets = $store.getters.tickets.value || [];
+
+    const periodTitle = period === 'mingguan'
+      ? 'Laporan Mingguan'
+      : period === 'bulanan'
+      ? 'Laporan Bulanan'
+      : 'Laporan Ringkasan';
+
+    const periodSubtitle = period === 'mingguan'
+      ? 'Rekapitulasi transaksi 7 hari terakhir'
+      : period === 'bulanan'
+      ? 'Analisis performa transaksi 30 hari terakhir'
+      : 'Pantau dan unduh data transaksi operasional Travel-In';
+
+    const parseTicketDate = (ticket) => {
+      if (!ticket.createdAt) return null;
+      if (ticket.createdAt.toDate) return ticket.createdAt.toDate();
+      return new Date(ticket.createdAt);
+    };
+
+    const filterTicketsByPeriod = () => {
+      const now = new Date();
+      return tickets.filter((ticket) => {
+        const ticketDate = parseTicketDate(ticket);
+        if (!ticketDate) return false;
+        if (period === 'mingguan') {
+          const sevenDaysAgo = new Date(now);
+          sevenDaysAgo.setDate(now.getDate() - 7);
+          return ticketDate >= sevenDaysAgo && ticketDate <= now;
+        }
+        if (period === 'bulanan') {
+          const thirtyDaysAgo = new Date(now);
+          thirtyDaysAgo.setDate(now.getDate() - 30);
+          return ticketDate >= thirtyDaysAgo && ticketDate <= now;
+        }
+        return true;
+      });
+    };
+
+    $on('pageBeforeIn', async () => {
+      await $store.dispatch('fetchTickets');
+      tickets = $store.getters.tickets.value || [];
+      $update();
+    });
 
     const calculateTotalRevenue = () => {
-      return tickets
+      return filterTicketsByPeriod()
         .filter(t => t.status === 'success' || t.status === 'completed' || t.status === 'PAID')
         .reduce((sum, t) => sum + (Number(t.totalPrice) || Number(t.price) || 0), 0);
     };
 
     const formatRupiah = (val) => {
-      if (!val) return '0';
-      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      const number = Number(val || 0);
+      return number.toLocaleString('id-ID');
     };
 
     const exportToExcel = (e) => {

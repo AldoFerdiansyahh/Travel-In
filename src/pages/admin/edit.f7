@@ -78,9 +78,8 @@
 </style>
 
 <script>
-  export default (props, { $store, $f7, $router, $f7route, $update }) => {
-    // PENTING: Gunakan $f7route.query untuk mengambil parameter dari router Framework7
-    const editingId = $f7route.query.id;
+  export default (props, { $store, $f7, $router, $update, $on }) => {
+    const editingId = (props.route && ((props.route.query && props.route.query.id) || (props.route.params && props.route.params.id))) || '';
     const isEditing = !!editingId;
     
     let unitForm = {
@@ -92,17 +91,19 @@
       status: 'Available',
     };
 
-    // Mengambil data awal jika mode edit
-    if (isEditing) {
-      const armadas = $store.getters.armadas.value || [];
-      const armada = armadas.find((item) => item.id === editingId);
-      if (armada) {
-        unitForm = { ...armada }; // Salin data agar tidak langsung mengubah store sebelum disimpan
-      } else {
-        // Jika ID tidak ditemukan, beri peringatan dan kembali
-        $f7.dialog.alert('Data armada tidak ditemukan', () => $router.back());
+    $on('pageBeforeIn', async () => {
+      await $store.dispatch('fetchArmadas');
+      if (isEditing) {
+        const armadas = $store.getters.armadas.value || [];
+        const armada = armadas.find((item) => item.id === editingId);
+        if (armada) {
+          unitForm = { ...armada };
+        } else {
+          $f7.dialog.alert('Data armada tidak ditemukan', () => $router.back());
+        }
+        $update();
       }
-    }
+    });
 
     const updateField = (field) => (e) => {
       unitForm[field] = e.target.value;
