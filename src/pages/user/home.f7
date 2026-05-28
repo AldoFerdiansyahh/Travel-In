@@ -45,24 +45,24 @@
           <button class="button button-fill btn-cari-sketsa font-sf-heavy margin-top-lg" @click="${searchTickets}">
             CARI JADWAL
           </button>
-        </div>
 
+        </div>
       </div>
-      
+
     </div>
 
-    <div class="bottom-tabbar-wireframe">
-      <a href="/home/" class="tab-item active">
+    <div class="ios-user-tabbar">
+      <a href="/home/" class="ios-tab-item active">
         <i class="f7-icons">house_fill</i>
         <span>Beranda</span>
       </a>
 
-      <a href="/search-results/" class="tab-item">
+      <a href="/search-results/" class="ios-tab-item">
         <i class="f7-icons">calendar</i>
         <span>Jadwal</span>
       </a>
 
-      <a href="#" @click="${openProfileMenu}" class="tab-item">
+      <a @click="${goToETicket}" class="ios-tab-item">
         <i class="f7-icons">ticket_fill</i>
         <span>Tiket</span>
       </a>
@@ -90,11 +90,6 @@
       });
     });
 
-    const formatK = (val) => {
-      if (!val) return '0';
-      return (val / 1000) + 'k';
-    };
-
     const searchTickets = () => {
       if (!search.origin || !search.destination) {
         $f7.dialog.alert("Pilih rute dulu!");
@@ -114,18 +109,26 @@
             text: 'Logout',
             color: 'red',
             bold: true,
-            onClick: () => {
-              $f7.dialog.confirm('Logout?', 'Travel-In', () => {
-                $store.dispatch('logoutUser').then(() => $router.navigate('/'));
+           onClick: () => {
+            $f7.dialog.confirm('Logout?', 'Travel-In', () => {
+              $store.dispatch('logoutUser').then(() => {
+                window.location.href = '/login/';
               });
-            }
-          }]
+            });
+          }
+          }],
         ]
       }).open();
     };
 
-    const goToDetail = (id) => {
-      $router.navigate(`/travel/${id}/`);
+    const goToETicket = () => {
+      const tickets = $store.getters.tickets.value || [];
+
+      if (tickets.length > 0) {
+        $router.navigate(`/e-ticket/${tickets[0].id}/`);
+      } else {
+        $f7.dialog.alert('Belum ada tiket yang tersedia.');
+      }
     };
 
     return $render;
@@ -140,7 +143,7 @@
   .home-page-content {
     background: #F8F9FA;
     padding-top: 0 !important;
-    padding-bottom: 110px !important;
+    padding-bottom: 120px !important;
   }
 
   .font-sf-heavy {
@@ -156,10 +159,6 @@
 
   .text-gold {
     color: #FFB300 !important;
-  }
-
-  .text-gray {
-    color: #8E8E93;
   }
 
   .wireframe-header-user {
@@ -237,89 +236,51 @@
     color: #000 !important;
   }
 
-  .ios-schedule-card-wireframe {
-    background: #FFF;
-    border-radius: 20px;
-    padding: 18px;
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-    border: 1px solid #F2F2F7;
-    box-shadow: 0 12px 25px rgba(0,0,0,0.05);
-  }
-
-  .card-center-sketsa {
-    flex: 1;
-    margin-left: 20px;
-  }
-
-  .time-label-sketsa {
-    font-size: 15px;
-    color: #111;
-  }
-
-  .unit-label-sketsa {
-    font-size: 10px;
-  }
-
-  .route-text-sketsa {
-    font-size: 13px;
-    color: #111;
-  }
-
-  .status-ready-sketsa {
-    font-size: 9px;
-    color: #34C759;
-  }
-
-  .price-text-sketsa {
-    font-size: 15px;
-  }
-
-  .empty-schedule {
-    text-align: center;
-    opacity: 0.25;
-    padding: 40px 0;
-  }
-
-  .bottom-tabbar-wireframe {
+  .ios-user-tabbar {
     position: fixed;
     left: 18px;
     right: 18px;
     bottom: 18px;
     height: 68px;
-    background: #FFFFFF;
-    border: 2px solid #000;
-    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 24px;
     display: flex;
     justify-content: space-around;
     align-items: center;
     z-index: 99999;
-    box-shadow: 0 18px 35px rgba(0,0,0,0.14);
+    box-shadow: 0 18px 35px rgba(0,0,0,0.12);
   }
 
-  .tab-item {
+  .ios-tab-item {
     flex: 1;
     height: 100%;
-    color: #111 !important;
+    color: #9A9AA2 !important;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    gap: 3px;
     text-decoration: none !important;
-    gap: 4px;
-    font-weight: 900;
+    font-weight: 800;
   }
 
-  .tab-item i {
+  .ios-tab-item i {
     font-size: 22px;
+    margin-bottom: 2px;
   }
 
-  .tab-item span {
+  .ios-tab-item span {
     font-size: 10px;
   }
 
-  .tab-item.active {
+  .ios-tab-item.active {
+    color: #FFB300 !important;
+  }
+
+  .ios-tab-item.active i {
     color: #FFB300 !important;
   }
 </style>

@@ -3,7 +3,7 @@
     <div class="page-content" style="background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 0 40px; box-sizing: border-box;">
       
       <div style="margin-bottom: 30px; text-align: center;">
-        <img src="logo.png" style="height: 120px; width: auto; object-fit: contain;" alt="Logo Travel-In" />
+        <img src="/logo.png" style="height: 120px; width: auto; object-fit: contain;" alt="Logo Travel-In" />
       </div>
 
       <div style="text-align: center; margin-bottom: 40px;">

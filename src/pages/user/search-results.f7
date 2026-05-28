@@ -1,219 +1,406 @@
 <template>
-  <div class="page page-with-navbar page-with-toolbar" data-name="search-results">
-    <div class="navbar navbar-transparent">
-      <div class="navbar-bg bg-color-white"></div>
-      <div class="navbar-inner sliding">
-        <div class="left">
-          <a href="#" class="link back icon-only color-black">
-            <i class="icon f7-icons">arrow_left</i>
-          </a>
+  <div class="page no-navbar schedule-page" data-name="search-results">
+
+    <div class="schedule-header">
+      <div class="schedule-top">
+        <a href="/home/" class="back-plain">
+          <i class="f7-icons">chevron_left</i>
+        </a>
+
+        <div>
+          <h1>${query.origin || 'JADWAL'}</h1>
+          <p>${formatDate(query.date)}</p>
         </div>
-        <div class="title text-color-black">
-          <div class="search-summary-title">${query.origin || 'Asal'} → ${query.destination || 'Tujuan'}</div>
-          <div class="search-summary-subtitle">${query.date || 'Semua Tanggal'}</div>
-        </div>
-        <div class="right">
-          <a href="#" class="link icon-only color-black">
-            <i class="icon f7-icons">arrow_up_down</i>
-          </a>
-        </div>
+      </div>
+
+      <div class="filter-row">
+        <button class="filter-chip active">Terpagi</button>
+        <button class="filter-chip">Harga Termurah</button>
+        <button class="filter-chip">Hiace Luxury</button>
       </div>
     </div>
 
-    <div class="page-content bg-color-f7">
-      
-      <div class="list media-list no-hairlines no-margin-top search-results-list">
-        <ul>
-          ${filteredSchedules.length > 0 ? filteredSchedules.map((schedule) => $h`
-          <li class="card travel-card-elegant shadow-sm">
-            <a href="/booking/${schedule.id}/" class="item-link item-content card-content">
-              <div class="item-inner">
-                
-                <div class="row margin-bottom">
-                  <div class="col-60 display-flex align-items-center">
-                    <div class="time-block">
-                      <div class="departure-time">${schedule.time}</div>
-                      <div class="arrival-info color-gray">Tiba</div>
-                    </div>
-                    <div class="route-line-container margin-horizontal">
-                      <div class="route-dot origin-dot"></div>
-                      <div class="route-line"></div>
-                      <div class="route-dot destination-dot"></div>
-                    </div>
-                    <div class="location-block">
-                      <div class="location-name">${schedule.origin}</div>
-                      <div class="location-name">${schedule.destination}</div>
-                    </div>
-                  </div>
-                  
-                  <div class="col-40 text-align-right price-container">
-                    <span class="ticket-price">${formatPrice(schedule.price)}</span>
-                    <span class="price-per-person color-gray">/orang</span>
-                  </div>
-                </div>
+    <div class="page-content schedule-content">
 
-                <hr class="divider-thin" />
+      ${filteredSchedules.length > 0 ? filteredSchedules.map((schedule) => $h`
+        <div class="schedule-wire-card" @click="${() => goToBooking(schedule.id)}">
 
-                <div class="row margin-top-half align-items-center info-footer">
-                  <div class="col-60 display-flex align-items-center color-gray">
-                    <i class="icon f7-icons size-14 margin-right-half">car_fill</i>
-                    <span class="vehicle-name">${schedule.vehicle}</span>
-                    <span class="separator-dot">•</span>
-                    <span class="status-text">${schedule.status}</span>
-                  </div>
-                  
-                  <div class="col-40 text-align-right seats-info ${schedule.seatsLeft < 5 ? 'text-color-red' : 'color-gray'}">
-                    ${schedule.seatsLeft < 5 ? $h`
-                      <i class="icon f7-icons size-12">exclamationmark_triangle_fill</i>
-                    ` : ''}
-                    ${schedule.seatsLeft} kursi tersisa
-                  </div>
-                </div>
-
-              </div>
-            </a>
-          </li>
-          `) : $h`
-          <div class="block text-align-center empty-state-elegant">
-            <i class="icon f7-icons size-48 color-gray">search</i>
-            <h4 class="weight-600 no-margin-bottom">Jadwal Tidak Tersedia</h4>
-            <p class="text-color-gray no-margin-top">Maaf, kami tidak menemukan perjalanan yang sesuai.</p>
+          <div class="card-head">
+            <h2>${schedule.vehicle || 'HIACE LUXURY'}</h2>
+            <span>${schedule.type || 'REGULER'}</span>
           </div>
-          `}
-        </ul>
-      </div>
+
+          <div class="time-route-row">
+            <div>
+              <strong>${schedule.time || '08:00'}</strong>
+              <small>${schedule.origin || 'BDO'}</small>
+            </div>
+
+            <div class="dash-line"></div>
+
+            <div class="text-align-right">
+              <strong>${schedule.arrivalTime || getArrivalTime(schedule.time)}</strong>
+              <small>${schedule.destination || 'JKT'}</small>
+            </div>
+          </div>
+
+          <div class="bottom-card-row">
+            <div class="price-text">Rp ${formatRupiah(schedule.price)}</div>
+
+            <button class="choose-btn" @click="${(e) => goToBooking(schedule.id, e)}">
+              PILIH
+            </button>
+          </div>
+
+        </div>
+      `) : $h`
+        <div class="empty-state">
+          <i class="f7-icons">calendar_badge_exclamationmark</i>
+          <h3>Jadwal Tidak Tersedia</h3>
+          <p>Coba cari rute atau tanggal lain.</p>
+        </div>
+      `}
+
     </div>
+
+    <div class="ios-user-tabbar">
+      <a href="/home/" class="ios-tab-item">
+        <i class="f7-icons">house_fill</i>
+        <span>Beranda</span>
+      </a>
+
+      <a href="/search-results/" class="ios-tab-item active">
+        <i class="f7-icons">calendar</i>
+        <span>Jadwal</span>
+      </a>
+
+      <a @click="${goToETicket}" class="ios-tab-item">
+        <i class="f7-icons">ticket_fill</i>
+        <span>Tiket</span>
+      </a>
+    </div>
+
   </div>
 </template>
 
 <style>
-  /* Palet Warna Elegan: Putih, Abu-abu (#f7, #eee, #666), dan Navy (#1a1a1a) */
-  .bg-color-f7 { background-color: #f7f7f7 !important; }
-  
-  /* Navbar */
-  .navbar-transparent .navbar-inner {
-    border-bottom: 1px solid #eee;
+  @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
+
+  * {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
-  .search-summary-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1a1a1a;
+
+  .schedule-page {
+    background: #F5F6FA !important;
   }
-  .search-summary-subtitle {
+
+  .schedule-header {
+    background: linear-gradient(135deg, #ffffff 0%, #fff7d6 100%);
+    padding: 54px 18px 16px 18px;
+    border-bottom-left-radius: 28px;
+    border-bottom-right-radius: 28px;
+    box-shadow: 0 16px 35px rgba(0,0,0,0.06);
+  }
+
+  .schedule-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .back-plain {
+    color: #111 !important;
+    margin-top: 1px;
+  }
+
+  .back-plain i {
+    font-size: 21px;
+    font-weight: 900;
+  }
+
+  .schedule-top h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 900;
+    color: #111;
+    letter-spacing: -0.04em;
+  }
+
+  .schedule-top p {
+    margin: 4px 0 0 0;
     font-size: 11px;
-    color: #666;
-    font-weight: 400;
+    color: #8E8E93;
+    font-weight: 700;
   }
 
-  /* Travel Card Elegan */
-  .travel-card-elegant {
-    margin: 10px 16px !important;
-    border-radius: 12px !important;
-    background: white !important;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.03) !important;
-    border: none !important;
-  }
-  .travel-card-elegant .item-inner {
-    padding: 16px !important;
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
   }
 
-  /* Waktu & Lokasi */
-  .departure-time {
-    font-size: 20px;
-    font-weight: 800;
-    color: #1a1a1a;
-    line-height: 1;
-  }
-  .arrival-info {
+  .filter-chip {
+    border: none;
+    background: #ffffff;
+    color: #111;
+    border-radius: 999px;
+    padding: 8px 13px;
     font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 2px;
-  }
-  .location-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: #555;
+    font-weight: 900;
     white-space: nowrap;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.06);
   }
 
-  /* Garis Rute Minimalis */
-  .route-line-container {
+  .filter-chip.active {
+    background: #111;
+    color: #FFD43B;
+  }
+
+  .schedule-content {
+    background: #F5F6FA !important;
+    padding: 18px 16px 110px 16px !important;
+  }
+
+  .schedule-wire-card {
+    background: #FFFFFF;
+    border: none;
+    border-radius: 24px;
+    padding: 17px;
+    margin-bottom: 15px;
+    box-shadow: 0 14px 32px rgba(0,0,0,0.07);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .schedule-wire-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 24px;
+    width: 5px;
+    height: 42px;
+    background: #FFD43B;
+    border-radius: 0 10px 10px 0;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-head h2 {
+    margin: 0;
+    font-size: 17px;
+    color: #111;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+  }
+
+  .card-head span {
+    background: #FFF4C2;
+    color: #B58100;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 9px;
+    font-weight: 900;
+  }
+
+  .time-route-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+    margin: 20px 0 16px 0;
+  }
+
+  .time-route-row strong {
+    display: block;
+    font-size: 25px;
+    line-height: 1;
+    color: #111;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+  }
+
+  .time-route-row small {
+    display: block;
+    margin-top: 5px;
+    font-size: 9px;
+    color: #8E8E93;
+    font-weight: 900;
+  }
+
+  .dash-line {
+    border-top: 2px dashed #D6D8DF;
+    margin-top: -10px;
+  }
+
+  .bottom-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #F7F8FA;
+    border-radius: 17px;
+    padding: 12px;
+  }
+
+  .price-text {
+    font-size: 19px;
+    font-weight: 900;
+    color: #111;
+    letter-spacing: -0.04em;
+  }
+
+  .choose-btn {
+    background: #FFD43B;
+    color: #111;
+    border: none;
+    border-radius: 13px;
+    padding: 11px 18px;
+    font-size: 11px;
+    font-weight: 900;
+    box-shadow: 0 8px 18px rgba(255, 212, 59, 0.35);
+    cursor: pointer;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #8E8E93;
+  }
+
+  .empty-state i {
+    font-size: 42px;
+    opacity: 0.4;
+  }
+
+  .empty-state h3 {
+    color: #111;
+    margin: 12px 0 4px 0;
+  }
+
+  .empty-state p {
+    margin: 0;
+  }
+
+  .ios-user-tabbar {
+    position: fixed;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+    height: 68px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 24px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 99999;
+    box-shadow: 0 18px 35px rgba(0,0,0,0.12);
+  }
+
+  .ios-tab-item {
+    flex: 1;
+    height: 100%;
+    color: #9A9AA2 !important;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    height: 40px;
-  }
-  .route-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-  }
-  .origin-dot { background-color: #ddd; }
-  .destination-dot { background-color: #1a1a1a; }
-  .route-line {
-    width: 1px;
-    background-color: #eee;
-    flex-grow: 1;
-    margin: 2px 0;
-  }
-
-  /* Harga */
-  .ticket-price {
-    font-size: 19px;
+    justify-content: center;
+    gap: 3px;
+    text-decoration: none !important;
     font-weight: 800;
-    color: #1a1a1a;
-  }
-  .price-per-person {
-    font-size: 11px;
-    margin-left: 2px;
   }
 
-  /* Footer Card */
-  .divider-thin {
-    border: 0;
-    border-top: 1px solid #f0f0f0;
-    margin: 0;
-  }
-  .info-footer {
-    font-size: 12px;
-  }
-  .separator-dot {
-    margin: 0 6px;
-    color: #ccc;
-  }
-  .seats-info {
-    font-weight: 600;
-    font-size: 12px;
+  .ios-tab-item i {
+    font-size: 22px;
   }
 
-  /* Empty State */
-  .empty-state-elegant {
-    padding-top: 80px;
+  .ios-tab-item span {
+    font-size: 10px;
   }
-  .weight-600 { font-weight: 600; }
+
+  .ios-tab-item.active,
+  .ios-tab-item.active i {
+    color: #FFB300 !important;
+  }
 </style>
 
 <script>
-  export default (props, { $store, $h }) => {
+  export default (props, { $store, $router, $f7, $update, $on }) => {
     const query = (props.route && props.route.query) || {};
-    const schedules = $store.getters.schedules;
+    let schedules = $store.getters.schedules.value || [];
 
-    const isMatch = (schedule, field, value) => {
-      if (!value) return true;
-      return schedule[field].toLowerCase().includes(value.toLowerCase());
-    };
-
-    const filteredSchedules = schedules.value.filter((schedule) => {
-      return isMatch(schedule, 'origin', query.origin || '') &&
-        isMatch(schedule, 'destination', query.destination || '') &&
-        (!query.date || schedule.date === query.date);
+    $on('pageBeforeIn', () => {
+      $store.dispatch('fetchSchedules').then(() => {
+        schedules = $store.getters.schedules.value || [];
+        $update();
+      });
     });
 
-    const formatPrice = (value) => {
-      const amount = Number(value || 0);
-      return 'Rp ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    const filteredSchedules = schedules.filter((schedule) => {
+      const originMatch = !query.origin || String(schedule.origin || '').toLowerCase().includes(String(query.origin).toLowerCase());
+      const destMatch = !query.destination || String(schedule.destination || '').toLowerCase().includes(String(query.destination).toLowerCase());
+      const dateMatch = !query.date || schedule.date === query.date;
+
+      return originMatch && destMatch && dateMatch;
+    });
+
+    const formatRupiah = (value) => {
+      return Number(value || 0).toLocaleString('id-ID');
+    };
+
+    const formatDate = (date) => {
+      if (!date) return 'Pilih jadwal perjalanan';
+
+      const bulan = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      ];
+
+      const dateObject = new Date(date);
+      if (isNaN(dateObject.getTime())) return date;
+
+      return `${dateObject.getDate()} ${bulan[dateObject.getMonth()]} ${dateObject.getFullYear()}`;
+    };
+
+    const getArrivalTime = (time) => {
+      if (!time) return '11:00';
+
+      const [hour, minute] = time.split(':').map(Number);
+      const arrivalHour = (hour + 3).toString().padStart(2, '0');
+
+      return `${arrivalHour}:${String(minute || 0).padStart(2, '0')}`;
+    };
+
+    const goToBooking = (id, e) => {
+      if (e && e.preventDefault) e.preventDefault();
+      if (e && e.stopPropagation) e.stopPropagation();
+
+      if (!id) {
+        $f7.dialog.alert('ID jadwal tidak ditemukan.');
+        return;
+      }
+
+      $router.navigate(`/booking/${id}/`);
+    };
+
+    const goToETicket = () => {
+      const tickets = $store.getters.tickets.value || [];
+
+      if (tickets.length > 0) {
+        $router.navigate(`/e-ticket/${tickets[0].id}/`);
+      } else {
+        $f7.dialog.alert('Belum ada tiket yang tersedia.');
+      }
     };
 
     return $render;

@@ -3,42 +3,66 @@
     
     <div class="wireframe-header-ios">
       <div class="header-inner-sketsa">
-        <a href="#" class="link back text-black">
-          <iconify-icon icon="solar:alt-arrow-left-outline" class="text-28"></iconify-icon>
+        <a href="/search-results/" class="link back text-black">
+          <i class="f7-icons text-28">chevron_left</i>
         </a>
+
         <h1 class="font-sf-heavy text-18 uppercase no-margin tracking-tighter">DATA PENUMPANG</h1>
-        <div style="width: 28px;"></div> </div>
+
+        <div style="width: 28px;"></div>
+      </div>
     </div>
 
-    <div class="page-content bg-white" style="padding-top: 0;">
+    <div class="page-content bg-white" style="padding-top: 0; padding-bottom: 180px;">
       
       <div class="block margin-top">
         <div class="booking-summary-box">
-          <h2 class="font-sf-heavy no-margin text-18 uppercase">${schedule.vehicle || 'Hiace Luxury'}</h2>
+          <h2 class="font-sf-heavy no-margin text-18 uppercase">
+            ${schedule.vehicle || 'Hiace Luxury'}
+          </h2>
+
           <p class="font-sf-bold no-margin text-14 text-gray margin-top-xs">
-            ${schedule.origin} → ${schedule.destination} | ${schedule.date || '10 Apr 2026'} (${schedule.time})
+            ${schedule.origin || 'Bandung'} → ${schedule.destination || 'Jakarta'} | ${schedule.date || '10 Apr 2026'} (${schedule.time || '08:00'})
           </p>
         </div>
       </div>
 
-      <div class="block-title font-sf-heavy text-16 text-black margin-top-lg">INFORMASI KONTAK</div>
+      <div class="block-title font-sf-heavy text-16 text-black margin-top-lg">
+        INFORMASI KONTAK
+      </div>
+
       <div class="list no-hairlines-md margin-horizontal">
         <div class="input-group-sketsa">
           <label class="font-sf-heavy text-11 text-black uppercase">NAMA PEMESAN</label>
-          <input type="text" placeholder="Nama Anda" .value="${currentUser.nama}" class="input-sketsa font-sf-bold" readonly />
+          <input type="text" placeholder="Nama Anda" .value="${currentUser.nama || ''}" class="input-sketsa font-sf-bold" readonly />
         </div>
       </div>
 
-      <div class="block-title font-sf-heavy text-16 text-black margin-top-lg">DETAIL PENUMPANG</div>
+      <div class="block-title font-sf-heavy text-16 text-black margin-top-lg">
+        DETAIL PENUMPANG
+      </div>
+
       <div class="list no-hairlines-md margin-horizontal">
         <div class="input-group-sketsa">
           <label class="font-sf-heavy text-11 text-black uppercase">NAMA LENGKAP PENUMPANG</label>
-          <input type="text" placeholder="Input nama lengkap..." @input="${(e) => passenger.name = e.target.value}" class="input-sketsa font-sf-bold" />
+          <input 
+            type="text" 
+            placeholder="Input nama lengkap..." 
+            .value="${passenger.name}"
+            @input="${(e) => { passenger.name = e.target.value; $update(); }}" 
+            class="input-sketsa font-sf-bold" 
+          />
         </div>
 
         <div class="input-group-sketsa margin-top">
           <label class="font-sf-heavy text-11 text-black uppercase">NOMOR TELEPON</label>
-          <input type="tel" placeholder="0812xxxx" @input="${(e) => passenger.phone = e.target.value}" class="input-sketsa font-sf-bold" />
+          <input 
+            type="tel" 
+            placeholder="0812xxxx" 
+            .value="${passenger.phone}"
+            @input="${(e) => { passenger.phone = e.target.value; $update(); }}" 
+            class="input-sketsa font-sf-bold" 
+          />
         </div>
       </div>
 
@@ -54,8 +78,11 @@
       <div class="footer-inner">
         <div class="price-summary-flex">
           <span class="font-sf-heavy text-18">Total Bayar</span>
-          <span class="font-sf-heavy text-20">Rp ${schedule.price ? schedule.price.toLocaleString('id-ID') : '0'}</span>
+          <span class="font-sf-heavy text-20">
+            Rp ${schedule.price ? schedule.price.toLocaleString('id-ID') : '0'}
+          </span>
         </div>
+
         <button class="button button-fill btn-pembayaran-ios font-sf-heavy margin-top-sm" @click="${processBooking}">
           LANJUT KE PEMBAYARAN
         </button>
@@ -66,23 +93,46 @@
 </template>
 
 <style>
-  .bg-white { background: #FFFFFF !important; }
-  .text-black { color: #000000 !important; }
-  .text-gray { color: #8E8E93 !important; }
+  .bg-white {
+    background: #FFFFFF !important;
+  }
 
-  .font-sf-heavy { font-family: -apple-system, sans-serif !important; font-weight: 900; letter-spacing: -0.02em; }
-  .font-sf-bold { font-family: -apple-system, sans-serif !important; font-weight: 700; }
-  .font-sf-medium { font-family: -apple-system, sans-serif !important; font-weight: 500; }
+  .text-black {
+    color: #000000 !important;
+  }
 
-  /* HEADER */
+  .text-gray {
+    color: #8E8E93 !important;
+  }
+
+  .font-sf-heavy {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+
+  .font-sf-bold {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif !important;
+    font-weight: 700;
+  }
+
+  .font-sf-medium {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif !important;
+    font-weight: 500;
+  }
+
   .wireframe-header-ios {
     padding: 60px 20px 15px 20px;
     border-bottom: 2.5px solid #000;
     background: #FFF;
   }
-  .header-inner-sketsa { display: flex; justify-content: space-between; align-items: center; }
 
-  /* DASHED BOX */
+  .header-inner-sketsa {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .booking-summary-box {
     border: 2px dashed #000;
     border-radius: 16px;
@@ -90,8 +140,10 @@
     background: #FAFAFA;
   }
 
-  /* INPUT SKETSA */
-  .input-group-sketsa { margin-bottom: 5px; }
+  .input-group-sketsa {
+    margin-bottom: 5px;
+  }
+
   .input-sketsa {
     width: 100%;
     border: 2px solid #000;
@@ -101,17 +153,25 @@
     margin-top: 5px;
     outline: none;
     background: #FFF;
+    box-sizing: border-box;
   }
-  .input-sketsa:focus { background: #F2F2F7; }
 
-  /* FOOTER & BUTTON */
+  .input-sketsa:focus {
+    background: #F2F2F7;
+  }
+
   .booking-footer-ios {
     height: 160px !important;
     background: #FFF !important;
     border-top: 2.5px solid #000;
     padding: 20px;
   }
-  .price-summary-flex { display: flex; justify-content: space-between; align-items: center; }
+
+  .price-summary-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   
   .btn-pembayaran-ios {
     background: #000 !important;
@@ -123,51 +183,55 @@
     width: 100%;
   }
 
-  .text-28 { font-size: 28px; }
-  .margin-top-xs { margin-top: 4px; }
+  .text-28 {
+    font-size: 28px;
+  }
+
+  .margin-top-xs {
+    margin-top: 4px;
+  }
 </style>
 
 <script>
-export default (props, { $f7, $router, $store, $update, $on }) => {
-    // Ambil ID dari props router
-    const { id } = props;
+  export default (props, { $f7, $router, $store, $update, $on }) => {
+    const id = props.route.params.id;
     const currentUser = $store.getters.currentUser.value || {};
     
-    // State lokal untuk menampung data
     let schedule = {};
     let passenger = {
       name: "",
       phone: ""
     };
 
-    // PERBAIKAN: Gunakan pageBeforeIn agar data siap sebelum halaman tampil
     $on('pageBeforeIn', () => {
       const allSchedules = $store.getters.schedules.value || [];
-      // Cari data jadwal yang sesuai dengan ID dari URL
-      schedule = allSchedules.find(s => s.id === id) || {};
+      schedule = allSchedules.find((s) => String(s.id) === String(id)) || {};
       
-      // Jika jadwal tidak ketemu, tarik ulang dari store (opsional tapi aman)
       if (!schedule.id) {
         $store.dispatch('fetchSchedules').then(() => {
           const updatedSchedules = $store.getters.schedules.value || [];
-          schedule = updatedSchedules.find(s => s.id === id) || {};
+          schedule = updatedSchedules.find((s) => String(s.id) === String(id)) || {};
           $update();
         });
       }
+
       $update();
     });
 
     const processBooking = async () => {
-      // Validasi Input
       if (!passenger.name || !passenger.phone) {
         $f7.dialog.alert("Lengkapi data penumpang dulu, Kang!");
+        return;
+      }
+
+      if (!schedule.id) {
+        $f7.dialog.alert("Data jadwal tidak ditemukan.");
         return;
       }
 
       $f7.preloader.show();
       
       try {
-        // Buat ID Tiket unik
         const ticketId = `ETK-${Date.now()}`;
         
         const bookingData = {
@@ -186,12 +250,10 @@ export default (props, { $f7, $router, $store, $update, $on }) => {
           paymentStatus: 'Unpaid'
         };
 
-        // Jalankan action addTicket di store.js
         await $store.dispatch('addTicket', bookingData);
         
         $f7.preloader.hide();
 
-        // Navigasi ke halaman pembayaran sesuai routes.js
         $router.navigate(`/payment/${ticketId}/`, {
           reloadCurrent: false,
           ignoreCache: true
