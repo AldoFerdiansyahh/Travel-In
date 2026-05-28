@@ -17,18 +17,18 @@ import AdminArmadaPage from "../pages/admin/armada-management.f7";
 import AdminSchedulePage from "../pages/admin/schedule-management.f7";
 import AdminScheduleDetailPage from "../pages/admin/schedule-detail.f7";
 import AdminTicketMonitoringPage from "../pages/admin/ticket-monitoring.f7";
+import AdminPaymentPage from "../pages/admin/payment-management.f7";
 
-// --- IMPORT HALAMAN CRUD BARU ---
+// 4. Import Halaman CRUD Admin
 import AdminAddSchedulePage from "../pages/admin/add-schedule.f7";
 import AdminEditSchedulePage from "../pages/admin/edit-schedule.f7";
 import ArmadaEditPage from "../pages/admin/edit.f7";
 
-// 4. Import Halaman Global
+// 5. Import Halaman Global
 import SettingsPage from "../pages/settings.f7";
 import NotFoundPage from "../pages/404.f7";
 
 var routes = [
-  // --- AUTH & USER ROUTES ---
   {
     path: "/",
     component: LoginPage,
@@ -79,7 +79,11 @@ var routes = [
     path: "/admin/armada-edit/",
     component: ArmadaEditPage,
   },
-  
+  {
+    path: "/admin/payments/",
+    component: AdminPaymentPage,
+  },
+
   // --- SCHEDULES CRUD ROUTES ---
   {
     path: "/admin/schedules/",
@@ -102,6 +106,7 @@ var routes = [
     path: "/admin/tickets/",
     component: AdminTicketMonitoringPage,
   },
+
   {
     path: "/admin/laporan/:period/",
     component: AdminLaporan,
@@ -111,13 +116,11 @@ var routes = [
     component: AdminLaporan,
   },
 
-  // --- GLOBAL ROUTES ---
   {
     path: "/settings/",
     component: SettingsPage,
   },
 
-  // Default 404 (Harus diletakkan paling bawah)
   {
     path: "(.*)",
     component: NotFoundPage,

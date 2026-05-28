@@ -1,116 +1,78 @@
 <template>
-  <div class="page no-navbar" data-name="home">
-    
+  <div class="page no-navbar home-page" data-name="home">
+
     <div class="wireframe-header-user">
       <div class="header-inner-sketsa">
-        <h1 class="font-sf-heavy text-24 no-margin tracking-tighter">TRAVEL-<span class="text-gold">IN</span></h1>
+        <h1 class="font-sf-heavy text-24 no-margin tracking-tighter">
+          TRAVEL-<span class="text-gold">IN</span>
+        </h1>
+
         <div class="profile-trigger-sketsa" @click="${openProfileMenu}">
           <img src="https://ui-avatars.com/api/?name=${$store.getters.currentUser.value?.nama || 'U'}&background=000&color=fff&bold=true" class="circle-avatar-wireframe" />
         </div>
       </div>
     </div>
 
-    <div class="page-content home-page-content" style="padding-top: 0; padding-bottom: 200px !important;">
-      
+    <div class="page-content home-page-content">
+
       <div class="block promo-block-sketsa">
         <div class="promo-card-wireframe shadow-luxury">
-          <div class="promo-content-sketsa">
-            <div class="promo-badge-sketsa font-sf-heavy">PROMO HIACE</div>
-            <div class="promo-title-sketsa font-sf-heavy">DISKON 30% UNTUK PERJALANAN PERTAMA</div>
+          <div class="promo-badge-sketsa font-sf-heavy">PROMO HIACE</div>
+          <div class="promo-title-sketsa font-sf-heavy">
+            DISKON 30% UNTUK PERJALANAN PERTAMA
           </div>
         </div>
       </div>
 
       <div class="block search-block-sketsa">
         <div class="search-card-wireframe shadow-luxury">
+
           <div class="input-item-sketsa">
             <span class="label-sketsa font-sf-bold uppercase">DARI (ASAL)</span>
-            <input type="text" placeholder="Pilih kota asal..." .value="${search.origin}" @input="${updateSearch('origin')}" class="font-sf-medium" />
+            <input type="text" placeholder="Pilih kota asal..." .value="${search.origin}" @input="${updateSearch('origin')}" />
           </div>
 
           <div class="input-item-sketsa margin-top">
             <span class="label-sketsa font-sf-bold uppercase">KE (TUJUAN)</span>
-            <input type="text" placeholder="Pilih kota tujuan..." .value="${search.destination}" @input="${updateSearch('destination')}" class="font-sf-medium" />
+            <input type="text" placeholder="Pilih kota tujuan..." .value="${search.destination}" @input="${updateSearch('destination')}" />
           </div>
-          
+
           <div class="input-item-sketsa margin-top">
             <span class="label-sketsa font-sf-bold uppercase">TANGGAL</span>
-            <input type="date" .value="${search.date}" @input="${updateSearch('date')}" class="font-sf-medium" />
+            <input type="date" .value="${search.date}" @input="${updateSearch('date')}" />
           </div>
 
           <button class="button button-fill btn-cari-sketsa font-sf-heavy margin-top-lg" @click="${searchTickets}">
             CARI JADWAL
           </button>
         </div>
-      </div>
 
-      <div class="block-title font-sf-heavy text-12 margin-top-xl text-gray uppercase tracking-widest">Jadwal Tersedia</div>
-      <div class="block recommendation-list-sketsa">
-        ${$store.getters.schedules.value && $store.getters.schedules.value.length > 0 ? $store.getters.schedules.value.map((item) => $h`
-          <div class="ios-schedule-card-wireframe shadow-sm" @click="${() => goToDetail(item.id)}">
-            <div class="card-left-sketsa">
-              <div class="time-label-sketsa font-sf-heavy">${item.time}</div>
-              <div class="unit-label-sketsa font-sf-medium text-gray">${item.vehicle || 'Executive'}</div>
-            </div>
-            <div class="card-center-sketsa">
-              <div class="route-text-sketsa font-sf-bold uppercase">${item.origin} → ${item.destination}</div>
-              <div class="status-ready-sketsa font-sf-bold">READY</div>
-            </div>
-<div class="block recommendation-list-sketsa">
-  ${$store.getters.schedules.value && $store.getters.schedules.value.length > 0 ? $store.getters.schedules.value.map((item) => $h`
-    <div class="ios-schedule-card-wireframe shadow-sm">
-      <div class="card-left-sketsa">
-        <div class="time-label-sketsa font-sf-heavy">${item.time}</div>
-        <div class="unit-label-sketsa font-sf-medium text-gray">${item.vehicle || 'Executive'}</div>
       </div>
-      <div class="card-center-sketsa">
-        <div class="route-text-sketsa font-sf-bold uppercase">${item.origin} → ${item.destination}</div>
-        <div class="status-ready-sketsa font-sf-bold">READY</div>
-      </div>
-
-        <div class="card-right-sketsa text-align-right" @click="${() => $router.navigate('/booking/' + item.id + '/')}" style="cursor: pointer;">
-                    <div class="price-text-sketsa font-sf-heavy text-gold">Rp ${formatK(item.price)}</div>
-                    <i class="f7-icons text-gray text-20">chevron_right</i>
-                  </div>
-                </div>
-              `) : $h`
-                <div class="text-align-center opacity-20 padding-vertical-xl">
-                  <p class="font-sf-heavy uppercase">Belum ada jadwal hari ini</p>
-                </div>
-              `}
-            </div>
-          </div>
-        `) : $h`
-          <div class="text-align-center opacity-20 padding-vertical-xl">
-            <p class="font-sf-heavy uppercase">Belum ada jadwal hari ini</p>
-          </div>
-        `}
-      </div>
-
+      
     </div>
 
-    <div class="ios-premium-nav-container">
-      <div class="ios-premium-nav-blur"></div>
-      <div class="ios-premium-nav-inner">
-        <a href="/home/" class="nav-item active">
-          <iconify-icon icon="solar:home-2-bold-duotone"></iconify-icon>
-          <span class="active-dot"></span>
-        </a>
-        <a href="/my-tickets/" class="nav-item">
-          <iconify-icon icon="solar:ticket-bold-duotone"></iconify-icon>
-        </a>
-        <a href="#" class="nav-item" @click="${openProfileMenu}">
-          <iconify-icon icon="solar:user-circle-bold-duotone"></iconify-icon>
-        </a>
-      </div>
+    <div class="bottom-tabbar-wireframe">
+      <a href="/home/" class="tab-item active">
+        <i class="f7-icons">house_fill</i>
+        <span>Beranda</span>
+      </a>
+
+      <a href="/search-results/" class="tab-item">
+        <i class="f7-icons">calendar</i>
+        <span>Jadwal</span>
+      </a>
+
+      <a href="#" @click="${openProfileMenu}" class="tab-item">
+        <i class="f7-icons">ticket_fill</i>
+        <span>Tiket</span>
+      </a>
     </div>
 
   </div>
 </template>
 
 <script>
-export default (props, { $f7, $router, $store, $update, $on }) => {
-    // VARIABEL SEARCH & FUNGSI TETAP SAMA (TIDAK BERUBAH)
+  export default (props, { $f7, $router, $store, $update, $on }) => {
     let search = {
       origin: "",
       destination: "",
@@ -119,114 +81,245 @@ export default (props, { $f7, $router, $store, $update, $on }) => {
 
     const updateSearch = (field) => (e) => {
       search[field] = e.target.value;
-      $update(); 
+      $update();
     };
 
     $on('pageBeforeIn', () => {
-      $store.dispatch('fetchSchedules').then(() => { $update(); });
+      $store.dispatch('fetchSchedules').then(() => {
+        $update();
+      });
     });
 
     const formatK = (val) => {
-      if(!val) return '0';
+      if (!val) return '0';
       return (val / 1000) + 'k';
     };
 
     const searchTickets = () => {
       if (!search.origin || !search.destination) {
-        $f7.dialog.alert("Pilih rute dulu, Bos!");
+        $f7.dialog.alert("Pilih rute dulu!");
         return;
       }
+
       $router.navigate(`/search-results/?origin=${search.origin}&destination=${search.destination}&date=${search.date}`);
     };
 
     const openProfileMenu = () => {
       const user = $store.getters.currentUser.value || {};
+
       $f7.actions.create({
         buttons: [
           [{ text: `Halo, ${user.nama || 'User'}`, label: true }],
-          [{ 
-              text: 'Logout', 
-              color: 'red',
-              bold: true,
-              onClick: () => {
-                $f7.dialog.confirm('Logout?', 'Travel-In', () => {
-                  $store.dispatch('logoutUser').then(() => $router.navigate('/'));
-                });
-              }
+          [{
+            text: 'Logout',
+            color: 'red',
+            bold: true,
+            onClick: () => {
+              $f7.dialog.confirm('Logout?', 'Travel-In', () => {
+                $store.dispatch('logoutUser').then(() => $router.navigate('/'));
+              });
+            }
           }]
         ]
       }).open();
     };
 
-    const goToDetail = (id) => { $router.navigate(`/travel/${id}/`); };
+    const goToDetail = (id) => {
+      $router.navigate(`/travel/${id}/`);
+    };
 
     return $render;
   };
 </script>
 
 <style>
-  .home-page-content { background: #F8F9FA; }
-  .font-sf-heavy { font-family: -apple-system, sans-serif !important; font-weight: 900; letter-spacing: -0.03em; }
-  .font-sf-bold { font-family: -apple-system, sans-serif !important; font-weight: 700; }
-  
-  /* HEADER */
-  .wireframe-header-user { padding: 60px 25px 20px 25px; background: #FFF; border-bottom: 1px solid #F2F2F7; }
-  .header-inner-sketsa { display: flex; justify-content: space-between; align-items: center; }
-  .circle-avatar-wireframe { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #000; object-fit: cover; }
+  .home-page {
+    background: #F8F9FA !important;
+  }
 
-  /* PROMO */
-  .promo-card-wireframe { background: #000; border-radius: 24px; padding: 25px 20px; color: #FFF; }
-  .promo-badge-sketsa { background: #FFB300; color: #000; padding: 2px 10px; border-radius: 6px; font-size: 9px; display: inline-block; margin-bottom: 8px; }
-  .promo-title-sketsa { font-size: 19px; line-height: 1.1; }
+  .home-page-content {
+    background: #F8F9FA;
+    padding-top: 0 !important;
+    padding-bottom: 110px !important;
+  }
 
-  /* SEARCH CARD */
-  .search-card-wireframe { background: #FFF; border-radius: 28px; padding: 25px; margin-top: -30px; border: 1px solid #F2F2F7; }
-  .label-sketsa { font-size: 10px; color: #8E8E93; display: block; margin-bottom: 5px; }
-  .search-card-wireframe input { width: 100%; border: none; border-bottom: 2px solid #F2F2F7; padding: 10px 0; font-size: 15px; outline: none; background: transparent; }
-  .btn-cari-sketsa { background: #000 !important; height: 54px !important; border-radius: 16px !important; color: #FFF !important; }
+  .font-sf-heavy {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+  }
 
-  /* JADWAL LIST */
-  .ios-schedule-card-wireframe { background: #FFF; border-radius: 20px; padding: 18px; display: flex; align-items: center; margin-bottom: 12px; border: 1px solid #F2F2F7; }
-  .card-center-sketsa { flex: 1; margin-left: 20px; }
-  .status-ready-sketsa { font-size: 9px; color: #34C759; }
+  .font-sf-bold {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif !important;
+    font-weight: 700;
+  }
 
-  /* --- PREMIUM IOS TOOLBAR FIXED --- */
-  .ios-premium-nav-container {
-    position: fixed;
-    bottom: 30px;
-    left: 20px;
-    right: 20px;
-    height: 72px;
-    /* Z-INDEX TINGGI AGAR TIDAK TERTUTUP APAPUN */
-    z-index: 10000 !important; 
-    display: flex !important;
+  .text-gold {
+    color: #FFB300 !important;
+  }
+
+  .text-gray {
+    color: #8E8E93;
+  }
+
+  .wireframe-header-user {
+    padding: 60px 25px 20px 25px;
+    background: #FFF;
+    border-bottom: 1px solid #F2F2F7;
+  }
+
+  .header-inner-sketsa {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    pointer-events: auto;
   }
-  .ios-premium-nav-blur {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 26px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+
+  .circle-avatar-wireframe {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid #000;
+    object-fit: cover;
   }
-  .ios-premium-nav-inner {
-    position: relative;
-    z-index: 10001;
+
+  .promo-card-wireframe {
+    background: #000;
+    border-radius: 24px;
+    padding: 25px 20px;
+    color: #FFF;
+  }
+
+  .promo-badge-sketsa {
+    background: #FFB300;
+    color: #000;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 9px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+
+  .promo-title-sketsa {
+    font-size: 19px;
+    line-height: 1.1;
+  }
+
+  .search-card-wireframe {
+    background: #FFF;
+    border-radius: 28px;
+    padding: 25px;
+    margin-top: -30px;
+    border: 1px solid #F2F2F7;
+    box-shadow: 0 16px 35px rgba(0,0,0,0.06);
+  }
+
+  .label-sketsa {
+    font-size: 10px;
+    color: #8E8E93;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .search-card-wireframe input {
     width: 100%;
+    border: none;
+    border-bottom: 2px solid #F2F2F7;
+    padding: 10px 0;
+    font-size: 15px;
+    outline: none;
+    background: transparent;
+  }
+
+  .btn-cari-sketsa {
+    background: #FFD43B !important;
+    height: 54px !important;
+    border-radius: 16px !important;
+    color: #000 !important;
+  }
+
+  .ios-schedule-card-wireframe {
+    background: #FFF;
+    border-radius: 20px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    border: 1px solid #F2F2F7;
+    box-shadow: 0 12px 25px rgba(0,0,0,0.05);
+  }
+
+  .card-center-sketsa {
+    flex: 1;
+    margin-left: 20px;
+  }
+
+  .time-label-sketsa {
+    font-size: 15px;
+    color: #111;
+  }
+
+  .unit-label-sketsa {
+    font-size: 10px;
+  }
+
+  .route-text-sketsa {
+    font-size: 13px;
+    color: #111;
+  }
+
+  .status-ready-sketsa {
+    font-size: 9px;
+    color: #34C759;
+  }
+
+  .price-text-sketsa {
+    font-size: 15px;
+  }
+
+  .empty-schedule {
+    text-align: center;
+    opacity: 0.25;
+    padding: 40px 0;
+  }
+
+  .bottom-tabbar-wireframe {
+    position: fixed;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+    height: 68px;
+    background: #FFFFFF;
+    border: 2px solid #000;
+    border-radius: 22px;
     display: flex;
     justify-content: space-around;
     align-items: center;
+    z-index: 99999;
+    box-shadow: 0 18px 35px rgba(0,0,0,0.14);
   }
-  .nav-item { color: rgba(255, 255, 255, 0.35); text-decoration: none; }
-  .nav-item iconify-icon { font-size: 30px; }
-  .nav-item.active { color: #FFB300; transform: translateY(-2px); }
-  .active-dot { width: 4px; height: 4px; background: #FFB300; border-radius: 50%; margin-top: 4px; display: block; margin-left: auto; margin-right: auto; }
 
-  .text-gold { color: #FFB300 !important; }
-  .text-gray { color: #8E8E93; }
+  .tab-item {
+    flex: 1;
+    height: 100%;
+    color: #111 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none !important;
+    gap: 4px;
+    font-weight: 900;
+  }
+
+  .tab-item i {
+    font-size: 22px;
+  }
+
+  .tab-item span {
+    font-size: 10px;
+  }
+
+  .tab-item.active {
+    color: #FFB300 !important;
+  }
 </style>
