@@ -56,7 +56,7 @@
                 <td class="text-right font-bold">Rp ${formatShortRupiah(item.revenue)}</td>
               </tr>
               `).join('')}
-            ${getGroupedData().length === 0 ? `<tr><td colspan="3" class="text-center">Tidak ada data</td></tr>` : ''}
+            <tr><td colspan="3" class="text-center">Tidak ada data</td></tr>
           </tbody>
         </table>
       </div>

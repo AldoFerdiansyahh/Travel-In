@@ -150,12 +150,12 @@
 </style>
 
 <script>
-  export default (props, { $f7, $store }) => {
+  export default (props, { $f7, $store, $on }) => {
     const ticketId = (props.route && props.route.params && props.route.params.ticketId) || '';
     
-    // Ambil data tiket dari store
-    const ticket = $store.getters.tickets.value.find((item) => item.id === ticketId) || { 
-      id: 'TIN-UNKNOWN', 
+    // Default ticket
+    let ticket = { 
+      id: ticketId || 'TIN-UNKNOWN', 
       passenger: 'ALDO FERDIANSYAH', 
       route: 'BANDUNG → JAKARTA', 
       date: '12 MEI 2026',
@@ -163,6 +163,25 @@
       vehicle: 'HIACE LUXURY',
       price: 0 
     };
+
+    // Cek di store dulu
+    const allTickets = $store.getters.tickets.value || [];
+    const foundTicket = allTickets.find((item) => item.id === ticketId);
+    
+    if (foundTicket) {
+      ticket = foundTicket;
+    } else {
+      // Jika tidak ketemu, fetch dari Firebase
+      $store.dispatch('fetchTickets').then(() => {
+        const ticketsAfterFetch = $store.getters.tickets.value || [];
+        const newFoundTicket = ticketsAfterFetch.find((item) => item.id === ticketId);
+        if (newFoundTicket) {
+          ticket = newFoundTicket;
+        }
+      }).catch(err => {
+        console.error('Error fetching tickets:', err);
+      });
+    }
 
     const saveToGallery = () => {
       $f7.dialog.preloader('Menyimpan ke Galeri...');

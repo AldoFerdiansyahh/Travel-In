@@ -121,13 +121,31 @@
       }).open();
     };
 
-    const goToETicket = () => {
-      const tickets = $store.getters.tickets.value || [];
+    const goToETicket = async () => {
+      $f7.dialog.preloader('Mengambil tiket...');
 
-      if (tickets.length > 0) {
-        $router.navigate(`/e-ticket/${tickets[0].id}/`);
-      } else {
-        $f7.dialog.alert('Belum ada tiket yang tersedia.');
+      try {
+        await $store.dispatch('fetchTickets');
+        const tickets = $store.getters.tickets.value || [];
+        const currentUser = $store.getters.currentUser.value || {};
+        const userEmail = currentUser.email || null;
+
+        // Filter hanya tiket milik user saat ini (jika email tersedia)
+        const userTickets = userEmail
+          ? tickets.filter((t) => t.customerEmail === userEmail)
+          : tickets.filter((t) => String(t.customerName || '').toLowerCase() === String(currentUser.nama || '').toLowerCase());
+
+        if (userTickets.length > 0) {
+          $f7.dialog.close();
+          $router.navigate(`/e-ticket/${userTickets[0].id}/`);
+        } else {
+          $f7.dialog.close();
+          $f7.dialog.alert('Belum ada tiket yang tersedia.');
+        }
+      } catch (error) {
+        $f7.dialog.close();
+        $f7.dialog.alert('Gagal mengambil data tiket!');
+        console.error(error);
       }
     };
 
