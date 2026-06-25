@@ -49,36 +49,24 @@
             </tr>
           </thead>
           <tbody>
-            ${getGroupedData().map((item) => `
+            ${getGroupedData().length > 0 ? getGroupedData().map((item) => `
               <tr>
                 <td class="text-left">${item.date}</td>
                 <td class="text-center">${item.count}</td>
                 <td class="text-right font-bold">Rp ${formatShortRupiah(item.revenue)}</td>
               </tr>
-              `).join('')}
-            <tr><td colspan="3" class="text-center">Tidak ada data</td></tr>
+            `).join('') : '<tr><td colspan="3" class="text-center" style="padding:20px;">Tidak ada data</td></tr>'}
           </tbody>
         </table>
       </div>
 
       <div class="download-section">
+        <button class="button button-large button-fill color-black" @click="${generateDatabaseReport}">
+          INISIALISASI DATABASE & LAPORAN
+        </button>
         <button class="button button-large button-outline color-black" @click="${exportToPDF}">
           DOWNLOAD LAPORAN (PDF)
         </button>
-      </div>
-
-      <div class="section-subheader">Format Laporan Lainnya</div>
-      <div class="report-list">
-        <a href="#" class="report-item" @click="${exportToExcel}">
-          <div class="report-icon-wrapper bg-gray-soft">
-             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-          </div>
-          <div class="report-text">
-            <span class="report-title">Ekspor ke Excel</span>
-            <span class="report-desc">Data mentah untuk pengolahan lanjut</span>
-          </div>
-          <i class="icon f7-icons report-chevron">chevron_right</i>
-        </a>
       </div>
     </div>
   </div>
@@ -88,195 +76,104 @@
   .custom-admin-navbar { background: #ffffff !important; border-bottom: 1px solid #f1f5f9; }
   .page-title { color: #111827; font-weight: 900; font-size: 16px; }
   .admin-laporan-content { background-color: #fcfcfc; padding-bottom: 40px; }
-
-  /* TAB NAVIGATION STYLING */
-  .tab-navigation {
-    display: flex;
-    padding: 20px;
-    gap: 10px;
-  }
-  .tab-btn {
-    flex: 1;
-    background: #ffffff;
-    border: 1.5px solid #111827;
-    color: #111827;
-    padding: 8px 0;
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: 800;
-    cursor: pointer;
-  }
-  .tab-btn.active {
-    background: #111827;
-    color: #ffffff;
-  }
-
-  /* REVENUE CARD */
-  .revenue-card {
-    margin: 0 20px 24px;
-    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-    border-radius: 24px;
-    padding: 24px 20px;
-    position: relative;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  }
+  .tab-navigation { display: flex; padding: 20px; gap: 10px; }
+  .tab-btn { flex: 1; background: #ffffff; border: 1.5px solid #111827; color: #111827; padding: 8px 0; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; }
+  .tab-btn.active { background: #111827; color: #ffffff; }
+  .revenue-card { margin: 0 20px 24px; background: linear-gradient(135deg, #111827 0%, #1f2937 100%); border-radius: 24px; padding: 24px 20px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
   .revenue-label { font-size: 10px; font-weight: 800; color: #9ca3af; letter-spacing: 0.1em; }
   .revenue-amount { font-size: 28px; color: #ffffff; margin: 4px 0 0; font-weight: 900; }
-  .revenue-icon-box {
-    position: absolute; top: 24px; right: 20px;
-    background: rgba(247, 201, 16, 0.15);
-    width: 44px; height: 44px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-  }
+  .revenue-icon-box { position: absolute; top: 24px; right: 20px; background: rgba(247, 201, 16, 0.15); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
   .revenue-icon-box i { color: #f7c910; font-size: 22px; }
   .revenue-divider { height: 1px; background: rgba(255, 255, 255, 0.1); margin: 20px 0 16px; }
   .footer-text-white { font-size: 13px; color: #ffffff; font-weight: 500; }
-
-  /* TABLE REKAP STYLING */
-  .section-subheader-row {
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    font-weight: 900;
-    color: #111827;
-  }
+  .section-subheader-row { padding: 10px 20px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 900; color: #111827; }
   .sub-indicator { width: 4px; height: 16px; background: #111827; border-radius: 2px; }
-  
   .table-container { padding: 0 20px; margin-bottom: 20px; }
   .rekap-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-  .rekap-table th {
-    padding: 12px 0;
-    border-bottom: 2px solid #111827;
-    font-size: 11px;
-    color: #64748b;
-    font-weight: 800;
-  }
-  .rekap-table td {
-    padding: 16px 0;
-    border-bottom: 1px solid #f1f5f9;
-    font-size: 13px;
-    color: #111827;
-    font-weight: 600;
-  }
-
+  .rekap-table th { padding: 12px 0; border-bottom: 2px solid #111827; font-size: 11px; color: #64748b; font-weight: 800; }
+  .rekap-table td { padding: 16px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #111827; font-weight: 600; }
   .download-section { padding: 10px 20px 30px; }
-  .download-section .button {
-    border: 1.5px solid #e2e8f0 !important;
-    font-weight: 800;
-    border-radius: 12px;
-    text-transform: uppercase;
-    font-size: 12px;
-    height: 50px;
-  }
-
-  /* LIST STYLE REUSE */
-  .section-subheader { padding: 10px 20px; font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; }
-  .report-list { padding: 0 20px; }
-  .report-item {
-    display: flex; align-items: center; background: #ffffff;
-    padding: 14px; border-radius: 16px; margin-bottom: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03); text-decoration: none;
-    border: 1px solid #f1f5f9;
-  }
-  .report-icon-wrapper { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 14px; }
-  .report-title { font-size: 14px; font-weight: 800; color: #111827; }
-  .report-desc { font-size: 11px; color: #64748b; }
-  .bg-gray-soft { background-color: #f1f5f9; color: #475569; }
+  .download-section .button { border: 1.5px solid #e2e8f0 !important; font-weight: 800; border-radius: 12px; text-transform: uppercase; font-size: 12px; height: 50px; }
 </style>
 
 <script>
   export default (props, { $f7, $store, $on, $update }) => {
-    // Default period berubah ke harian agar match dengan gambar 2
-    let period = 'harian'; 
-    let tickets = $store.getters.tickets.value || [];
-
-    const changePeriod = (p) => {
-      period = p;
-      $update();
+    let period = 'harian';
+    let payments = [];
+    
+    
+    const generateDatabaseReport = async () => {
+      $f7.preloader.show('Membuat koleksi laporan...');
+      try {
+        // Fungsi ini akan memicu pembuatan koleksi 'reports' di Firebase
+        await $store.dispatch('generateReport', { reportType: 'summary', period: period });
+        $f7.preloader.hide();
+        $f7.dialog.alert('Koleksi laporan berhasil dibuat di database!');
+      } catch (error) {
+        $f7.preloader.hide();
+        $f7.dialog.alert('Gagal: ' + error.message);
+      }
     };
+    
+    const changePeriod = (p) => { period = p; $update(); };
 
-    const parseTicketDate = (ticket) => {
-      if (!ticket.createdAt) return null;
-      if (ticket.createdAt.toDate) return ticket.createdAt.toDate();
-      return new Date(ticket.createdAt);
+    // Memperbaiki parsing tanggal & status agar lebih fleksibel
+    const parseDate = (item) => {
+      if (item.createdAt && item.createdAt.toDate) return item.createdAt.toDate();
+      if (item.paidAt && item.paidAt.toDate) return item.paidAt.toDate();
+      // Fallback jika tidak ada timestamp
+      return new Date(); 
     };
 
     const filterTicketsByPeriod = () => {
       const now = new Date();
-      return tickets.filter((ticket) => {
-        const ticketDate = parseTicketDate(ticket);
-        if (!ticketDate) return false;
+      return payments.filter((p) => {
+        // Cek status dengan fleksibel (mengecek paymentStatus ATAU status)
+        const statusVal = String(p.paymentStatus || p.status || '').toLowerCase();
+        const isPaid = statusVal === 'paid' || statusVal === 'success' || statusVal === 'completed';
         
-        // Filter Sukses Saja
-        const isPaid = ['success', 'completed', 'PAID'].includes(ticket.status);
         if (!isPaid) return false;
 
-        if (period === 'harian') {
-          return ticketDate.toDateString() === now.toDateString();
-        }
+        const date = parseDate(p);
+        if (!date || isNaN(date.getTime())) return false;
+        
+        if (period === 'harian') return date.toDateString() === now.toDateString();
         if (period === 'mingguan') {
           const sevenDaysAgo = new Date(now);
           sevenDaysAgo.setDate(now.getDate() - 7);
-          return ticketDate >= sevenDaysAgo && ticketDate <= now;
+          return date >= sevenDaysAgo;
         }
-        if (period === 'bulanan') {
-          return ticketDate.getMonth() === now.getMonth() && ticketDate.getFullYear() === now.getFullYear();
-        }
+        if (period === 'bulanan') return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
         return true;
       });
     };
 
-    // Fungsi tambahan untuk mengelompokkan data di tabel (Simulasi Data Per Hari)
     const getGroupedData = () => {
       const filtered = filterTicketsByPeriod();
       const groups = {};
       
-      filtered.forEach(t => {
-        const d = parseTicketDate(t);
-        const dateStr = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-        if (!groups[dateStr]) {
-          groups[dateStr] = { date: dateStr, count: 0, revenue: 0 };
-        }
+      filtered.forEach(p => {
+        const d = parseDate(p);
+        const dateStr = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
+        if (!groups[dateStr]) groups[dateStr] = { date: dateStr, count: 0, revenue: 0 };
         groups[dateStr].count += 1;
-        groups[dateStr].revenue += (Number(t.totalPrice) || Number(t.price) || 0);
+        groups[dateStr].revenue += Number(p.amount || 0);
       });
 
       return Object.values(groups).sort((a, b) => new Date(b.date) - new Date(a.date));
     };
 
-    const calculateTotalRevenue = () => {
-      return filterTicketsByPeriod()
-        .reduce((sum, t) => sum + (Number(t.totalPrice) || Number(t.price) || 0), 0);
-    };
-
-    const formatRupiah = (val) => Number(val || 0).toLocaleString('id-ID');
-    
-    // Format K (misal 2.450k) sesuai gambar 2
-    const formatShortRupiah = (val) => {
-        const num = Number(val || 0);
-        if (num >= 1000) return (num/1000).toLocaleString('id-ID') + 'k';
-        return num;
-    };
+    const calculateTotalRevenue = () => filterTicketsByPeriod().reduce((sum, p) => sum + Number(p.amount || 0), 0);
+    const formatRupiah = (val) => Number(val).toLocaleString('id-ID');
+    const formatShortRupiah = (val) => (val >= 1000 ? (val/1000).toLocaleString('id-ID') + 'k' : val.toLocaleString('id-ID'));
 
     $on('pageBeforeIn', async () => {
-      await $store.dispatch('fetchTickets');
-      tickets = $store.getters.tickets.value || [];
+      await $store.dispatch('fetchPayments');
+      payments = $store.getters.payments.value || [];
       $update();
     });
 
-    const exportToExcel = (e) => {
-      if (e) e.preventDefault();
-      $f7.dialog.preloader('Menyiapkan Excel...');
-      setTimeout(() => { $f7.preloader.hide(); $f7.dialog.alert('Berhasil diekspor!', 'Sukses'); }, 1000);
-    };
-
-    const exportToPDF = (e) => {
-      if (e) e.preventDefault();
-      $f7.dialog.preloader('Menghasilkan PDF...');
-      setTimeout(() => { $f7.preloader.hide(); $f7.dialog.alert('PDF berhasil diunduh!', 'Sukses'); }, 1000);
-    };
+    const exportToPDF = () => $f7.dialog.alert('Fitur download PDF sedang disiapkan.');
 
     return $render;
   };
