@@ -3,7 +3,7 @@
 
     <div class="pay-hero">
       <div class="pay-nav">
-        <a href="/admin/" @click="${goBack}" class="pay-back">
+        <a href="#" @click="${goBack}" class="pay-back">
           <i class="f7-icons">chevron_left</i>
         </a>
 
@@ -48,8 +48,8 @@
           <div class="pay-card">
             <div class="pay-card-head">
               <div>
-                <div class="pay-code">#${payment.id}</div>
-                <h2>${payment.passenger}</h2>
+                <div class="pay-code">#${payment.ticketId || payment.id}</div>
+                <h2>${payment.passenger || 'Penumpang'}</h2>
               </div>
 
               <div class="pay-badge ${payment.status === 'Paid' ? 'paid' : 'pending'}">
@@ -60,11 +60,11 @@
             <div class="pay-route-box">
               <div>
                 <span>RUTE</span>
-                <strong>${payment.route}</strong>
+                <strong>${payment.route || '-'}</strong>
               </div>
               <div>
                 <span>METODE</span>
-                <strong>${payment.method}</strong>
+                <strong>${payment.method || '-'}</strong>
               </div>
             </div>
 
@@ -73,7 +73,7 @@
                 <span>TOTAL PEMBAYARAN</span>
                 <h3>Rp ${formatRupiah(payment.amount)}</h3>
               </div>
-              <div class="pay-date">${payment.date}</div>
+              <div class="pay-date">${payment.date || '-'}</div>
             </div>
 
             <div class="pay-action-row">
@@ -100,364 +100,114 @@
 </template>
 
 <style>
-  .pay-page {
-    background: #F5F6FA !important;
-  }
-
-  .pay-hero {
-    background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFF 100%);
-    padding: 48px 18px 22px 18px;
-    border-bottom-left-radius: 32px;
-    border-bottom-right-radius: 32px;
-    box-shadow: 0 18px 38px rgba(0,0,0,0.05);
-  }
-
-  .pay-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 26px;
-  }
-
-  .pay-back {
-    width: auto;
-    height: auto;
-    border-radius: 0;
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #111 !important;
-    padding: 0;
-    box-shadow: none;
-    }
-
-    .pay-back i {
-    font-size: 22px;
-    font-weight: 900;
-    }
-
-  .pay-status {
-    background: #111;
-    color: #FFF;
-    border-radius: 999px;
-    padding: 8px 12px;
-    font-size: 9px;
-    font-weight: 900;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .pay-status span {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #34C759;
-  }
-
-  .pay-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .pay-icon {
-    width: 54px;
-    height: 54px;
-    border-radius: 20px;
-    background: #EAFBF0;
-    color: #34C759;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .pay-icon i {
-    font-size: 26px;
-  }
-
-  .pay-title-wrap p {
-    margin: 0 0 5px 0;
-    font-size: 10px;
-    color: #9A9AA2;
-    font-weight: 800;
-  }
-
-  .pay-title-wrap h1 {
-    margin: 0;
-    font-size: 28px;
-    line-height: 1;
-    color: #111;
-    font-weight: 900;
-    letter-spacing: -0.06em;
-  }
-
-  .pay-content {
-    padding: 18px 16px 40px 16px !important;
-  }
-
-  .pay-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 22px;
-  }
-
-  .pay-stat-card {
-    background: #FFFFFF;
-    border-radius: 20px;
-    padding: 14px 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.04);
-    border: 1px solid rgba(0,0,0,0.03);
-  }
-
-  .pay-stat-card small {
-    display: block;
-    font-size: 9px;
-    color: #9A9AA2;
-    font-weight: 900;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-  }
-
-  .pay-stat-card strong {
-    font-size: 25px;
-    color: #111;
-    font-weight: 900;
-  }
-
-  .pay-stat-card.warning {
-    background: #FFF5E8;
-  }
-
-  .pay-stat-card.success {
-    background: #EAFBF0;
-  }
-
-  .pay-section-title {
-    font-size: 10px;
-    color: #A0A0A8;
-    font-weight: 900;
-    margin: 0 4px 12px 4px;
-    letter-spacing: 0.8px;
-  }
-
-  .pay-card {
-    background: #FFFFFF;
-    border-radius: 26px;
-    padding: 17px;
-    margin-bottom: 14px;
-    box-shadow: 0 14px 34px rgba(0,0,0,0.06);
-    border: 1px solid rgba(0,0,0,0.03);
-  }
-
-  .pay-card-head {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    align-items: flex-start;
-    margin-bottom: 15px;
-  }
-
-  .pay-code {
-    font-size: 10px;
-    color: #A0A0A8;
-    font-weight: 900;
-    margin-bottom: 5px;
-  }
-
-  .pay-card h2 {
-    margin: 0;
-    font-size: 19px;
-    font-weight: 900;
-    color: #111;
-    letter-spacing: -0.05em;
-  }
-
-  .pay-badge {
-    padding: 7px 10px;
-    border-radius: 999px;
-    font-size: 9px;
-    font-weight: 900;
-  }
-
-  .pay-badge.pending {
-    background: #FFF1E0;
-    color: #FF9500;
-  }
-
-  .pay-badge.paid {
-    background: #EAFBF0;
-    color: #1E9E4A;
-  }
-
-  .pay-route-box {
-    display: grid;
-    grid-template-columns: 1.3fr 0.7fr;
-    gap: 12px;
-    background: #F7F8FA;
-    border-radius: 20px;
-    padding: 14px;
-    margin-bottom: 14px;
-  }
-
-  .pay-route-box span,
-  .pay-total-row span {
-    display: block;
-    font-size: 8px;
-    color: #A0A0A8;
-    font-weight: 900;
-    margin-bottom: 5px;
-  }
-
-  .pay-route-box strong {
-    display: block;
-    font-size: 12px;
-    color: #111;
-    font-weight: 900;
-    line-height: 1.3;
-  }
-
-  .pay-total-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-
-  .pay-total-row h3 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: -0.05em;
-    color: #34C759;
-  }
-
-  .pay-date {
-    background: #F1F2F6;
-    color: #111;
-    font-size: 10px;
-    font-weight: 900;
-    padding: 8px 10px;
-    border-radius: 999px;
-  }
-
-  .pay-action-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 0.8fr;
-    gap: 8px;
-  }
-
-  .pay-action {
-    height: 38px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    font-size: 10px;
-    font-weight: 900;
-  }
-
-  .pay-action i {
-    font-size: 14px;
-  }
-
-  .pay-action.approve {
-    background: #EAFBF0;
-    color: #1E9E4A !important;
-  }
-
-  .pay-action.reject {
-    background: #FFECEC;
-    color: #FF3B30 !important;
-  }
-
-  .pay-action.detail {
-    background: #111;
-    color: #FFF !important;
-  }
+  .pay-page { background: #F5F6FA !important; }
+  .pay-hero { background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFF 100%); padding: 48px 18px 22px 18px; border-bottom-left-radius: 32px; border-bottom-right-radius: 32px; box-shadow: 0 18px 38px rgba(0,0,0,0.05); }
+  .pay-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 26px; }
+  .pay-back { width: auto; height: auto; border-radius: 0; background: transparent; display: flex; align-items: center; justify-content: center; color: #111 !important; padding: 0; box-shadow: none; }
+  .pay-back i { font-size: 22px; font-weight: 900; }
+  .pay-status { background: #111; color: #FFF; border-radius: 999px; padding: 8px 12px; font-size: 9px; font-weight: 900; display: flex; align-items: center; gap: 6px; }
+  .pay-status span { width: 7px; height: 7px; border-radius: 50%; background: #34C759; }
+  .pay-title-wrap { display: flex; align-items: center; gap: 14px; }
+  .pay-icon { width: 54px; height: 54px; border-radius: 20px; background: #EAFBF0; color: #34C759; display: flex; align-items: center; justify-content: center; }
+  .pay-icon i { font-size: 26px; }
+  .pay-title-wrap p { margin: 0 0 5px 0; font-size: 10px; color: #9A9AA2; font-weight: 800; }
+  .pay-title-wrap h1 { margin: 0; font-size: 28px; line-height: 1; color: #111; font-weight: 900; letter-spacing: -0.06em; }
+  .pay-content { padding: 18px 16px 40px 16px !important; }
+  .pay-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 22px; }
+  .pay-stat-card { background: #FFFFFF; border-radius: 20px; padding: 14px 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.03); }
+  .pay-stat-card small { display: block; font-size: 9px; color: #9A9AA2; font-weight: 900; margin-bottom: 8px; text-transform: uppercase; }
+  .pay-stat-card strong { font-size: 25px; color: #111; font-weight: 900; }
+  .pay-stat-card.warning { background: #FFF5E8; }
+  .pay-stat-card.success { background: #EAFBF0; }
+  .pay-section-title { font-size: 10px; color: #A0A0A8; font-weight: 900; margin: 0 4px 12px 4px; letter-spacing: 0.8px; }
+  .pay-card { background: #FFFFFF; border-radius: 26px; padding: 17px; margin-bottom: 14px; box-shadow: 0 14px 34px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.03); }
+  .pay-card-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 15px; }
+  .pay-code { font-size: 10px; color: #A0A0A8; font-weight: 900; margin-bottom: 5px; }
+  .pay-card h2 { margin: 0; font-size: 19px; font-weight: 900; color: #111; letter-spacing: -0.05em; }
+  .pay-badge { padding: 7px 10px; border-radius: 999px; font-size: 9px; font-weight: 900; }
+  .pay-badge.pending { background: #FFF1E0; color: #FF9500; }
+  .pay-badge.paid { background: #EAFBF0; color: #1E9E4A; }
+  .pay-route-box { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 12px; background: #F7F8FA; border-radius: 20px; padding: 14px; margin-bottom: 14px; }
+  .pay-route-box span, .pay-total-row span { display: block; font-size: 8px; color: #A0A0A8; font-weight: 900; margin-bottom: 5px; }
+  .pay-route-box strong { display: block; font-size: 12px; color: #111; font-weight: 900; line-height: 1.3; }
+  .pay-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .pay-total-row h3 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: -0.05em; color: #34C759; }
+  .pay-date { background: #F1F2F6; color: #111; font-size: 10px; font-weight: 900; padding: 8px 10px; border-radius: 999px; }
+  .pay-action-row { display: grid; grid-template-columns: 1fr 1fr 0.8fr; gap: 8px; }
+  .pay-action { height: 38px; border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 10px; font-weight: 900; cursor: pointer; }
+  .pay-action i { font-size: 14px; }
+  .pay-action.approve { background: #EAFBF0; color: #1E9E4A !important; }
+  .pay-action.reject { background: #FFECEC; color: #FF3B30 !important; }
+  .pay-action.detail { background: #111; color: #FFF !important; }
 </style>
 
 <script>
-  export default (props, { $f7, $router, $update }) => {
-    let payments = [
-      {
-        id: 'PAY-001',
-        ticketId: 'TCK-001',
-        passenger: 'Aldo Ferdiansyah',
-        route: 'Bandung - Jakarta',
-        method: 'Transfer',
-        amount: 150000,
-        date: '28/05/2026',
-        status: 'Pending',
-      },
-      {
-        id: 'PAY-002',
-        ticketId: 'TCK-002',
-        passenger: 'Andi Aryanto',
-        route: 'Bandung - Bogor',
-        method: 'QRIS',
-        amount: 125000,
-        date: '28/05/2026',
-        status: 'Paid',
-      },
-    ];
+export default (props, { $f7, $f7router, $update, $store, $on }) => {
+  let payments = [];
+  let pendingCount = 0;
+  let paidCount = 0;
 
-    let pendingCount = payments.filter((item) => item.status === 'Pending').length;
-    let paidCount = payments.filter((item) => item.status === 'Paid').length;
+  const formatRupiah = (val) => val ? Number(val).toLocaleString('id-ID') : '0';
 
-    const formatRupiah = (value) => {
-      return value.toLocaleString('id-ID');
-    };
-
-    const refreshCount = () => {
-      pendingCount = payments.filter((item) => item.status === 'Pending').length;
-      paidCount = payments.filter((item) => item.status === 'Paid').length;
-    };
-
-    const goBack = (e) => {
-      if (e && e.preventDefault) e.preventDefault();
-      $router.navigate('/admin/');
-    };
-
-    const verifyPayment = (id) => {
-      payments = payments.map((item) => {
-        if (item.id === id) {
-          return { ...item, status: 'Paid' };
-        }
-        return item;
-      });
-
-      refreshCount();
-
-      $f7.toast.create({
-        text: 'Pembayaran berhasil diverifikasi',
-        closeTimeout: 2000,
-      }).open();
-
-      $update();
-    };
-
-    const rejectPayment = (id) => {
-      $f7.dialog.confirm('Yakin ingin menolak pembayaran ini?', 'Konfirmasi', () => {
-        payments = payments.filter((item) => item.id !== id);
-        refreshCount();
-
-        $f7.toast.create({
-          text: 'Pembayaran ditolak',
-          closeTimeout: 2000,
-        }).open();
-
-        $update();
-      });
-    };
-
-    const viewTicket = (ticketId) => {
-      $router.navigate('/admin/tickets/');
-    };
-
-    return $render;
+  const refreshStats = () => {
+    pendingCount = payments.filter(i => i.status === 'Pending').length;
+    paidCount = payments.filter(i => i.status === 'Paid').length;
   };
+
+  const goBack = () => {
+    $f7router.back();
+  };
+
+  $on('pageBeforeIn', async () => {
+    $f7.preloader.show('Memuat data...');
+    await $store.dispatch('fetchPayments');
+    payments = $store.getters.payments.value || [];
+    refreshStats();
+    $f7.preloader.hide();
+    $update();
+  });
+
+  const verifyPayment = async (id) => {
+    $f7.preloader.show('Memverifikasi...');
+    try {
+      await $store.dispatch('updatePayment', { id: id, status: 'Paid' });
+      await $store.dispatch('fetchPayments');
+      payments = $store.getters.payments.value || [];
+      refreshStats();
+      $f7.preloader.hide();
+      $f7.toast.create({ text: 'Pembayaran Lunas!', closeTimeout: 2000 }).open();
+      $update();
+    } catch (err) {
+      $f7.preloader.hide();
+      $f7.dialog.alert('Gagal: ' + err.message);
+    }
+  };
+
+  const rejectPayment = (id) => {
+    $f7.dialog.confirm('Tolak pembayaran ini?', 'Konfirmasi', async () => {
+        $f7.preloader.show('Menolak...');
+        try {
+            await $store.dispatch('updatePayment', { id: id, status: 'Rejected' });
+            await $store.dispatch('fetchPayments');
+            payments = $store.getters.payments.value || [];
+            refreshStats();
+            $f7.preloader.hide();
+            $update();
+        } catch (err) {
+            $f7.preloader.hide();
+            $f7.dialog.alert('Gagal menolak.');
+        }
+    });
+  };
+
+  const viewTicket = (ticketId) => {
+    if (ticketId) {
+      $f7router.navigate(`/e-ticket/${ticketId}/`);
+    } else {
+      $f7.dialog.alert('ID Tiket tidak ditemukan.');
+    }
+  };
+
+  return $render;
+};
 </script>

@@ -1,0 +1,53 @@
+<template>
+  <div class="page custom-bg" data-name="my-tickets">
+    <div class="navbar custom-navbar">
+      <div class="navbar-bg bg-white"></div>
+      <div class="navbar-inner sliding">
+        <div class="left"><a href="#" class="link back text-black"><i class="f7-icons">chevron_left</i></a></div>
+        <div class="title font-sf-heavy text-15 uppercase text-black">RIWAYAT TIKET</div>
+      </div>
+    </div>
+
+    <div class="page-content" style="padding: 20px 16px;">
+      ${tickets.length > 0 ? tickets.map((ticket) => $h`
+        <div class="ios-card margin-bottom-custom" @click="${() => $f7router.navigate('/e-ticket/' + ticket.id + '/')}">
+          <div class="flex-between">
+            <h2 class="font-sf-heavy text-16 text-black no-margin">${ticket.route}</h2>
+            <span class="badge ${ticket.paymentStatus === 'Paid' ? 'bg-green' : 'bg-orange'}">${ticket.paymentStatus}</span>
+          </div>
+          <p class="font-sf-medium text-12 text-gray mt-2">${ticket.date}</p>
+          <div class="font-sf-bold text-12 text-black mt-2">ID: #${ticket.id.substring(ticket.id.length - 8)}</div>
+        </div>
+      `) : $h`
+        <div class="text-center margin-top">
+          <p class="font-sf-medium text-gray">Belum ada riwayat tiket.</p>
+        </div>
+      `}
+    </div>
+  </div>
+</template>
+
+<style>
+  .bg-green { background: #34C759; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 10px; }
+  .bg-orange { background: #FF9500; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 10px; }
+  .ios-card { background: #FFF; border-radius: 16px; padding: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.04); }
+  .margin-bottom-custom { margin-bottom: 16px; }
+</style>
+
+<script>
+export default (props, { $f7, $f7router, $store, $update, $on }) => {
+  let tickets = [];
+  const currentUser = $store.getters.currentUser.value || {};
+
+  $on('pageBeforeIn', async () => {
+    $f7.preloader.show();
+    await $store.dispatch('fetchTickets');
+    const allTickets = $store.getters.tickets.value || [];
+    tickets = allTickets.filter(t => t.userId === currentUser.uid);
+    $f7.preloader.hide();
+    $update();
+  });
+
+  return $render;
+};
+</script>

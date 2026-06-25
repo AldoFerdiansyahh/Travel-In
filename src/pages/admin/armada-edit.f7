@@ -1,0 +1,583 @@
+<template>
+  <div class="page no-toolbar bg-soft-ios" data-name="admin-armada-edit">
+
+    <div class="edit-header-ios">
+      <div class="header-top-sketsa">
+        <a href="/admin/armadas/" @click="${goBack}" class="back-btn-ios">
+          <i class="f7-icons">chevron_left</i>
+        </a>
+
+        <div class="status-pill-ios">
+          <span></span>
+          ${isEdit ? 'EDIT UNIT' : 'TAMBAH UNIT'}
+        </div>
+      </div>
+
+      <div class="header-inner-sketsa">
+        <div>
+          <p class="mini-label-ios font-sf-bold">Fleet Registration</p>
+          <h1 class="font-sf-heavy uppercase no-margin">
+            ${isEdit ? 'EDIT' : 'REGISTRASI'} <span>ARMADA</span>
+          </h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-content bg-soft-ios" style="padding-top: 0;">
+      <div class="form-wrapper-ios">
+
+        <div class="form-card-ios">
+
+          <div class="form-group-ios">
+            <label class="form-label-ios font-sf-bold">Nama Armada</label>
+            <input
+              type="text"
+              class="input-ios"
+              placeholder="Contoh: Toyota Calya / Hiace Premio"
+              value="${name}"
+              @input="${(e) => name = e.target.value}"
+            />
+          </div>
+
+          <div class="form-group-ios">
+            <label class="form-label-ios font-sf-bold">Kategori Armada</label>
+            <select class="input-ios select-ios" @change="${onCategoryChange}">
+              <option value="mobil_kecil" selected="${category === 'mobil_kecil' ? 'selected' : ''}">
+                Mobil Kecil - Maksimal 7 Orang
+              </option>
+              <option value="hiace_elf" selected="${category === 'hiace_elf' ? 'selected' : ''}">
+                Hiace / Elf - 18 sampai 21 Seat
+              </option>
+            </select>
+
+            <div class="helper-box-ios font-sf-bold">
+              ${getCategoryHelper()}
+            </div>
+          </div>
+
+          <div class="form-group-ios">
+            <label class="form-label-ios font-sf-bold">Kapasitas Kursi</label>
+            <input
+              type="number"
+              class="input-ios"
+              placeholder="Contoh: 7"
+              value="${capacity}"
+              @input="${(e) => capacity = e.target.value}"
+            />
+          </div>
+
+          <div class="form-group-ios">
+            <label class="form-label-ios font-sf-bold">Plat Nomor</label>
+            <input
+              type="text"
+              class="input-ios uppercase-input"
+              placeholder="Contoh: D 1990 ADO"
+              value="${plate}"
+              @input="${(e) => plate = e.target.value}"
+            />
+          </div>
+
+          <div class="form-group-ios">
+            <label class="form-label-ios font-sf-bold">Tahun Unit</label>
+            <input
+              type="number"
+              class="input-ios"
+              placeholder="Contoh: 2024"
+              value="${year}"
+              @input="${(e) => year = e.target.value}"
+            />
+          </div>
+
+          <div class="form-group-ios">
+            <label class="form-label-ios font-sf-bold">Fasilitas Utama</label>
+            <textarea
+              class="input-ios textarea-ios"
+              placeholder="Contoh: AC, Bagasi, Reclining Seat"
+              @input="${(e) => facilities = e.target.value}"
+            >${facilities}</textarea>
+          </div>
+
+          <div class="form-group-ios">
+            <label class="form-label-ios font-sf-bold">Status Armada</label>
+            <select class="input-ios select-ios" @change="${(e) => status = e.target.value}">
+              <option value="Available" selected="${status === 'Available' ? 'selected' : ''}">
+                Available / Siap Digunakan
+              </option>
+              <option value="In Service" selected="${status === 'In Service' ? 'selected' : ''}">
+                In Service / Tidak Aktif
+              </option>
+            </select>
+          </div>
+
+          <div class="button-row-ios">
+            <button class="button button-fill btn-save-ios font-sf-heavy" @click="${saveArmada}">
+              ${isEdit ? 'SIMPAN' : 'TAMBAH ARMADA'}
+            </button>
+
+            <a href="/admin/armadas/" @click="${goBack}" class="button btn-cancel-ios font-sf-heavy">
+              BATAL
+            </a>
+          </div>
+
+          ${isEdit ? $h`
+            <button class="button btn-delete-ios font-sf-heavy" @click="${deleteArmada}">
+              HAPUS ARMADA
+            </button>
+          ` : ''}
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+  .font-sf-heavy {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+  }
+
+  .font-sf-bold {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif !important;
+    font-weight: 700;
+  }
+
+  .bg-soft-ios {
+    background: #F5F6FA !important;
+  }
+
+  .edit-header-ios {
+    padding: 52px 20px 22px 20px;
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFF8DA 100%);
+    border-bottom-left-radius: 28px;
+    border-bottom-right-radius: 28px;
+    box-shadow: 0 16px 34px rgba(0,0,0,0.05);
+  }
+
+  .header-top-sketsa {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+
+  .back-btn-ios {
+    width: auto;
+    height: auto;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111 !important;
+    padding: 0;
+    box-shadow: none;
+    text-decoration: none !important;
+  }
+
+  .back-btn-ios i {
+    font-size: 24px;
+    font-weight: 900;
+  }
+
+  .status-pill-ios {
+    background: #111;
+    color: #FFF;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 9px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .status-pill-ios span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #FFD43B;
+  }
+
+  .header-inner-sketsa {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mini-label-ios {
+    margin: 0 0 5px 0;
+    font-size: 10px;
+    color: #9A9AA2;
+  }
+
+  .header-inner-sketsa h1 {
+    font-size: 27px;
+    line-height: 1.05;
+    color: #111;
+  }
+
+  .header-inner-sketsa h1 span {
+    color: #FFB000;
+  }
+
+  .form-wrapper-ios {
+    padding: 18px 16px 60px 16px;
+  }
+
+  .form-card-ios {
+    background: #FFFFFF;
+    border-radius: 26px;
+    padding: 20px;
+    box-shadow: 0 14px 34px rgba(0,0,0,0.06);
+  }
+
+  .form-group-ios {
+    margin-bottom: 16px;
+  }
+
+  .form-label-ios {
+    display: block;
+    font-size: 10px;
+    color: #9AA3B5;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+
+  .input-ios {
+    width: 100%;
+    height: 48px;
+    border: none;
+    outline: none;
+    background: #F5F6FA;
+    border-radius: 16px;
+    padding: 0 14px;
+    box-sizing: border-box;
+    color: #111;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    font-weight: 800;
+  }
+
+  .select-ios {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, #111 50%), linear-gradient(135deg, #111 50%, transparent 50%);
+    background-position: calc(100% - 20px) 20px, calc(100% - 14px) 20px;
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 38px;
+  }
+
+  .textarea-ios {
+    height: 92px;
+    padding-top: 14px;
+    resize: none;
+    line-height: 1.4;
+  }
+
+  .uppercase-input {
+    text-transform: uppercase;
+  }
+
+  .helper-box-ios {
+    margin-top: 8px;
+    background: #FFF6D6;
+    color: #9A6A00;
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .button-row-ios {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .btn-save-ios {
+    flex: 1;
+    height: 52px !important;
+    background: #FFD43B !important;
+    color: #111 !important;
+    border-radius: 999px !important;
+    box-shadow: 0 12px 24px rgba(255, 212, 59, 0.35);
+    letter-spacing: -0.02em;
+  }
+
+  .btn-cancel-ios {
+    flex: 1;
+    height: 52px !important;
+    background: #FFFFFF !important;
+    color: #111 !important;
+    border: 1.5px solid #FFD43B !important;
+    border-radius: 999px !important;
+    text-decoration: none !important;
+  }
+
+  .btn-delete-ios {
+    width: 100%;
+    height: 48px !important;
+    background: #FFECEC !important;
+    color: #FF3B30 !important;
+    border-radius: 999px !important;
+    margin-top: 12px;
+    border: none !important;
+  }
+</style>
+
+<script>
+  export default (props, { $store, $f7, $router, $f7route, $update, $on }) => {
+    let isEdit = false;
+    let armadaId = '';
+
+    let armadaCode = '';
+    let name = '';
+    let category = 'mobil_kecil';
+    let capacity = 7;
+    let plate = '';
+    let year = '2024';
+    let facilities = 'AC, Bagasi';
+    let status = 'Available';
+
+    const categoryMap = {
+      mobil_kecil: {
+        category: 'mobil_kecil',
+        categoryLabel: 'Mobil Kecil',
+        seatMin: 1,
+        seatMax: 7,
+        defaultCapacity: 7,
+        defaultFacilities: 'AC, Bagasi',
+        helper: 'Kategori mobil kecil digunakan untuk kendaraan kapasitas maksimal 7 orang. Contoh: Calya, Avanza, Xenia, Ertiga.',
+      },
+      hiace_elf: {
+        category: 'hiace_elf',
+        categoryLabel: 'Hiace / Elf',
+        seatMin: 18,
+        seatMax: 21,
+        defaultCapacity: 21,
+        defaultFacilities: 'Full AC, Reclining Seat, Bagasi',
+        helper: 'Kategori Hiace / Elf digunakan untuk rombongan besar dengan kapasitas 18 sampai 21 seat.',
+      },
+    };
+
+    const generateArmadaCode = () => {
+      return `ARM-${Date.now().toString().slice(-6)}`;
+    };
+
+    const getCategoryHelper = () => {
+      return categoryMap[category]?.helper || categoryMap.mobil_kecil.helper;
+    };
+
+    const resolveCategoryFromOldData = (armada) => {
+      if (armada.category) return armada.category;
+
+      const oldCapacity = Number(armada.capacity || 0);
+
+      if (oldCapacity >= 18 && oldCapacity <= 21) {
+        return 'hiace_elf';
+      }
+
+      return 'mobil_kecil';
+    };
+
+    const onCategoryChange = (e) => {
+      category = e.target.value;
+
+      const selectedCategory = categoryMap[category] || categoryMap.mobil_kecil;
+
+      capacity = selectedCategory.defaultCapacity;
+      facilities = selectedCategory.defaultFacilities;
+
+      $update();
+    };
+
+    const loadArmada = async () => {
+      armadaId = $f7route.query.id || '';
+      isEdit = !!armadaId;
+
+      if (!isEdit) {
+        armadaCode = generateArmadaCode();
+        name = '';
+        category = 'mobil_kecil';
+        capacity = 7;
+        plate = '';
+        year = '2024';
+        facilities = 'AC, Bagasi';
+        status = 'Available';
+        $update();
+        return;
+      }
+
+      await $store.dispatch('fetchArmadas');
+
+      const armadas = $store.getters.armadas.value || [];
+      const selectedArmada = armadas.find((item) => item.id === armadaId);
+
+      if (!selectedArmada) {
+        $f7.toast.create({
+          text: 'Data armada tidak ditemukan',
+          closeTimeout: 2000,
+        }).open();
+
+        $router.navigate('/admin/armadas/', {
+          reloadCurrent: true,
+          ignoreCache: true,
+        });
+
+        return;
+      }
+
+      armadaCode = selectedArmada.armadaCode || `ARM-${selectedArmada.id.substring(0, 6).toUpperCase()}`;
+      name = selectedArmada.name || '';
+      category = resolveCategoryFromOldData(selectedArmada);
+      capacity = Number(selectedArmada.capacity || categoryMap[category].defaultCapacity);
+      plate = selectedArmada.plate || '';
+      year = selectedArmada.year || '2024';
+      facilities = selectedArmada.facilities || categoryMap[category].defaultFacilities;
+      status = selectedArmada.status || 'Available';
+
+      $update();
+    };
+
+    const validateForm = () => {
+      const selectedCategory = categoryMap[category] || categoryMap.mobil_kecil;
+      const numericCapacity = Number(capacity || 0);
+
+      if (!name.trim()) {
+        return 'Nama armada wajib diisi';
+      }
+
+      if (!plate.trim()) {
+        return 'Plat nomor wajib diisi';
+      }
+
+      if (!year.toString().trim()) {
+        return 'Tahun unit wajib diisi';
+      }
+
+      if (!numericCapacity) {
+        return 'Kapasitas wajib diisi';
+      }
+
+      if (numericCapacity < selectedCategory.seatMin || numericCapacity > selectedCategory.seatMax) {
+        return `Kapasitas ${selectedCategory.categoryLabel} harus ${selectedCategory.seatMin} sampai ${selectedCategory.seatMax} seat`;
+      }
+
+      return null;
+    };
+
+    const saveArmada = async (e) => {
+      if (e && e.preventDefault) e.preventDefault();
+
+      const validationMessage = validateForm();
+
+      if (validationMessage) {
+        $f7.toast.create({
+          text: validationMessage,
+          closeTimeout: 2200,
+        }).open();
+
+        return;
+      }
+
+      const selectedCategory = categoryMap[category] || categoryMap.mobil_kecil;
+
+      const payload = {
+        armadaCode: armadaCode || generateArmadaCode(),
+        name: name.trim(),
+        category: selectedCategory.category,
+        categoryLabel: selectedCategory.categoryLabel,
+        seatMin: selectedCategory.seatMin,
+        seatMax: selectedCategory.seatMax,
+        capacity: Number(capacity),
+        plate: plate.trim().toUpperCase(),
+        year: year.toString().trim(),
+        facilities: facilities.trim(),
+        status: status || 'Available',
+      };
+
+      try {
+        if (isEdit) {
+          await $store.dispatch('updateArmada', {
+            id: armadaId,
+            ...payload,
+          });
+        } else {
+          await $store.dispatch('addArmada', payload);
+        }
+
+        $f7.toast.create({
+          text: isEdit ? 'Armada berhasil diperbarui' : 'Armada berhasil ditambahkan',
+          closeTimeout: 2000,
+        }).open();
+
+        $router.navigate('/admin/armadas/', {
+          reloadCurrent: true,
+          ignoreCache: true,
+        });
+      } catch (error) {
+        console.error('Gagal menyimpan armada:', error);
+
+        $f7.toast.create({
+          text: 'Gagal menyimpan armada',
+          closeTimeout: 2000,
+        }).open();
+      }
+    };
+
+    const deleteArmada = async (e) => {
+      if (e && e.preventDefault) e.preventDefault();
+
+      if (!isEdit || !armadaId) return;
+
+      $f7.dialog.confirm(
+        'Yakin ingin menghapus armada ini?',
+        'Hapus Armada',
+        async () => {
+          try {
+            await $store.dispatch('deleteArmada', armadaId);
+
+            $f7.toast.create({
+              text: 'Armada berhasil dihapus',
+              closeTimeout: 2000,
+            }).open();
+
+            $router.navigate('/admin/armadas/', {
+              reloadCurrent: true,
+              ignoreCache: true,
+            });
+          } catch (error) {
+            console.error('Gagal menghapus armada:', error);
+
+            $f7.toast.create({
+              text: 'Gagal menghapus armada',
+              closeTimeout: 2000,
+            }).open();
+          }
+        }
+      );
+    };
+
+    const goBack = (e) => {
+      if (e && e.preventDefault) e.preventDefault();
+      if (e && e.stopPropagation) e.stopPropagation();
+
+      $router.navigate('/admin/armadas/', {
+        reloadCurrent: true,
+        ignoreCache: true,
+      });
+    };
+
+    $on('pageBeforeIn', async () => {
+      await loadArmada();
+    });
+
+    return $render;
+  };
+</script>

@@ -1,106 +1,177 @@
 <template>
-  <div class="page page-with-navbar page-with-toolbar" data-name="payment">
-    <div class="navbar">
-      <div class="navbar-bg"></div>
+  <div class="page custom-bg" data-name="payment">
+    
+    <div class="navbar custom-navbar">
+      <div class="navbar-bg bg-white"></div>
       <div class="navbar-inner sliding">
         <div class="left">
-          <a href="${ticket.id ? `/booking/${ticket.id}/` : '/home/'}" class="link icon-only">
-            <i class="icon f7-icons">arrow_left</i>
+          <a href="#" class="link back text-black">
+            <i class="f7-icons">chevron_left</i>
           </a>
         </div>
-        <div class="title">Pembayaran</div>
+        <div class="title font-sf-heavy text-15 uppercase tracking-wide text-black">PEMBAYARAN</div>
       </div>
     </div>
-    <div class="page-content">
-      <div class="block block-strong">
-        <div class="block-title">Ringkasan Pembayaran</div>
-        <div class="card card-rounded card-shadow">
-          <div class="card-content card-content-padding">
-            <div class="list no-hairlines-md">
-              <ul>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Nama</div>
-                    <div class="item-input-wrap"><input type="text" readonly value="${ticket.passenger}" /></div>
-                  </div>
-                </li>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Rute</div>
-                    <div class="item-input-wrap"><input type="text" readonly value="${ticket.route}" /></div>
-                  </div>
-                </li>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Jumlah Kursi</div>
-                    <div class="item-input-wrap"><input type="text" readonly value="${ticket.seats} kursi" /></div>
-                  </div>
-                </li>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Total</div>
-                    <div class="item-input-wrap"><input type="text" readonly value="${formatPrice(ticket.price)}" /></div>
-                  </div>
-                </li>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Metode Pembayaran</div>
-                    <div class="item-input-wrap">
-                      <select value="${paymentMethod}" @change="${updateMethod}">
-                        <option value="Transfer Bank">Transfer Bank</option>
-                        <option value="E-Wallet">E-Wallet</option>
-                        <option value="Kartu Kredit">Kartu Kredit</option>
-                      </select>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button class="button button-fill button-round" @click="${submitPayment}">Bayar Sekarang</button>
+
+    <div class="page-content custom-content" style="padding-bottom: 60px;">
+      
+      <div class="margin-top-custom">
+        <div class="bg-yellow-warning rounded-xl p-4 flex items-center">
+          <i class="f7-icons text-brand-yellow mr-3">timer</i>
+          <div>
+            <h4 class="font-sf-bold text-13 text-black no-margin">Menunggu Pembayaran</h4>
+            <p class="font-sf-medium text-11 text-gray-dark no-margin mt-1">Segera selesaikan pembayaran agar tiket tidak hangus.</p>
           </div>
         </div>
       </div>
+
+      <div class="ios-card margin-top-custom text-center">
+        <p class="font-sf-bold text-11 text-gray uppercase tracking-wide no-margin">Total Tagihan</p>
+        <h1 class="font-sf-heavy text-28 text-black no-margin mt-2">Rp ${ticket.price ? ticket.price.toLocaleString('id-ID') : '0'}</h1>
+        <div class="divider-dashed my-4"></div>
+        <div class="flex-between">
+          <span class="font-sf-medium text-13 text-gray">Order ID</span>
+          <span class="font-sf-bold text-13 text-black">#${ticket.id ? ticket.id.substring(ticket.id.length - 8).toUpperCase() : '---'}</span>
+        </div>
+        <div class="flex-between mt-2">
+          <span class="font-sf-medium text-13 text-gray">Metode Pembayaran</span>
+          <span class="font-sf-bold text-13 text-black">${ticket.paymentMethod || 'Transfer Bank'}</span>
+        </div>
+      </div>
+
+      <div class="ios-card margin-top-custom">
+        <h3 class="font-sf-heavy text-14 text-black uppercase tracking-wide mb-3 pl-1">Instruksi Pembayaran</h3>
+        <div class="instruction-box">
+          <p class="font-sf-medium text-13 text-black no-margin">Transfer ke rekening resmi Travel-In:</p>
+          <div class="rek-box mt-3">
+            <span class="font-sf-heavy text-18 text-brand-yellow">1234-01-000000-50-0</span>
+            <span class="font-sf-bold text-11 text-gray block mt-1">a.n. PT Travel-In Indonesia</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ios-card margin-top-custom">
+        <h3 class="font-sf-heavy text-14 text-black uppercase tracking-wide mb-3 pl-1">Upload Bukti Bayar</h3>
+        <p class="font-sf-medium text-11 text-gray mb-3 pl-1">Format: JPG/PNG (Maks. 2MB)</p>
+        <div class="upload-area" @click="${triggerFileInput}">
+          <i class="f7-icons text-brand-yellow text-28 mb-2">cloud_upload_fill</i>
+          <span class="font-sf-bold text-13 text-black block">${fileName || 'Ketuk untuk pilih file'}</span>
+        </div>
+        <input type="file" id="file-upload-input" class="hidden" accept="image/*" @change="${handleFileUpload}" />
+      </div>
+
+      <div class="margin-top-custom" style="margin-top: 30px;">
+        <button class="btn-brand-full font-sf-heavy text-15" @click="${submitPayment}">
+          KONFIRMASI PEMBAYARAN
+        </button>
+      </div>
+
     </div>
   </div>
 </template>
 
-<script>
-  export default (props, { $store, $f7, $router, $update }) => {
-    const ticketId = (props.route && props.route.params && props.route.params.ticketId) || '';
-    const ticket = $store.getters.tickets.value.find((item) => item.id === ticketId) || { id: '', passenger: '-', route: '-', seats: 0, price: 0 };
-    let paymentMethod = 'Transfer Bank';
+<style>
+  .custom-bg { background-color: #F4F4F5 !important; }
+  .bg-white { background-color: #FFFFFF !important; }
+  .text-black { color: #111111 !important; }
+  .text-gray { color: #8E8E93 !important; }
+  .text-gray-dark { color: #3A3A3C !important; }
+  .text-brand-yellow { color: #FFCC00 !important; }
+  .bg-yellow-warning { background-color: #FFF9E6; border: 1px solid #FFE58F; }
+  .no-margin { margin: 0 !important; }
+  .mt-1 { margin-top: 4px; }
+  .mt-2 { margin-top: 8px; }
+  .mt-3 { margin-top: 12px; }
+  .mb-2 { margin-bottom: 8px; }
+  .mb-3 { margin-bottom: 12px; }
+  .my-4 { margin-top: 16px; margin-bottom: 16px; }
+  .pl-1 { padding-left: 4px; }
+  .p-4 { padding: 16px; }
+  .mr-3 { margin-right: 12px; }
+  .hidden { display: none !important; }
+  .text-center { text-align: center; }
+  .uppercase { text-transform: uppercase; }
+  .tracking-wide { letter-spacing: 0.05em; }
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
 
-    if (!ticket.id) {
-      setTimeout(() => {
-        $f7.dialog.alert('Tiket tidak ditemukan. Silakan kembali ke halaman utama.', () => {
-          $router.navigate('/home/');
-        });
-      }, 0);
+  .font-sf-heavy { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important; font-weight: 900; }
+  .font-sf-bold { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif !important; font-weight: 700; }
+  .font-sf-medium { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif !important; font-weight: 500; }
+  .text-11 { font-size: 11px; }
+  .text-13 { font-size: 13px; }
+  .text-14 { font-size: 14px; }
+  .text-15 { font-size: 15px; }
+  .text-18 { font-size: 18px; }
+  .text-28 { font-size: 28px; }
+
+  .custom-navbar { border-bottom: 1px solid #E5E5EA; background: #FFF; }
+  .margin-top-custom { margin-top: 20px; margin-left: 16px; margin-right: 16px; }
+  .rounded-xl { border-radius: 16px; }
+  .ios-card { background: #FFFFFF; border-radius: 16px; padding: 20px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04); border: 1px solid #E5E5EA; }
+  .divider-dashed { border-top: 2px dashed #E5E5EA; width: 100%; }
+  .rek-box { background: #111111; padding: 16px; border-radius: 12px; text-align: center; }
+  .upload-area { border: 2px dashed #D1D1D6; border-radius: 12px; padding: 30px 20px; text-align: center; background: #FAFAFA; cursor: pointer; transition: all 0.2s ease; }
+  .btn-brand-full { width: 100%; background: #FFCC00; color: #111111; border: none; padding: 18px; border-radius: 14px; cursor: pointer; font-weight: 900; }
+</style>
+
+<script>
+export default (props, { $f7, $f7route, $f7router, $store, $update, $on }) => {
+  const ticketId = $f7route.params.ticketId;
+  let ticket = {};
+  let fileName = "";
+  let fileData = null;
+
+  $on('pageBeforeIn', async () => {
+    $f7.preloader.show('Memuat detail...');
+    await $store.dispatch('fetchTickets');
+    ticket = $store.getters.tickets.value.find(t => t.id === ticketId) || {};
+    $f7.preloader.hide();
+    $update();
+  });
+
+  const triggerFileInput = () => document.getElementById('file-upload-input').click();
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      fileName = file.name;
+      fileData = file; 
+      $update();
+    }
+  };
+
+  const submitPayment = async () => {
+    if (!fileData) {
+      $f7.dialog.alert("Harap upload bukti pembayaran!");
+      return;
     }
 
-    const updateMethod = (e) => {
-      paymentMethod = e.target.value;
-      $update();
-    };
-
-    const submitPayment = () => {
-      if (!ticket.id) {
-        $f7.dialog.alert('Tiket tidak ditemukan.');
-        return;
-      }
-      $store.dispatch('payTicket', { id: ticket.id, method: paymentMethod });
-      $f7.dialog.alert('Pembayaran berhasil.', () => {
-        $router.navigate(`/e-ticket/${ticket.id}/`);
+    $f7.preloader.show('Mengirim bukti...');
+    try {
+      // Kita update status di 'payments' koleksi agar muncul di Admin
+      await $store.dispatch('addPayment', {
+        ticketId: ticket.id,
+        passenger: ticket.passengerName,
+        route: ticket.route,
+        amount: ticket.price,
+        method: ticket.paymentMethod,
+        date: ticket.date,
+        status: 'Pending',
+        proof: 'uploaded'
       });
-    };
 
-    const formatPrice = (value) => {
-      const amount = Number(value || 0);
-      return 'Rp ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    };
-
-    return $render;
+      $f7.preloader.hide();
+      $f7.dialog.alert('Bukti berhasil dikirim!', 'Berhasil', () => {
+        $f7router.navigate(`/e-ticket/${ticket.id}/`);
+      });
+    } catch (err) {
+      $f7.preloader.hide();
+      $f7.dialog.alert("Gagal: " + err.message);
+    }
   };
+
+  return $render;
+};
 </script>

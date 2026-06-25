@@ -1,271 +1,245 @@
 <template>
-  <div class="page no-toolbar bg-white" data-name="booking">
+  <div class="page custom-bg" data-name="booking">
     
-    <div class="wireframe-header-ios">
-      <div class="header-inner-sketsa">
-        <a href="/search-results/" class="link back text-black">
-          <i class="f7-icons text-28">chevron_left</i>
-        </a>
-
-        <h1 class="font-sf-heavy text-18 uppercase no-margin tracking-tighter">DATA PENUMPANG</h1>
-
-        <div style="width: 28px;"></div>
+    <div class="navbar custom-navbar">
+      <div class="navbar-bg bg-white"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back text-black">
+            <i class="f7-icons">chevron_left</i>
+          </a>
+        </div>
+        <div class="title font-sf-heavy text-15 uppercase tracking-wide text-black">FORM TIKET</div>
       </div>
     </div>
 
-    <div class="page-content bg-white" style="padding-top: 0; padding-bottom: 180px;">
+    <div class="page-content custom-content" style="padding-bottom: 40px;">
       
-      <div class="block margin-top">
-        <div class="booking-summary-box">
-          <h2 class="font-sf-heavy no-margin text-18 uppercase">
-            ${schedule.vehicle || 'Hiace Luxury'}
-          </h2>
-
-          <p class="font-sf-bold no-margin text-14 text-gray margin-top-xs">
-            ${schedule.origin || 'Bandung'} → ${schedule.destination || 'Jakarta'} | ${schedule.date || '10 Apr 2026'} (${schedule.time || '08:00'})
-          </p>
+      <div class="ios-card brand-card margin-top-custom">
+        <div class="card-header-custom">
+          <h2 class="font-sf-heavy text-18 text-black no-margin">${schedule.vehicle || 'Armada Travel'}</h2>
+          <span class="badge-brand font-sf-bold">Reguler</span>
         </div>
-      </div>
-
-      <div class="block-title font-sf-heavy text-16 text-black margin-top-lg">
-        INFORMASI KONTAK
-      </div>
-
-      <div class="list no-hairlines-md margin-horizontal">
-        <div class="input-group-sketsa">
-          <label class="font-sf-heavy text-11 text-black uppercase">NAMA PEMESAN</label>
-          <input type="text" placeholder="Nama Anda" .value="${currentUser.nama || ''}" class="input-sketsa font-sf-bold" readonly />
-        </div>
-      </div>
-
-      <div class="block-title font-sf-heavy text-16 text-black margin-top-lg">
-        DETAIL PENUMPANG
-      </div>
-
-      <div class="list no-hairlines-md margin-horizontal">
-        <div class="input-group-sketsa">
-          <label class="font-sf-heavy text-11 text-black uppercase">NAMA LENGKAP PENUMPANG</label>
-          <input 
-            type="text" 
-            placeholder="Input nama lengkap..." 
-            .value="${passenger.name}"
-            @input="${(e) => { passenger.name = e.target.value; $update(); }}" 
-            class="input-sketsa font-sf-bold" 
-          />
-        </div>
-
-        <div class="input-group-sketsa margin-top">
-          <label class="font-sf-heavy text-11 text-black uppercase">NOMOR TELEPON</label>
-          <input 
-            type="tel" 
-            placeholder="0812xxxx" 
-            .value="${passenger.phone}"
-            @input="${(e) => { passenger.phone = e.target.value; $update(); }}" 
-            class="input-sketsa font-sf-bold" 
-          />
-        </div>
-      </div>
-
-      <div class="block margin-top">
-        <p class="font-sf-medium italic text-11 text-gray">
-          *Pastikan data sesuai dengan kartu identitas untuk keperluan asuransi perjalanan.
+        <p class="font-sf-medium text-13 text-gray no-margin mt-1">
+          ${schedule.origin || 'Asal'} → ${schedule.destination || 'Tujuan'}
         </p>
       </div>
 
-    </div>
+      <div class="ios-card margin-top-custom">
+        <h3 class="font-sf-heavy text-14 text-black uppercase tracking-wide mb-3 pl-1">Detail Pemesanan</h3>
 
-    <div class="toolbar toolbar-bottom booking-footer-ios">
-      <div class="footer-inner">
-        <div class="price-summary-flex">
-          <span class="font-sf-heavy text-18">Total Bayar</span>
-          <span class="font-sf-heavy text-20">
-            Rp ${schedule.price ? schedule.price.toLocaleString('id-ID') : '0'}
-          </span>
+        <!-- INPUT TANGGAL -->
+        <div class="input-group-ios mb-4">
+          <label class="font-sf-bold text-11 text-black uppercase mb-2 block tracking-wide">Tanggal Keberangkatan</label>
+          <input 
+            type="date" 
+            .value="${booking.date}"
+            @input="${(e) => updateForm('date', e.target.value)}"
+            class="input-ios font-sf-bold text-15 text-black"
+          />
         </div>
 
-        <button class="button button-fill btn-pembayaran-ios font-sf-heavy margin-top-sm" @click="${processBooking}">
-          LANJUT KE PEMBAYARAN
-        </button>
+        <!-- DROPDOWN JAM -->
+        <div class="input-group-ios mb-4">
+          <label class="font-sf-bold text-11 text-black uppercase mb-2 block tracking-wide">Jam Keberangkatan</label>
+          <select class="input-ios font-sf-bold text-15 text-black" @change="${(e) => updateForm('time', e.target.value)}">
+            <option value="06:00">06:00 Pagi</option>
+            <option value="12:00">12:00 Siang</option>
+            <option value="16:00">04:00 Sore</option>
+            <option value="20:00">08:00 Malam</option>
+          </select>
+        </div>
+
+        <div class="input-group-ios mb-4">
+          <label class="font-sf-bold text-11 text-black uppercase mb-2 block tracking-wide">Jumlah Tiket</label>
+          <select class="input-ios font-sf-bold text-15 text-black" @change="${(e) => updateForm('qty', parseInt(e.target.value))}">
+            <option value="1" selected>1 Penumpang</option>
+            <option value="2">2 Penumpang</option>
+            <option value="3">3 Penumpang</option>
+            <option value="4">4 Penumpang</option>
+          </select>
+        </div>
+
+        <div class="input-group-ios mb-4">
+          <label class="font-sf-bold text-11 text-black uppercase mb-2 block tracking-wide">Nama Penumpang</label>
+          <input 
+            type="text" 
+            placeholder="Masukkan nama lengkap" 
+            .value="${booking.name}"
+            @input="${(e) => updateForm('name', e.target.value)}"
+            class="input-ios font-sf-bold text-15 text-black"
+          />
+        </div>
+
+        <div class="input-group-ios mb-4">
+          <label class="font-sf-bold text-11 text-black uppercase mb-2 block tracking-wide">Nomor Kursi</label>
+          <input type="text" placeholder="Contoh: A1, A2" .value="${booking.seat}" @input="${(e) => updateForm('seat', e.target.value)}" class="input-ios font-sf-bold text-15 text-black" />
+        </div>
+
+        <div class="input-group-ios mb-4">
+          <label class="font-sf-bold text-11 text-black uppercase mb-2 block tracking-wide">Nomor WhatsApp (Aktif)</label>
+          <input type="tel" placeholder="0812xxxx" .value="${booking.phone}" @input="${(e) => updateForm('phone', e.target.value)}" class="input-ios font-sf-bold text-15 text-black" />
+        </div>
+
+        <div class="input-group-ios mb-2">
+          <label class="font-sf-bold text-11 text-black uppercase mb-2 block tracking-wide">Metode Pembayaran</label>
+          <select class="input-ios font-sf-bold text-15 text-black" @change="${(e) => updateForm('paymentMethod', e.target.value)}">
+            <option value="Transfer Bank" selected>Transfer Bank</option>
+            <option value="E-Wallet">E-Wallet (GoPay / Dana / ShopeePay)</option>
+            <option value="Cash di Tempat">Cash di Tempat</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="margin-top-custom">
+        <div class="brand-checkout-box">
+          <div class="price-info">
+            <span class="font-sf-medium text-11 text-gray-light uppercase tracking-wide block">Total Harga</span>
+            <span class="font-sf-heavy text-20 text-brand-yellow block mt-1">Rp ${getTotalPrice().toLocaleString('id-ID')}</span>
+          </div>
+          <button class="btn-brand font-sf-heavy text-14" @click="${processBooking}">
+            PESAN SEKARANG
+          </button>
+        </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <style>
-  .bg-white {
-    background: #FFFFFF !important;
-  }
+  /* Base & Fonts */
+  .custom-bg { background-color: #F4F4F5 !important; }
+  .bg-white { background-color: #FFFFFF !important; }
+  .text-black { color: #111111 !important; }
+  .text-gray { color: #8E8E93 !important; }
+  .text-gray-light { color: #A1A1AA !important; }
+  .text-brand-yellow { color: #FFCC00 !important; }
+  .no-margin { margin: 0 !important; }
+  .mt-1 { margin-top: 4px; }
+  .mb-2 { margin-bottom: 8px; }
+  .mb-3 { margin-bottom: 12px; }
+  .mb-4 { margin-bottom: 16px; }
+  .pl-1 { padding-left: 4px; }
+  .px-4 { padding-left: 16px; padding-right: 16px; }
+  .block { display: block; }
+  .text-center { text-align: center; }
+  .uppercase { text-transform: uppercase; }
+  .tracking-wide { letter-spacing: 0.05em; }
 
-  .text-black {
-    color: #000000 !important;
-  }
+  .font-sf-heavy { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important; font-weight: 900; }
+  .font-sf-bold { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif !important; font-weight: 700; }
+  .font-sf-medium { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif !important; font-weight: 500; }
+  .text-11 { font-size: 11px; }
+  .text-13 { font-size: 13px; }
+  .text-14 { font-size: 14px; }
+  .text-15 { font-size: 15px; }
+  .text-18 { font-size: 18px; }
+  .text-20 { font-size: 20px; }
 
-  .text-gray {
-    color: #8E8E93 !important;
-  }
-
-  .font-sf-heavy {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-  }
-
-  .font-sf-bold {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif !important;
-    font-weight: 700;
-  }
-
-  .font-sf-medium {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif !important;
-    font-weight: 500;
-  }
-
-  .wireframe-header-ios {
-    padding: 60px 20px 15px 20px;
-    border-bottom: 2.5px solid #000;
-    background: #FFF;
-  }
-
-  .header-inner-sketsa {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .booking-summary-box {
-    border: 2px dashed #000;
-    border-radius: 16px;
-    padding: 20px;
-    background: #FAFAFA;
-  }
-
-  .input-group-sketsa {
-    margin-bottom: 5px;
-  }
-
-  .input-sketsa {
-    width: 100%;
-    border: 2px solid #000;
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 15px;
-    margin-top: 5px;
-    outline: none;
-    background: #FFF;
-    box-sizing: border-box;
-  }
-
-  .input-sketsa:focus {
-    background: #F2F2F7;
-  }
-
-  .booking-footer-ios {
-    height: 160px !important;
-    background: #FFF !important;
-    border-top: 2.5px solid #000;
-    padding: 20px;
-  }
-
-  .price-summary-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .btn-pembayaran-ios {
-    background: #000 !important;
-    color: #FFF !important;
-    height: 60px !important;
-    border-radius: 14px !important;
-    font-size: 16px;
-    letter-spacing: 1px;
-    width: 100%;
-  }
-
-  .text-28 {
-    font-size: 28px;
-  }
-
-  .margin-top-xs {
-    margin-top: 4px;
-  }
+  .custom-navbar { border-bottom: 1px solid #E5E5EA; background: #FFF; }
+  .margin-top-custom { margin-top: 20px; margin-left: 16px; margin-right: 16px; }
+  .ios-card { background: #FFFFFF; border-radius: 16px; padding: 20px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04); border: 1px solid #E5E5EA; }
+  .brand-card { border-left: 6px solid #FFCC00; }
+  .card-header-custom { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .badge-brand { background: #111111; color: #FFCC00; font-size: 11px; padding: 5px 10px; border-radius: 8px; letter-spacing: 0.5px; }
+  .input-ios { width: 100%; box-sizing: border-box; padding: 14px 16px; border-radius: 12px; border: 2px solid #F4F4F5; background: #F4F4F5; color: #111; outline: none; transition: all 0.2s ease; }
+  .input-ios:focus { border-color: #111111; background: #FFFFFF; box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.3); }
+  .brand-checkout-box { background: #111111; border-radius: 16px; padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); }
+  .btn-brand { background: #FFCC00; color: #111111; border: none; padding: 14px 24px; border-radius: 12px; cursor: pointer; transition: transform 0.1s; }
+  .btn-brand:active { transform: scale(0.96); }
 </style>
 
 <script>
-  export default (props, { $f7, $router, $store, $update, $on }) => {
-    const id = props.route.params.id;
-    const currentUser = $store.getters.currentUser.value || {};
-    
-    let schedule = {};
-    let passenger = {
-      name: "",
-      phone: ""
-    };
-
-    $on('pageBeforeIn', () => {
-      const allSchedules = $store.getters.schedules.value || [];
-      schedule = allSchedules.find((s) => String(s.id) === String(id)) || {};
-      
-      if (!schedule.id) {
-        $store.dispatch('fetchSchedules').then(() => {
-          const updatedSchedules = $store.getters.schedules.value || [];
-          schedule = updatedSchedules.find((s) => String(s.id) === String(id)) || {};
-          $update();
-        });
-      }
-
-      $update();
-    });
-
-    const processBooking = async () => {
-      if (!passenger.name || !passenger.phone) {
-        $f7.dialog.alert("Lengkapi data penumpang dulu, Kang!");
-        return;
-      }
-
-      if (!schedule.id) {
-        $f7.dialog.alert("Data jadwal tidak ditemukan.");
-        return;
-      }
-
-      $f7.preloader.show();
-      
-      try {
-        const ticketId = `ETK-${Date.now()}`;
-        
-        const bookingData = {
-          id: ticketId,
-          scheduleId: id,
-          passengerName: passenger.name,
-          passengerPhone: passenger.phone,
-          customerName: currentUser.nama || 'User',
-          customerEmail: currentUser.email || '',
-          price: schedule.price || 0,
-          vehicle: schedule.vehicle || 'Bus',
-          route: `${schedule.origin} → ${schedule.destination}`,
-          date: schedule.date || new Date().toISOString().split('T')[0],
-          time: schedule.time || '--:--',
-          status: 'Pending',
-          paymentStatus: 'Unpaid'
-        };
-
-        await $store.dispatch('addTicket', bookingData);
-        
-        $f7.preloader.hide();
-
-        $router.navigate(`/payment/${ticketId}/`, {
-          reloadCurrent: false,
-          ignoreCache: true
-        });
-
-      } catch (err) {
-        $f7.preloader.hide();
-        console.error("Booking Error:", err);
-        $f7.dialog.alert("Gagal memproses booking: " + err.message);
-      }
-    };
-
-    return $render;
+export default (props, { $f7, $f7route, $f7router, $store, $update, $on }) => {
+  const id = $f7route.params.id;
+  const currentUser = $store.getters.currentUser.value || {};
+  
+  let schedule = {};
+  
+  let booking = {
+    qty: 1,
+    name: currentUser.nama || "",
+    seat: "",
+    phone: currentUser.whatsapp || "",
+    paymentMethod: "Transfer Bank",
+    date: "", // Tanggal baru
+    time: "06:00" // Jam baru
   };
+
+  $on('pageBeforeIn', async () => {
+    await $store.dispatch('fetchSchedules');
+    const schedules = $store.getters.schedules.value || [];
+    schedule = schedules.find(item => String(item.id) === String(id)) || {};
+    $update();
+  });
+
+  const updateForm = (field, value) => {
+    booking[field] = value;
+    $update();
+  };
+
+  const getTotalPrice = () => {
+    return (schedule.price || 0) * booking.qty;
+  };
+
+  const processBooking = async () => {
+    if (!booking.name || !booking.seat || !booking.phone || !booking.date) {
+      $f7.dialog.alert("Lengkapi data penumpang, tanggal, dan kursi!");
+      return;
+    }
+
+    $f7.preloader.show('Memproses pesanan...');
+
+    try {
+      const ticketId = `ETK-${Date.now()}`;
+      const totalAmount = getTotalPrice();
+
+      const bookingData = {
+        id: ticketId,
+        scheduleId: schedule.id,
+        userId: currentUser.uid || "", 
+        qty: booking.qty,
+        passengerName: booking.name,
+        seatNumber: booking.seat,
+        passengerPhone: booking.phone,
+        paymentMethod: booking.paymentMethod,
+        customerName: currentUser.nama || "User",
+        price: totalAmount, 
+        vehicle: schedule.vehicle || "",
+        route: `${schedule.origin} → ${schedule.destination}`,
+        date: booking.date, // Tanggal dari input user
+        time: booking.time, // Jam dari input user
+        status: "Pending",
+        paymentStatus: "Unpaid"
+      };
+
+      // Tambah ke tiket
+      await $store.dispatch("addTicket", bookingData);
+
+      // Tambah ke pembayaran agar Admin bisa melihat
+      await $store.dispatch("addPayment", {
+        ticketId: ticketId,
+        passenger: booking.name,
+        route: bookingData.route,
+        amount: totalAmount,
+        method: booking.paymentMethod,
+        date: `${booking.date} ${booking.time}`,
+        status: 'Pending'
+      });
+
+      $f7.preloader.hide();
+      if (booking.paymentMethod === 'Cash di Tempat') {
+        $f7router.navigate(`/e-ticket/${ticketId}/`);
+      } else {
+        $f7router.navigate(`/payment/${ticketId}/`);
+      }
+
+    } catch (err) {
+      $f7.preloader.hide();
+      $f7.dialog.alert("Gagal memproses: " + err.message);
+    }
+  };
+
+  return $render;
+};
 </script>

@@ -72,11 +72,9 @@
             </a>
           </li>
           <li>
-            <a href="/admin/payments/" class="item-link item-content py-3">
+            <a @click="${() => $f7router.navigate('/admin/payments/')}" class="item-link item-content" style="cursor: pointer !important;">
               <div class="item-media">
-                <div class="icon-box-premium bg-green-soft color-green">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                </div>
+                <div class="icon-box-premium bg-green-soft color-green">💳</div>
               </div>
               <div class="item-inner">
                 <div class="item-title font-sf-bold">Kelola Pembayaran</div>
@@ -147,32 +145,76 @@
   .badge-ios-premium { background: #000; color: #FFF; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; }
   .premium-logout-btn { background: #000 !important; height: 58px !important; border-radius: 18px !important; box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important; }
   .grid-gap { --f7-grid-gap: 12px; }
+  /* Tambahkan ini di paling bawah <style> */
+.stats-container-white { 
+    margin-top: -20px; 
+    position: relative; 
+    z-index: 1; /* Turunkan z-index agar tidak menutupi menu */
+  }
+
+  .ios-list-white { 
+    margin: 0 16px !important; 
+    background: #FFF !important; 
+    border-radius: 20px !important; 
+    overflow: hidden; 
+    position: relative;
+    z-index: 5; /* Pastikan menu di atas stats */
+  }
+  
+  /* Pastikan link di dalam list bisa diklik */
+  .item-link { 
+    display: block !important; 
+    cursor: pointer !important; 
+    padding: 8px 0 !important; 
+    text-decoration: none !important;
+  }
+  
+  .premium-logout-btn { 
+    background: #000 !important; 
+    height: 58px !important; 
+    border-radius: 18px !important; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important; 
+  }
 </style>
 
 <script>
   import { auth } from '../../js/firebase';
   import { signOut } from 'firebase/auth';
 
-  export default (props, { $f7, $store, $f7router }) => {
-    const currentUser = $store.getters.currentUser.value || { nama: 'Admin' };
-    const schedules = $store.getters.schedules.value || [];
-    const tickets = $store.getters.tickets.value || [];
-    const armadas = $store.getters.armadas.value || [];
+  export default (props, { $f7, $store, $f7router, $on, $update }) => {
+    let currentUser = $store.getters.currentUser.value || { nama: 'Admin' };
+    let schedules = [];
+    let tickets = [];
+    let armadas = [];
+
+    const loadDashboardData = async () => {
+      try {
+        await Promise.all([
+          $store.dispatch('fetchArmadas'),
+          $store.dispatch('fetchSchedules'),
+          $store.dispatch('fetchTickets')
+        ]);
+        armadas = $store.getters.armadas.value || [];
+        schedules = $store.getters.schedules.value || [];
+        tickets = $store.getters.tickets.value || [];
+        currentUser = $store.getters.currentUser.value || { nama: 'Admin' };
+        $update();
+      } catch (error) {
+        console.error('Dashboard Load Error:', error);
+      }
+    };
+
+    $on('pageBeforeIn', async () => {
+      await loadDashboardData();
+    });
 
     const handleLogout = async () => {
       try {
         await signOut(auth);
         await $store.dispatch('logoutUser');
-        
-        // PERBAIKAN DI SINI: Pakai $f7router agar pasti terbaca
         $f7router.navigate('/login/', { reloadCurrent: true });
-        
       } catch (err) {
         console.error(err);
-        $f7.toast.create({
-          text: 'Gagal keluar sistem: ' + err.message,
-          closeTimeout: 2000,
-        }).open();
       }
     };
 

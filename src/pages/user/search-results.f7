@@ -335,7 +335,7 @@
 </style>
 
 <script>
-  export default (props, { $store, $router, $f7, $update, $on }) => {
+  export default (props, { $store, $f7router, $f7, $update, $on }) => {
     const query = (props.route && props.route.query) || {};
     let schedules = $store.getters.schedules.value || [];
 
@@ -382,22 +382,27 @@
     };
 
     const goToBooking = (id, e) => {
-      if (e && e.preventDefault) e.preventDefault();
-      if (e && e.stopPropagation) e.stopPropagation();
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      console.log('=== BOOKING CLICK ===');
+      console.log('ID JADWAL:', id);
 
       if (!id) {
         $f7.dialog.alert('ID jadwal tidak ditemukan.');
         return;
       }
 
-      $router.navigate(`/booking/${id}/`);
+      $f7router.navigate(`/booking/${id}/`);
     };
 
     const goToETicket = () => {
       const tickets = $store.getters.tickets.value || [];
 
       if (tickets.length > 0) {
-        $router.navigate(`/e-ticket/${tickets[0].id}/`);
+        $f7router.navigate(`/e-ticket/${tickets[0].id}/`);
       } else {
         $f7.dialog.alert('Belum ada tiket yang tersedia.');
       }

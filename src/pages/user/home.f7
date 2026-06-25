@@ -1,48 +1,48 @@
 <template>
   <div class="page no-navbar home-page" data-name="home">
 
-    <div class="wireframe-header-user">
-      <div class="header-inner-sketsa">
-        <h1 class="font-sf-heavy text-24 no-margin tracking-tighter">
-          TRAVEL-<span class="text-gold">IN</span>
+    <div class="custom-header-home">
+      <div class="header-inner">
+        <h1 class="font-sf-heavy text-24 no-margin tracking-tighter text-black">
+          TRAVEL-<span class="text-brand-yellow">IN</span>
         </h1>
 
-        <div class="profile-trigger-sketsa" @click="${openProfileMenu}">
-          <img src="https://ui-avatars.com/api/?name=${$store.getters.currentUser.value?.nama || 'U'}&background=000&color=fff&bold=true" class="circle-avatar-wireframe" />
+        <div class="profile-trigger" @click="${openProfileMenu}">
+          <img src="https://ui-avatars.com/api/?name=${$store.getters.currentUser.value?.nama || 'U'}&background=111111&color=FFCC00&bold=true" class="circle-avatar" />
         </div>
       </div>
     </div>
 
     <div class="page-content home-page-content">
 
-      <div class="block promo-block-sketsa">
-        <div class="promo-card-wireframe shadow-luxury">
-          <div class="promo-badge-sketsa font-sf-heavy">PROMO HIACE</div>
-          <div class="promo-title-sketsa font-sf-heavy">
+      <div class="block promo-block mt-4">
+        <div class="brand-promo-card shadow-luxury">
+          <div class="promo-badge font-sf-heavy">PROMO HIACE</div>
+          <div class="promo-title font-sf-heavy">
             DISKON 30% UNTUK PERJALANAN PERTAMA
           </div>
         </div>
       </div>
 
-      <div class="block search-block-sketsa">
-        <div class="search-card-wireframe shadow-luxury">
+      <div class="block search-block">
+        <div class="search-card shadow-luxury">
 
-          <div class="input-item-sketsa">
-            <span class="label-sketsa font-sf-bold uppercase">DARI (ASAL)</span>
+          <div class="input-item">
+            <span class="label-input font-sf-bold uppercase">DARI (ASAL)</span>
             <input type="text" placeholder="Pilih kota asal..." .value="${search.origin}" @input="${updateSearch('origin')}" />
           </div>
 
-          <div class="input-item-sketsa margin-top">
-            <span class="label-sketsa font-sf-bold uppercase">KE (TUJUAN)</span>
+          <div class="input-item mt-4">
+            <span class="label-input font-sf-bold uppercase">KE (TUJUAN)</span>
             <input type="text" placeholder="Pilih kota tujuan..." .value="${search.destination}" @input="${updateSearch('destination')}" />
           </div>
 
-          <div class="input-item-sketsa margin-top">
-            <span class="label-sketsa font-sf-bold uppercase">TANGGAL</span>
+          <div class="input-item mt-4">
+            <span class="label-input font-sf-bold uppercase">TANGGAL</span>
             <input type="date" .value="${search.date}" @input="${updateSearch('date')}" />
           </div>
 
-          <button class="button button-fill btn-cari-sketsa font-sf-heavy margin-top-lg" @click="${searchTickets}">
+          <button class="button button-fill btn-brand-cari font-sf-heavy mt-6" @click="${searchTickets}">
             CARI JADWAL
           </button>
 
@@ -62,7 +62,7 @@
         <span>Jadwal</span>
       </a>
 
-      <a @click="${goToETicket}" class="ios-tab-item">
+      <a href="/my-tickets/" class="ios-tab-item">
         <i class="f7-icons">ticket_fill</i>
         <span>Tiket</span>
       </a>
@@ -109,42 +109,42 @@
             text: 'Logout',
             color: 'red',
             bold: true,
-           onClick: () => {
-            $f7.dialog.confirm('Logout?', 'Travel-In', () => {
-              $store.dispatch('logoutUser').then(() => {
-                window.location.href = '/login/';
+            onClick: () => {
+              $f7.dialog.confirm('Logout dari Travel-In?', 'Konfirmasi', () => {
+                $store.dispatch('logoutUser').then(() => {
+                  window.location.href = '/login/';
+                });
               });
-            });
-          }
+            }
           }],
         ]
       }).open();
     };
 
     const goToETicket = async () => {
-      $f7.dialog.preloader('Mengambil tiket...');
+      // Langsung navigasi ke halaman daftar riwayat
+      $router.navigate('/my-tickets/');
 
       try {
         await $store.dispatch('fetchTickets');
         const tickets = $store.getters.tickets.value || [];
         const currentUser = $store.getters.currentUser.value || {};
-        const userEmail = currentUser.email || null;
 
-        // Filter hanya tiket milik user saat ini (jika email tersedia)
-        const userTickets = userEmail
-          ? tickets.filter((t) => t.customerEmail === userEmail)
-          : tickets.filter((t) => String(t.customerName || '').toLowerCase() === String(currentUser.nama || '').toLowerCase());
+        // PERBAIKAN LOGIKA: Sekarang kita filter menggunakan userId (UID) agar sangat akurat
+        const userTickets = tickets.filter((t) => t.userId === currentUser.uid);
 
         if (userTickets.length > 0) {
           $f7.dialog.close();
+          // Karena query di store.js sudah menggunakan orderBy('createdAt', 'desc'),
+          // index [0] otomatis akan memuat tiket yang paling baru dipesan.
           $router.navigate(`/e-ticket/${userTickets[0].id}/`);
         } else {
           $f7.dialog.close();
-          $f7.dialog.alert('Belum ada tiket yang tersedia.');
+          $f7.dialog.alert('Anda belum memiliki tiket. Yuk, pesan jadwal sekarang!');
         }
       } catch (error) {
         $f7.dialog.close();
-        $f7.dialog.alert('Gagal mengambil data tiket!');
+        $f7.dialog.alert('Gagal mengambil data tiket. Periksa koneksi Anda.');
         console.error(error);
       }
     };
@@ -155,19 +155,25 @@
 
 <style>
   .home-page {
-    background: #F8F9FA !important;
+    background: #F4F4F5 !important;
   }
 
   .home-page-content {
-    background: #F8F9FA;
+    background: #F4F4F5;
     padding-top: 0 !important;
     padding-bottom: 120px !important;
   }
 
+  .text-black { color: #111111 !important; }
+  .text-brand-yellow { color: #FFCC00 !important; }
+  .mt-4 { margin-top: 16px; }
+  .mt-6 { margin-top: 24px; }
+  .uppercase { text-transform: uppercase; }
+
   .font-sf-heavy {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
     font-weight: 900;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
   }
 
   .font-sf-bold {
@@ -175,119 +181,150 @@
     font-weight: 700;
   }
 
-  .text-gold {
-    color: #FFB300 !important;
-  }
-
-  .wireframe-header-user {
+  .custom-header-home {
     padding: 60px 25px 20px 25px;
-    background: #FFF;
-    border-bottom: 1px solid #F2F2F7;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E5E5EA;
   }
 
-  .header-inner-sketsa {
+  .header-inner {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  .circle-avatar-wireframe {
-    width: 38px;
-    height: 38px;
+  .circle-avatar {
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    border: 2px solid #000;
+    border: 2px solid #111111;
     object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
 
-  .promo-card-wireframe {
-    background: #000;
-    border-radius: 24px;
+  /* Kartu Promo Hitam & Kuning */
+  .brand-promo-card {
+    background: #111111;
+    border-radius: 20px;
     padding: 25px 20px;
-    color: #FFF;
+    color: #FFFFFF;
+    position: relative;
+    overflow: hidden;
   }
 
-  .promo-badge-sketsa {
-    background: #FFB300;
-    color: #000;
-    padding: 3px 10px;
-    border-radius: 6px;
-    font-size: 9px;
-    display: inline-block;
-    margin-bottom: 8px;
+  .brand-promo-card::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    bottom: -30px;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 204, 0, 0.1);
+    border-radius: 50%;
   }
 
-  .promo-title-sketsa {
-    font-size: 19px;
-    line-height: 1.1;
-  }
-
-  .search-card-wireframe {
-    background: #FFF;
-    border-radius: 28px;
-    padding: 25px;
-    margin-top: -30px;
-    border: 1px solid #F2F2F7;
-    box-shadow: 0 16px 35px rgba(0,0,0,0.06);
-  }
-
-  .label-sketsa {
+  .promo-badge {
+    background: #FFCC00;
+    color: #111111;
+    padding: 4px 12px;
+    border-radius: 8px;
     font-size: 10px;
+    display: inline-block;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .promo-title {
+    font-size: 20px;
+    line-height: 1.2;
+    max-width: 80%;
+  }
+
+  /* Kartu Pencarian */
+  .search-card {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 25px;
+    margin-top: -20px;
+    border: 1px solid #E5E5EA;
+    box-shadow: 0 16px 35px rgba(0,0,0,0.04);
+  }
+
+  .label-input {
+    font-size: 11px;
     color: #8E8E93;
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
   }
 
-  .search-card-wireframe input {
+  .search-card input {
     width: 100%;
     border: none;
-    border-bottom: 2px solid #F2F2F7;
-    padding: 10px 0;
-    font-size: 15px;
+    border-bottom: 2px solid #F4F4F5;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #111111;
     outline: none;
     background: transparent;
+    transition: border-color 0.3s;
   }
 
-  .btn-cari-sketsa {
-    background: #FFD43B !important;
+  .search-card input:focus {
+    border-bottom: 2px solid #FFCC00;
+  }
+
+  .btn-brand-cari {
+    background: #FFCC00 !important;
     height: 54px !important;
-    border-radius: 16px !important;
-    color: #000 !important;
+    border-radius: 14px !important;
+    color: #111111 !important;
+    font-size: 15px;
+    box-shadow: 0 4px 14px rgba(255, 204, 0, 0.2);
+    transition: transform 0.1s;
+  }
+  
+  .btn-brand-cari:active {
+    transform: scale(0.97);
   }
 
+  /* Floating Tabbar iOS Style */
   .ios-user-tabbar {
     position: fixed;
-    left: 18px;
-    right: 18px;
-    bottom: 18px;
-    height: 68px;
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    left: 20px;
+    right: 20px;
+    bottom: 25px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 24px;
     display: flex;
     justify-content: space-around;
     align-items: center;
     z-index: 99999;
-    box-shadow: 0 18px 35px rgba(0,0,0,0.12);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
   }
 
   .ios-tab-item {
     flex: 1;
     height: 100%;
-    color: #9A9AA2 !important;
+    color: #A1A1AA !important;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 4px;
     text-decoration: none !important;
-    font-weight: 800;
+    font-weight: 700;
+    transition: all 0.3s ease;
   }
 
   .ios-tab-item i {
-    font-size: 22px;
-    margin-bottom: 2px;
+    font-size: 24px;
+    transition: all 0.3s ease;
   }
 
   .ios-tab-item span {
@@ -295,10 +332,11 @@
   }
 
   .ios-tab-item.active {
-    color: #FFB300 !important;
+    color: #111111 !important;
   }
 
   .ios-tab-item.active i {
-    color: #FFB300 !important;
+    color: #FFCC00 !important;
+    transform: translateY(-2px);
   }
 </style>

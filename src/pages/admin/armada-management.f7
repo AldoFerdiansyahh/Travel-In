@@ -38,39 +38,56 @@
               <div class="card-color-line"></div>
 
               <div class="card-header-flex">
-                <span class="armada-id-label font-sf-bold text-gray">#${armada.id ? armada.id.substring(0,6).toUpperCase() : 'UNIT'}</span>
+                <span class="armada-id-label font-sf-bold text-gray">
+                  #${armada.armadaCode ? armada.armadaCode : armada.id ? armada.id.substring(0, 6).toUpperCase() : 'UNIT'}
+                </span>
+
                 <div class="badge-status-sketsa font-sf-heavy ${armada.status === 'Available' ? 'badge-ready' : 'badge-service'}">
                   ${armada.status === 'Available' ? 'READY' : 'IN SERVICE'}
                 </div>
               </div>
 
-              <h2 class="armada-name-sketsa font-sf-heavy uppercase">${armada.name}</h2>
+              <h2 class="armada-name-sketsa font-sf-heavy uppercase">
+                ${armada.name || 'Nama Armada'}
+              </h2>
+
+              <div class="category-pill-armada font-sf-heavy">
+                ${getCategoryLabel(armada)}
+              </div>
               
               <div class="info-grid-sketsa margin-top">
                 <div class="info-box-ios">
                   <div class="info-label-ios font-sf-bold text-gray uppercase">PLAT NOMOR</div>
-                  <div class="info-val-ios font-sf-heavy">${armada.plate}</div>
+                  <div class="info-val-ios font-sf-heavy">${armada.plate || '-'}</div>
                 </div>
+
                 <div class="info-box-ios">
                   <div class="info-label-ios font-sf-bold text-gray uppercase">KAPASITAS</div>
-                  <div class="info-val-ios font-sf-heavy">${armada.capacity} KURSI</div>
+                  <div class="info-val-ios font-sf-heavy">${getCapacityLabel(armada)}</div>
                 </div>
               </div>
 
               <div class="info-grid-sketsa">
                 <div class="info-box-ios">
                   <div class="info-label-ios font-sf-bold text-gray uppercase">TAHUN UNIT</div>
-                  <div class="info-val-ios font-sf-heavy">${armada.year || '2024'}</div>
+                  <div class="info-val-ios font-sf-heavy">${armada.year || '-'}</div>
                 </div>
+
                 <div class="info-box-ios">
                   <div class="info-label-ios font-sf-bold text-gray uppercase">FASILITAS</div>
-                  <div class="info-val-ios font-sf-heavy">${armada.facilities || 'Full AC, TV, WiFi'}</div>
+                  <div class="info-val-ios font-sf-heavy">${armada.facilities || 'Full AC'}</div>
                 </div>
               </div>
 
               <div class="card-actions-sketsa-ios margin-top-lg">
-                <a href="/admin/armada-edit/?id=${armada.id}" @click="${(e) => editUnit(armada.id, e)}" class="link font-sf-heavy action-blue">EDIT DATA</a>
-                <a @click="${() => viewSchedule(armada.id)}" class="link font-sf-heavy action-dark">CEK JADWAL</a>
+                <a href="/admin/armada-edit/?id=${armada.id}" @click="${(e) => editUnit(armada.id, e)}" class="link font-sf-heavy action-blue">
+                  EDIT DATA
+                </a>
+
+                <a @click="${() => viewSchedule(armada.id)}" class="link font-sf-heavy action-dark">
+                  CEK JADWAL
+                </a>
+
                 <a @click="${() => toggleArmadaStatus(armada.id)}" class="link font-sf-heavy ${armada.status === 'Available' ? 'text-red' : 'text-green'} action-underline">
                   ${armada.status === 'Available' ? 'NON-AKTIFKAN' : 'AKTIFKAN'}
                 </a>
@@ -230,11 +247,16 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 4px;
+    gap: 10px;
   }
 
   .armada-id-label {
     font-size: 11px;
     letter-spacing: 1px;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .badge-status-sketsa {
@@ -243,6 +265,7 @@
     border-radius: 999px;
     font-size: 9px;
     text-transform: uppercase;
+    flex-shrink: 0;
   }
 
   .badge-ready {
@@ -255,9 +278,23 @@
 
   .armada-name-sketsa {
     font-size: 24px;
-    margin: 0 0 15px 0;
+    margin: 0 0 10px 0;
     line-height: 1;
     color: #111;
+  }
+
+  .category-pill-armada {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    background: #FFF6D6;
+    color: #B07800;
+    border-radius: 999px;
+    padding: 7px 11px;
+    font-size: 9px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    letter-spacing: 0.3px;
   }
 
   .info-grid-sketsa {
@@ -267,10 +304,12 @@
     padding: 12px;
     margin-bottom: 8px;
     border-top: none;
+    gap: 8px;
   }
 
   .info-box-ios {
     flex: 1;
+    min-width: 0;
   }
 
   .info-label-ios {
@@ -282,6 +321,7 @@
   .info-val-ios {
     font-size: 14px;
     color: #111;
+    word-break: break-word;
   }
 
   .card-actions-sketsa-ios {
@@ -326,16 +366,73 @@
     border-radius: 12px;
   }
 
+  .empty-state-ios {
+    margin: 40px 16px;
+    border-radius: 24px;
+    background: #FFFFFF;
+    box-shadow: 0 14px 34px rgba(0,0,0,0.04);
+  }
+
   .padding-bottom-xl {
     padding-bottom: 60px;
   }
 </style>
 
 <script>
-  import $ from 'dom7';
-
   export default (props, { $store, $f7, $router, $update, $on }) => {
     let armadas = $store.getters.armadas.value || [];
+
+    const getCategoryLabel = (armada) => {
+      if (armada.categoryLabel) {
+        return armada.categoryLabel;
+      }
+
+      if (armada.category === 'mobil_kecil') {
+        return 'Mobil Kecil';
+      }
+
+      if (armada.category === 'hiace_elf') {
+        return 'Hiace / Elf';
+      }
+
+      const capacity = Number(armada.capacity || 0);
+
+      if (capacity >= 18 && capacity <= 21) {
+        return 'Hiace / Elf';
+      }
+
+      if (capacity > 0 && capacity <= 7) {
+        return 'Mobil Kecil';
+      }
+
+      return 'Belum Dikategorikan';
+    };
+
+    const getCapacityLabel = (armada) => {
+      const category = armada.category || '';
+      const categoryLabel = getCategoryLabel(armada);
+      const capacity = Number(armada.capacity || 0);
+
+      if (category === 'hiace_elf' || categoryLabel === 'Hiace / Elf') {
+        const seatMin = armada.seatMin || 18;
+        const seatMax = armada.seatMax || 21;
+        return `${seatMin}-${seatMax} SEAT`;
+      }
+
+      if (category === 'mobil_kecil' || categoryLabel === 'Mobil Kecil') {
+        return `${capacity || armada.seatMax || 7} KURSI`;
+      }
+
+      if (armada.seatMin && armada.seatMax) {
+        return `${armada.seatMin}-${armada.seatMax} KURSI`;
+      }
+
+      if (capacity) {
+        return `${capacity} KURSI`;
+      }
+
+      return '-';
+    };
 
     $on('pageBeforeIn', async () => {
       await $store.dispatch('fetchArmadas');
@@ -362,19 +459,35 @@
       $router.navigate('/admin/schedules/');
     };
 
-    const toggleArmadaStatus = (id) => {
+    const toggleArmadaStatus = async (id) => {
       const armada = armadas.find((item) => item.id === id);
       if (!armada) return;
       
       const newStatus = armada.status === 'Available' ? 'In Service' : 'Available';
-      $store.dispatch('updateArmada', { ...armada, status: newStatus });
-      
-      $f7.toast.create({ 
-        text: `Status ${armada.name} diubah ke ${newStatus}`, 
-        closeTimeout: 2000 
-      }).open();
-      
-      $update();
+
+      try {
+        await $store.dispatch('updateArmada', {
+          ...armada,
+          status: newStatus,
+        });
+
+        await $store.dispatch('fetchArmadas');
+        armadas = $store.getters.armadas.value || [];
+        
+        $f7.toast.create({ 
+          text: `Status ${armada.name} diubah ke ${newStatus}`, 
+          closeTimeout: 2000 
+        }).open();
+
+        $update();
+      } catch (error) {
+        console.error('Gagal update status armada:', error);
+
+        $f7.toast.create({ 
+          text: 'Gagal mengubah status armada', 
+          closeTimeout: 2000 
+        }).open();
+      }
     };
 
     return $render;

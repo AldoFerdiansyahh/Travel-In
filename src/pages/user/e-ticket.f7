@@ -1,196 +1,146 @@
 <template>
-  <div class="page no-navbar no-toolbar" data-name="e-ticket">
-    <div class="page-content bg-apple-white display-flex justify-content-center align-items-center">
+  <div class="page no-navbar bg-app-gray" data-name="e-ticket">
+    <div class="page-content" style="padding: 20px 16px;">
       
-      <div class="ticket-container-premium shadow-luxury">
-        <div class="ticket-inner">
-          
-          <div class="ticket-header-text font-sf-heavy">E-TIKET PERJALANAN</div>
+      <!-- Judul -->
+      <div class="text-center margin-bottom-lg">
+        <div class="font-sf-heavy text-18 text-black tracking-wide">E-TIKET PERJALANAN</div>
+      </div>
 
-          <div class="status-badge-verified font-sf-heavy">
-            TERVERIFIKASI
-          </div>
+      <!-- Container Utama Tiket -->
+      <div class="ticket-card">
+        <!-- Header Status - Diberi warna Yellow Brand -->
+        <div class="status-header font-sf-heavy">TERVERIFIKASI</div>
 
-          <div class="display-flex justify-content-between margin-top-lg">
-            <div class="info-group">
-              <div class="info-label font-sf-bold">Nama Penumpang</div>
-              <div class="info-value font-sf-heavy">${ticket.passenger || 'ALDO FERDIANSYAH'}</div>
+        <!-- Detail Grid -->
+        <div class="ticket-body">
+          <div class="flex-between">
+            <div class="info-block">
+              <div class="info-label">NAMA PENUMPANG</div>
+              <div class="info-value font-sf-heavy">${ticket.passengerName || 'Nama Penumpang'}</div>
             </div>
-            <div class="info-group text-align-right">
-              <div class="info-label font-sf-bold">Order ID</div>
-              <div class="info-value font-sf-heavy">#${ticket.id.substring(0, 8).toUpperCase() || 'TIN-9901'}</div>
-            </div>
-          </div>
-
-          <div class="info-group margin-top">
-            <div class="info-label font-sf-bold">Rute Perjalanan</div>
-            <div class="info-value font-sf-heavy text-uppercase">${ticket.route || 'BANDUNG → JAKARTA'}</div>
-          </div>
-
-          <div class="display-flex justify-content-between margin-top">
-            <div class="info-group">
-              <div class="info-label font-sf-bold">Tanggal & Jam</div>
-              <div class="info-value font-sf-heavy">${ticket.date || '12 MEI 2026'} | ${ticket.time || '10:30'}</div>
-            </div>
-            <div class="info-group text-align-right">
-              <div class="info-label font-sf-bold">Armada</div>
-              <div class="info-value font-sf-heavy">${ticket.vehicle || 'HIACE LUXURY'}</div>
+            <div class="info-block text-align-right">
+              <div class="info-label">ORDER ID</div>
+              <div class="info-value font-sf-heavy">#${ticket.id ? ticket.id.substring(ticket.id.length - 8).toUpperCase() : 'TIN-9901'}</div>
             </div>
           </div>
 
-          <div class="ticket-divider"></div>
-
-          <div class="qr-section text-align-center">
-            <div class="qr-wrapper shadow-sm">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticket.id}" alt="QR Code" />
-            </div>
-            <div class="qr-instruction font-sf-medium margin-top">Tunjukkan QR Code ini ke petugas</div>
+          <div class="info-block margin-top">
+            <div class="info-label">RUTE PERJALANAN</div>
+            <div class="info-value font-sf-heavy">${ticket.route || '-'}</div>
           </div>
 
-          <button class="button button-fill btn-save-ticket font-sf-heavy margin-top-lg shadow-sm" @click="${saveToGallery}">
-            SIMPAN KE GALERI
-          </button>
+          <div class="flex-between margin-top">
+            <div class="info-block">
+              <div class="info-label">TANGGAL & JAM</div>
+              <div class="info-value font-sf-heavy">${ticket.date || '-'}</div>
+            </div>
+            <div class="info-block text-align-right">
+              <div class="info-label">ARMADA</div>
+              <div class="info-value font-sf-heavy">${ticket.vehicle || '-'}</div>
+            </div>
+          </div>
+        </div>
 
+        <div class="dashed-divider"></div>
+
+        <!-- Area QR -->
+        <div class="qr-area">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${ticket.id || 'N/A'}" class="qr-code" />
+          <p class="qr-hint font-sf-medium">Tunjukkan QR Code ini ke petugas</p>
         </div>
       </div>
 
-      <a href="/home/" class="link back-fab shadow-sm">
-        <i class="f7-icons size-20">arrow_left</i>
-      </a>
+      <!-- Tombol Utama - Warna Brand Yellow -->
+      <button class="btn-primary font-sf-heavy" @click="${saveToGallery}">
+        SIMPAN KE GALERI
+      </button>
 
+      <!-- Navigasi Bawah -->
+      <div class="text-center margin-top">
+        <a href="/home/" class="link font-sf-bold text-12 text-gray">Kembali ke Beranda</a>
+      </div>
+      
     </div>
   </div>
 </template>
 
 <style>
-  .bg-apple-white { background: #F2F2F7; }
-  .font-sf-heavy { font-family: -apple-system, sans-serif; font-weight: 800; letter-spacing: -0.02em; }
+  .bg-app-gray { background: #F4F4F5; } /* Mengikuti tema booking */
+  .text-black { color: #111; }
+  .text-gray { color: #8E8E93; }
+
+  .font-sf-heavy { font-family: -apple-system, sans-serif; font-weight: 900; }
   .font-sf-bold { font-family: -apple-system, sans-serif; font-weight: 700; }
   .font-sf-medium { font-family: -apple-system, sans-serif; font-weight: 500; }
 
-  /* Container E-Tiket Putih Mewah */
-  .ticket-container-premium {
-    width: 90%;
-    max-width: 400px;
-    background: #FFFFFF;
-    border: 2px solid #FFB300; /* Border Gold sesuai gambar */
-    border-radius: 24px;
-    padding: 30px 20px;
-    position: relative;
-  }
-
-  .ticket-header-text {
-    text-align: center;
-    font-size: 14px;
-    color: #FFB300;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-  }
-
-  /* Badge Terverifikasi */
-  .status-badge-verified {
-    background: #000000;
-    color: #FFB300;
-    text-align: center;
-    padding: 12px;
-    border-radius: 12px;
-    font-size: 16px;
-    letter-spacing: 2px;
-  }
-
-  .info-label { font-size: 10px; color: #8E8E93; text-transform: uppercase; margin-bottom: 2px; }
-  .info-value { font-size: 15px; color: #000000; }
-
-  /* Divider Garis Putus */
-  .ticket-divider {
-    height: 1px;
-    border-top: 2px dashed #E5E5E7;
-    margin: 25px 0;
-  }
-
-  /* QR Area */
-  .qr-wrapper {
-    display: inline-block;
+  /* Kartu Tiket dengan Border Kuning Brand */
+  .ticket-card {
+    display: block;
+    width: 100%;
+    max-width: 380px;
     background: #FFF;
-    padding: 10px;
-    border-radius: 16px;
-    border: 1px solid #F2F2F7;
-  }
-  .qr-wrapper img { width: 140px; height: 140px; display: block; }
-  .qr-instruction { font-size: 11px; color: #8E8E93; }
-
-  /* Button Premium */
-  .btn-save-ticket {
-    background: transparent !important;
-    border: 2px solid #FFB300 !important;
-    color: #FFB300 !important;
-    height: 54px !important;
-    border-radius: 14px !important;
-    font-size: 14px;
-    letter-spacing: 1px;
+    border: 3px solid #111; /* Border tegas */
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   }
 
-  .back-fab {
-    position: absolute;
-    top: 50px;
-    left: 20px;
-    width: 40px;
-    height: 40px;
-    background: #FFF;
-    color: #000;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
+  .status-header { 
+    background: #FFCC00; /* Warna Brand Yellow */
+    color: #111; 
+    padding: 15px; 
+    text-align: center; 
+    font-size: 16px; 
+    letter-spacing: 1px; 
   }
 
-  .shadow-luxury { box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
-  .text-uppercase { text-transform: uppercase; }
+  .ticket-body { padding: 20px; }
+  .flex-between { display: flex; justify-content: space-between; align-items: flex-start; }
+  .info-label { font-size: 9px; color: #888; margin-bottom: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .info-value { font-size: 14px; color: #111; word-break: break-word; }
+  
+  .dashed-divider { border-top: 2px dashed #E5E5EA; margin: 0 20px; }
+  
+  .qr-area { padding: 20px; text-align: center; }
+  .qr-code { width: 140px; height: 140px; border: 2px solid #111; padding: 5px; border-radius: 10px; }
+  .qr-hint { font-size: 10px; color: #888; margin-top: 8px; }
+
+  /* Tombol Kuning Brand */
+  .btn-primary {
+    display: block;
+    width: 100%;
+    max-width: 380px;
+    margin: 25px auto 0 auto;
+    background: #FFCC00; /* Warna Brand Yellow */
+    border: none;
+    color: #111;
+    padding: 18px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255, 204, 0, 0.3);
+  }
 </style>
 
 <script>
-  export default (props, { $f7, $store, $on }) => {
-    const ticketId = (props.route && props.route.params && props.route.params.ticketId) || '';
-    
-    // Default ticket
-    let ticket = { 
-      id: ticketId || 'TIN-UNKNOWN', 
-      passenger: 'ALDO FERDIANSYAH', 
-      route: 'BANDUNG → JAKARTA', 
-      date: '12 MEI 2026',
-      time: '10:30',
-      vehicle: 'HIACE LUXURY',
-      price: 0 
-    };
+export default (props, { $f7, $f7route, $store, $update, $on }) => {
+  const ticketId = $f7route.params.ticketId;
+  let ticket = {};
 
-    // Cek di store dulu
+  $on('pageBeforeIn', async () => {
+    await $store.dispatch('fetchTickets');
     const allTickets = $store.getters.tickets.value || [];
-    const foundTicket = allTickets.find((item) => item.id === ticketId);
-    
-    if (foundTicket) {
-      ticket = foundTicket;
-    } else {
-      // Jika tidak ketemu, fetch dari Firebase
-      $store.dispatch('fetchTickets').then(() => {
-        const ticketsAfterFetch = $store.getters.tickets.value || [];
-        const newFoundTicket = ticketsAfterFetch.find((item) => item.id === ticketId);
-        if (newFoundTicket) {
-          ticket = newFoundTicket;
-        }
-      }).catch(err => {
-        console.error('Error fetching tickets:', err);
-      });
-    }
+    ticket = allTickets.find(t => t.id === ticketId) || {};
+    $update();
+  });
 
-    const saveToGallery = () => {
-      $f7.dialog.preloader('Menyimpan ke Galeri...');
-      setTimeout(() => {
-        $f7.dialog.close();
-        $f7.toast.create({ text: 'E-Tiket berhasil disimpan!', closeTimeout: 2000 }).open();
-      }, 1500);
-    };
-
-    return $render;
+  const saveToGallery = () => {
+    $f7.dialog.alert('Fitur simpan sedang disiapkan!');
   };
+
+  return $render;
+};
 </script>
